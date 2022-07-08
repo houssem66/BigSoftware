@@ -1,0 +1,17 @@
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\netcoreapp3.1\Services.deps.json
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\netcoreapp3.1\Services.runtimeconfig.json
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\netcoreapp3.1\Services.runtimeconfig.dev.json
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\netcoreapp3.1\Services.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\netcoreapp3.1\Services.pdb
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\netcoreapp3.1\Services.csprojAssemblyReference.cache
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\netcoreapp3.1\Services.AssemblyInfoInputs.cache
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\netcoreapp3.1\Services.AssemblyInfo.cs
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\netcoreapp3.1\Services.csproj.CoreCompileInputs.cache
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\netcoreapp3.1\Services.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\netcoreapp3.1\Services.pdb
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\netcoreapp3.1\Services.genruntimeconfig.cache
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\netcoreapp3.1\Data.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\netcoreapp3.1\Repository.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\netcoreapp3.1\Data.pdb
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\netcoreapp3.1\Repository.pdb
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\netcoreapp3.1\Services.csproj.CopyComplete
