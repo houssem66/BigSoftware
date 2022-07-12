@@ -11,6 +11,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using Repository.Implementation;
+using Repository.Implmentation;
+using Repository.Interfaces;
+using Services.Implementation;
+using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +43,7 @@ namespace WebApi
             services.AddMvc(option => option.EnableEndpointRouting = false)
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
             .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
-           //JWT config
+            //JWT config
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
@@ -55,7 +60,44 @@ namespace WebApi
             });
             //SignalIR
             services.AddSignalR();
+            #region Repositories AddScoped
+            
+            //Add GenericRepo
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
+            //Sprint 1
+            services.AddScoped(typeof(IClientRepo), typeof(ClientRepo));
+            services.AddScoped(typeof(IFournisseurRepo), typeof(FournisseurRepo));
+            services.AddScoped(typeof(IUserRepo), typeof(UserRepo));
+            services.AddScoped(typeof(IGrossiteRepo), typeof(GrossisteRepo));
+            #endregion
+
+
+            #region Services Addtransient
+            //sprint1
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IGrossisteService, GrossisteService>();
+            services.AddTransient<IFournisseurService, FournisseurService>();
+            services.AddTransient<IClientService, ClientService>();
+            #endregion
+            #region JWT Config 
+
+            // JWT Config
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = Configuration["Jwt:Issuer"],
+                    ValidAudience = Configuration["Jwt:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                };
+            });
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

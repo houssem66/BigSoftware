@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Repository.Interfaces
 {
-    class IGrossiteRepo
+    public interface IGrossiteRepo
     {
     }
 }

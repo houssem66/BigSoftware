@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Repository.Interfaces
 {
-    class IClientRepo
+    public interface IClientRepo
     {
     }
 }
