@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Repository.Implementation
 {
-    public class GrossisteRepo
+    public class GrossisteRepo:IGrossiteRepo
     {
         private readonly BigSoftContext bigSoftContext;
         private readonly IGenericRepository<Grossiste> genericRepository;

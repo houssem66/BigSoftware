@@ -1,10 +1,11 @@
 ﻿using Data.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 
 namespace Data
 {
-    public class BigSoftContext : DbContext
+    public class BigSoftContext :  IdentityDbContext<Utilisateur>
     {
         public BigSoftContext(DbContextOptions<BigSoftContext> options) : base(options)
         {
