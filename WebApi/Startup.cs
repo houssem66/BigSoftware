@@ -1,8 +1,10 @@
 using Data;
+using Data.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using Repository.Implementation;
 using Repository.Implmentation;
@@ -21,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApi.Helpers;
 
 namespace WebApi
 {
@@ -35,7 +39,9 @@ namespace WebApi
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {//Conection string
+        {
+           
+            //Conection string
             services.AddDbContext<BigSoftContext>(options =>
                            options.UseSqlServer(Configuration.GetConnectionString("myconn")));
             services.AddControllers();
@@ -43,7 +49,12 @@ namespace WebApi
             services.AddMvc(option => option.EnableEndpointRouting = false)
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
             .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
-           
+            #region SwaggerConfig
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BigSoftWare", Version = "v1" });
+            });
+            #endregion
             //SignalIR
             services.AddSignalR();
             #region Repositories AddScoped
@@ -67,22 +78,37 @@ namespace WebApi
             services.AddTransient<IClientService, ClientService>();
             #endregion
             #region JWT Config 
-
-            // JWT Config
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+            //Identity Config
+            services.AddIdentity<Utilisateur, IdentityRole>(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidAudience = Configuration["Jwt:Issuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
-                };
-            });
+                options.SignIn.RequireConfirmedEmail = true;
+
+            }
+
+           ).AddEntityFrameworkStores<BigSoftContext>()
+            .AddDefaultTokenProviders();
+            // JWT Config
+            services.Configure<JWT>(Configuration.GetSection("JWT"));
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                 .AddJwtBearer(o =>
+                 {
+                     o.RequireHttpsMetadata = false;
+                     o.SaveToken = false;
+                     o.TokenValidationParameters = new TokenValidationParameters
+                     {
+                         ValidateIssuerSigningKey = true,
+                         ValidateIssuer = true,
+                         ValidateAudience = true,
+                         ValidateLifetime = true,
+                         ValidIssuer = Configuration["JWT:Issuer"],
+                         ValidAudience = Configuration["JWT:Audience"],
+                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Key"]))
+                     };
+                 });
             #endregion
         }
 
@@ -91,13 +117,15 @@ namespace WebApi
         {
             if (env.IsDevelopment())
             {
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BigSoftWare v1"));
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
