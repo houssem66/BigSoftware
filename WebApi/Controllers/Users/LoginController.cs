@@ -1,4 +1,5 @@
 ﻿using Data.Entities;
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -17,16 +18,16 @@ using WebApi.Models;
 
 namespace WebApi.Controllers
 {
+   
     [Route("api/[controller]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly IConfiguration config;
         private readonly IUserService userService;
 
-        public LoginController(IConfiguration _config, IUserService _UserService)
+        public LoginController( IUserService _UserService)
         {
-            config = _config;
+           
             userService = _UserService;
         }
         [AllowAnonymous]
@@ -44,7 +45,28 @@ namespace WebApi.Controllers
 
             return Ok(result);
         }
-      
-     
+        [HttpPost("token")]
+        public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await userService.Login(model);
+
+            if (!result.IsAuthenticated)
+                return BadRequest(result.Message);
+
+            return Ok(result);
+        }
+        [Authorize]
+       
+        public IQueryable GetAll()
+        {
+
+
+            return (userService.GetAll().AsQueryable());
+        }
+
+
     }
 }

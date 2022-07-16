@@ -1,8 +1,10 @@
 ﻿using Data.Entities;
+using Data.Models;
 using Repository.Interfaces;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WebApi.Models;
@@ -25,14 +27,19 @@ namespace Services.Implementation
             throw new NotImplementedException();
         }
 
+        public List<Utilisateur> GetAll()
+        {
+            return genericRepo.GetAll().ToList();
+        }
+
         public Task<Utilisateur> GetById(int id)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Utilisateur> Login(Utilisateur entity)
+        public Task<AuthModel> Login(TokenRequestModel model)
         {
-            throw new NotImplementedException();
+            return userRepo.GetTokenAsync(model);
         }
 
         public Task<AuthModel> RegisterAsync(RegisterModelUser model)

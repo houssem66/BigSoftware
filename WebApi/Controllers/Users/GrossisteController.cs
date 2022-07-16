@@ -9,7 +9,7 @@ namespace WebApi.Controllers.Users
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class GrossisteController : ControllerBase
     {
     }
 }
