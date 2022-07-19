@@ -1,44 +1,35 @@
 ﻿using Data.Entities;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Services.Implementation;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using WebApi.Models;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
-namespace WebApi.Controllers
+namespace WebApi.Controllers.Users
 {
-   
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class FournisseurController : ControllerBase
     {
-        private readonly IUserService userService;
+        private readonly IFournisseurService fournisseurService;
 
-        public UserController( IUserService _UserService)
+        public FournisseurController(IFournisseurService _FournisseurService)
         {
-           
-            userService = _UserService;
+            fournisseurService = _FournisseurService;
         }
         [AllowAnonymous]
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync([FromBody] RegisterModelUser model)
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterModelFournisseur model)
         {
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await userService.RegisterAsync(model);
+            var result = await fournisseurService.RegisterAsync(model);
 
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
@@ -51,7 +42,7 @@ namespace WebApi.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await userService.Login(model);
+            var result = await fournisseurService.Login(model);
 
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
@@ -59,20 +50,21 @@ namespace WebApi.Controllers
             return Ok(result);
         }
         [Authorize]
-       [HttpGet]
+        [HttpGet]
         public IQueryable GetAll()
         {
 
 
-            return (userService.GetAll().AsQueryable());
+            return (fournisseurService.GetAll().AsQueryable());
         }
         [Authorize]
+        // DELETE: api/Applications/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             try
             {
-                await userService.Delete(id);
+                await fournisseurService.Delete(id);
 
                 return Ok(StatusCode(200));
             }
@@ -85,11 +77,11 @@ namespace WebApi.Controllers
         }
         [Authorize]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(string id,Utilisateur utilisateur)
+        public async Task<IActionResult> Update(string id, Fournisseur entity)
         {
             try
             {
-                await userService.Update(id,utilisateur);
+                await fournisseurService.Update(id, entity);
 
                 return Ok(StatusCode(200));
             }
@@ -98,13 +90,14 @@ namespace WebApi.Controllers
 
                 return Ok(StatusCode(400));
             }
+          
 
         }
         [Authorize]
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<Utilisateur>> Details(string id)
+        public async Task<ActionResult<Fournisseur>> Details(string id)
         {
-            var Entity = await userService.GetById(id);
+            var Entity = await fournisseurService.GetById(id);
 
             if (Entity == null)
             {

@@ -1,11 +1,14 @@
 ﻿using Data.Entities;
+using Data.Models;
 using Repository.Implementation;
 using Repository.Interfaces;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApi.Models;
 
 namespace Services.Implementation
 {
@@ -19,24 +22,36 @@ namespace Services.Implementation
             genericRepo = _GenericRepo;
             grossisteRepo = _GrossisteRepo;
         }
-        public Task Ajout(Grossiste entity)
+      
+
+        public Task Delete(string id)
         {
-            throw new NotImplementedException();
+            return genericRepo.DeleteAsync(id);
         }
 
-        public Task Delete(int id)
+        public List<Grossiste> GetAll()
         {
-            throw new NotImplementedException();
+            return genericRepo.GetAll().ToList();
         }
 
-        public Task<Grossiste> GetById(int id)
+        public Task<Grossiste> GetById(string id)
         {
-            throw new NotImplementedException();
+            return genericRepo.GetByIdAsync(id);
         }
 
-        public Task Update(Grossiste entity)
+        public Task<AuthModel> Login(TokenRequestModel model)
         {
-            throw new NotImplementedException();
+            return grossisteRepo.GetTokenAsync(model);
+        }
+
+        public Task<AuthModel> RegisterAsync(RegisterModelGrossiste model)
+        {
+            return grossisteRepo.RegisterAsync(model);
+        }
+
+        public Task Update(string id,Grossiste entity)
+        {
+            return genericRepo.PutAsync(id, entity);
         }
     }
 }

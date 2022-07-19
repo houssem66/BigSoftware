@@ -1,20 +1,23 @@
 ﻿using Data.Entities;
+using Data.Models;
 using Repository.Implementation;
 using Repository.Interfaces;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebApi.Models;
 
 namespace Services.Implementation
 {
     public class FournisseurService : IFournisseurService
     {
         private readonly IGenericRepository<Fournisseur> genericRepo;
-        private readonly IGrossiteRepo FournisseurRepo;
+        private readonly IFournisseurRepo FournisseurRepo;
 
-        public FournisseurService(IGenericRepository<Fournisseur> _GenericRepo, IGrossiteRepo _FournisseurRepo)
+        public FournisseurService(IGenericRepository<Fournisseur> _GenericRepo, IFournisseurRepo _FournisseurRepo)
         {
             genericRepo = _GenericRepo;
             FournisseurRepo = _FournisseurRepo;
@@ -24,19 +27,35 @@ namespace Services.Implementation
             throw new NotImplementedException();
         }
 
-        public Task Delete(int id)
+        public Task Delete(string id)
         {
-            throw new NotImplementedException();
+            return genericRepo.DeleteAsync(id);
         }
 
-        public Task<Fournisseur> GetById(int id)
+        public Task<Fournisseur> GetById(string id)
         {
-            throw new NotImplementedException();
+            return genericRepo.GetByIdAsync(id);
         }
 
-        public Task Update(Fournisseur entity)
+        public Task Update(string id,Fournisseur entity)
         {
-            throw new NotImplementedException();
+            return genericRepo.PutAsync(id, entity);
+        }
+        public List<Fournisseur> GetAll()
+        {
+            return genericRepo.GetAll().ToList();
+        }
+
+       
+
+        public Task<AuthModel> Login(TokenRequestModel model)
+        {
+            return FournisseurRepo.GetTokenAsync(model);
+        }
+
+        public Task<AuthModel> RegisterAsync(RegisterModelFournisseur model)
+        {
+            return FournisseurRepo.RegisterAsync(model);
         }
     }
 }

@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Data.Models
 {
-  public  class RegisterModelUser
-    {
+   public class RegisterModelClient
+    {//User Attribut
         [Required, MaxLength(50)]
         public String Nom { get; set; }
         [Required, MaxLength(50)]
@@ -30,5 +32,10 @@ namespace Data.Models
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
         public string Password { get; set; }
+        //Client Attribut
+        public TypeClient TypeClient { get; set; }
+        [RegularExpression(@"([0-9]+)", ErrorMessage = "Must be a Number.")]
+        [StringLength(8, ErrorMessage = "The {0}  cannot exceed {1} characters. ")]
+        public string Cin { get; set; }
     }
 }
