@@ -8,29 +8,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebApi.Models;
 
-namespace WebApi.Controllers.Users
+namespace WebApi.Controllers.Clients
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GrossisteController : ControllerBase
+    public class ClientController : ControllerBase
     {
-        private readonly IGrossisteService grossisteService;
+        private readonly IClientService ClientService;
 
-        public GrossisteController(IGrossisteService _grossisteService)
+        public ClientController(IClientService _ClientService)
         {
-            grossisteService = _grossisteService;
+
+            ClientService = _ClientService;
         }
         [AllowAnonymous]
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync([FromBody] RegisterModelGrossiste model)
+        public async Task<IActionResult> RegisterAsync([FromBody] RegisterModelClient model)
         {
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await grossisteService.RegisterAsync(model);
+            var result = await ClientService.RegisterAsync(model);
 
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
@@ -43,7 +43,7 @@ namespace WebApi.Controllers.Users
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await grossisteService.Login(model);
+            var result = await ClientService.Login(model);
 
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
@@ -56,17 +56,17 @@ namespace WebApi.Controllers.Users
         {
 
 
-            return (grossisteService.GetAll().AsQueryable());
+            return (ClientService.GetAll().AsQueryable());
         }
         [Authorize]
-       
+        // DELETE: api/Applications/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
             try
             {
-                await grossisteService.Delete(id);
-
+                await ClientService.Delete(id);
+               
                 return Ok(StatusCode(200));
             }
             catch (Exception)
@@ -77,13 +77,12 @@ namespace WebApi.Controllers.Users
 
         }
         [Authorize]
-        
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(string id, Grossiste entity)
+        public async Task<IActionResult> Update(string id, Client entity)
         {
             try
             {
-                await grossisteService.Update(id, entity);
+                await ClientService.Update(id, entity);
 
                 return Ok(StatusCode(200));
             }
@@ -93,12 +92,13 @@ namespace WebApi.Controllers.Users
                 return Ok(StatusCode(400));
             }
 
+       
         }
         [Authorize]
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<Grossiste>> Details(string id)
+        public async Task<ActionResult<Client>> Details(string id)
         {
-            var Entity = await grossisteService.GetById(id);
+            var Entity = await ClientService.GetById(id);
 
             if (Entity == null)
             {

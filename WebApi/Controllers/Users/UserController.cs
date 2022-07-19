@@ -21,11 +21,11 @@ namespace WebApi.Controllers
    
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IUserService userService;
 
-        public LoginController( IUserService _UserService)
+        public UserController( IUserService _UserService)
         {
            
             userService = _UserService;
@@ -59,14 +59,60 @@ namespace WebApi.Controllers
             return Ok(result);
         }
         [Authorize]
-       
+       [HttpGet]
         public IQueryable GetAll()
         {
 
 
             return (userService.GetAll().AsQueryable());
         }
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                await userService.Delete(id);
 
+                return Ok(StatusCode(200));
+            }
+            catch (Exception)
+            {
 
+                return Ok(StatusCode(400));
+            }
+
+        }
+        [Authorize]
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update(string id,Utilisateur utilisateur)
+        {
+            try
+            {
+                await userService.Update(id,utilisateur);
+
+                return Ok(StatusCode(200));
+            }
+            catch (Exception)
+            {
+
+                return Ok(StatusCode(400));
+            }
+
+        }
+        [Authorize]
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<Utilisateur>> Details(string id)
+        {
+            var Entity = await userService.GetById(id);
+
+            if (Entity == null)
+            {
+                return NotFound();
+            }
+
+            return Entity;
+
+        }
     }
 }

@@ -22,9 +22,9 @@ namespace Services.Implementation
             userRepo = _UserRepo;
         }
        
-        public Task Delete(int id)
+        public Task Delete(string id)
         {
-            throw new NotImplementedException();
+            return genericRepo.DeleteAsync(id);
         }
 
         public List<Utilisateur> GetAll()
@@ -32,9 +32,9 @@ namespace Services.Implementation
             return genericRepo.GetAll().ToList();
         }
 
-        public Task<Utilisateur> GetById(int id)
+        public Task<Utilisateur> GetById(string id)
         {
-            throw new NotImplementedException();
+            return genericRepo.GetByIdAsync(id);
         }
 
         public Task<AuthModel> Login(TokenRequestModel model)
@@ -47,9 +47,9 @@ namespace Services.Implementation
             return userRepo.RegisterAsync(model);
         }
 
-        public Task Update(Utilisateur entity)
+        public Task Update(string id, Utilisateur entity)
         {
-            throw new NotImplementedException();
+            return genericRepo.PutAsync(id, entity);
         }
 
       

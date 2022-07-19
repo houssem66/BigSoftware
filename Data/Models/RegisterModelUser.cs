@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace WebApi.Models
+namespace Data.Models
 {
   public  class RegisterModelUser
     {
