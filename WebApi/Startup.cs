@@ -1,5 +1,6 @@
 using Data;
 using Data.Entities;
+using Data.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -76,6 +77,7 @@ namespace WebApi
             services.AddTransient<IGrossisteService, GrossisteService>();
             services.AddTransient<IFournisseurService, FournisseurService>();
             services.AddTransient<IClientService, ClientService>();
+            services.AddTransient<IMailingService, MailingService>();
             #endregion
             #region JWT Config 
             //Identity Config
@@ -109,6 +111,9 @@ namespace WebApi
                          IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Key"]))
                      };
                  });
+            #endregion
+            #region Mail
+            services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             #endregion
         }
 
