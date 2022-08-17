@@ -19,6 +19,46 @@ namespace Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Data.Entities.Fournisseur", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Adresse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CodePostale")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NomPersAContact")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumFax")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Numbureau")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PrenomPersAContact")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RaisonSocial")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SiteWeb")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Fournisseurs");
+                });
+
             modelBuilder.Entity("Data.Entities.Utilisateur", b =>
                 {
                     b.Property<string>("Id")
@@ -62,7 +102,9 @@ namespace Data.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Nom")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -85,13 +127,12 @@ namespace Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Prenom")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Telephone")
-                        .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -258,39 +299,6 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("Client");
-                });
-
-            modelBuilder.Entity("Data.Entities.Fournisseur", b =>
-                {
-                    b.HasBaseType("Data.Entities.Utilisateur");
-
-                    b.Property<string>("CodePostale")
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)")
-                        .HasColumnName("Fournisseur_CodePostale");
-
-                    b.Property<int>("Numbureau")
-                        .HasColumnType("int")
-                        .HasColumnName("Fournisseur_Numbureau");
-
-                    b.Property<string>("PersAContact")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Fournisseur_PersAContact");
-
-                    b.Property<string>("Rib")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("Fournisseur_Rib");
-
-                    b.Property<string>("SiteWeb")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Fournisseur_SiteWeb");
-
-                    b.Property<bool>("Verified")
-                        .HasColumnType("bit")
-                        .HasColumnName("Fournisseur_Verified");
-
-                    b.HasDiscriminator().HasValue("Fournisseur");
                 });
 
             modelBuilder.Entity("Data.Entities.Grossiste", b =>

@@ -9,7 +9,6 @@ namespace Repository.Interfaces
 {
     public interface IFournisseurRepo
     {
-        public Task<AuthModel> RegisterAsync(RegisterModelFournisseur model);
-        public Task<AuthModel> GetTokenAsync(TokenRequestModel model);
+      
     }
 }

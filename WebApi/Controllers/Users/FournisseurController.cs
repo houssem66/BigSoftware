@@ -33,47 +33,15 @@ namespace WebApi.Controllers.Users
             this.mailingService = mailingService;
         }
         [AllowAnonymous]
-        [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync([FromBody] RegisterModelFournisseur model)
-        {
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var result = await fournisseurService.RegisterAsync(model);
-
-            if (!result.IsAuthenticated)
-                return BadRequest(result.Message);
-            var user = await _userManager.FindByEmailAsync(result.Email);
-            var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
-            var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
-            string url = $"https://localhost:44353/api/User/confirmemail?userid={user.Id}&token={validEmailToken}";
-            var filePath = $"{Directory.GetCurrentDirectory()}\\Templates\\EmailTemplate.html";
-            var str = new StreamReader(filePath);
-
-            var mailText = str.ReadToEnd();
-            str.Close();
-
-            mailText = mailText.Replace("[username]", user.UserName).Replace("[email]", user.Email).Replace("[URL]", url);
-
-            await mailingService.SendEmailAsync(user.Email, "Welcome to BigSoft" +
-                "", mailText);
-            return Ok(result);
+        [HttpPost("Post")]
+        public async Task<ActionResult<Fournisseur>> PostFournisseur([FromBody] Fournisseur model)
+        {try { await fournisseurService.Ajout(model); }
+           
+            catch(Exception ex) { Console.WriteLine(ex); }
+            return CreatedAtAction("Details", new { id = model.Id }, model);
         }
         [HttpPost("token")]
-        public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestModel model)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var result = await fournisseurService.Login(model);
-
-            if (!result.IsAuthenticated)
-                return BadRequest(result.Message);
-
-            return Ok(result);
-        }
+       
         [Authorize]
         [HttpGet]
         public IQueryable GetAll()
@@ -132,30 +100,7 @@ namespace WebApi.Controllers.Users
             return Entity;
 
         }
-        [AllowAnonymous]
-        [HttpGet("ForgetPassword")]
-        public async Task<UserManagerResponseModel> ForgetPasswordAsync(string email)
-        {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-                return new UserManagerResponseModel
-                {
-                    IsSuccess = false,
-                    Message = "No user associated with email",
-                };
-
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var encodedToken = Encoding.UTF8.GetBytes(token);
-            var validToken = WebEncoders.Base64UrlEncode(encodedToken);
-
-
-
-            return new UserManagerResponseModel
-            {
-                IsSuccess = true,
-                Message = "Reset password URL has been sent to the email successfully!",
-                token = validToken
-            };
-        }
+       
+        
     }
 }

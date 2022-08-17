@@ -36,16 +36,18 @@ namespace WebApi
             Configuration = configuration;
         }
 
+         string policyName = "_myAllowSpecificOrigins";
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-           
+            services.AddCors();
             //Conection string
             services.AddDbContext<BigSoftContext>(options =>
                            options.UseSqlServer(Configuration.GetConnectionString("myconn")));
             services.AddControllers();
+          
             //JSON
             services.AddMvc(option => option.EnableEndpointRouting = false)
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
@@ -120,6 +122,15 @@ namespace WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseAuthentication();
+            app.UseCors(options =>
+                         options.WithOrigins("http://localhost:3000")
+                         .AllowCredentials()
+                         .AllowAnyMethod()
+                         .AllowAnyHeader());
+
+
+            app.UseMvc();
             if (env.IsDevelopment())
             {
                 app.UseSwagger();
@@ -128,11 +139,13 @@ namespace WebApi
             }
 
             app.UseHttpsRedirection();
-
+            
             app.UseRouting();
-            app.UseAuthentication();
-            app.UseAuthorization();
 
+
+            app.UseHttpsRedirection();
+            app.UseAuthorization();
+         
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
