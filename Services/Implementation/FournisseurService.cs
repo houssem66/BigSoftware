@@ -24,7 +24,7 @@ namespace Services.Implementation
         }
         public Task Ajout(Fournisseur entity)
         {
-            throw new NotImplementedException();
+            return genericRepo.InsertAsync(entity);
         }
 
         public Task Delete(string id)
@@ -48,14 +48,6 @@ namespace Services.Implementation
 
        
 
-        public Task<AuthModel> Login(TokenRequestModel model)
-        {
-            return FournisseurRepo.GetTokenAsync(model);
-        }
-
-        public Task<AuthModel> RegisterAsync(RegisterModelFournisseur model)
-        {
-            return FournisseurRepo.RegisterAsync(model);
-        }
+       
     }
 }

@@ -9,11 +9,11 @@ namespace Services.Interfaces
 {
     public interface IFournisseurService
     {
-        public Task<AuthModel> RegisterAsync(RegisterModelFournisseur model);
-        public Task<AuthModel> Login(TokenRequestModel model);
+    
         public Task Update(string id, Fournisseur entity);
         public Task<Fournisseur> GetById(string id);
         public Task Delete(string id);
         public List<Fournisseur> GetAll();
+        public Task Ajout(Fournisseur entity);
     }
 }

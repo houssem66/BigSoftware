@@ -10,10 +10,11 @@ namespace Data.Models
     {
         [Required, MaxLength(50)]
         public String Nom { get; set; }
-        [Required, MaxLength(50)]
+        [Required, MaxLength(50)]   
         public String Prenom { get; set; }
         public string Telephone { get; set; }
-        [DisplayFormat(DataFormatString = @"{0:dd\/MM\/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
+
         public DateTime BirthDate { get; set; }
         public Civility Civility { get; set; }
 
@@ -29,6 +30,8 @@ namespace Data.Models
         [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }

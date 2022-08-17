@@ -3,25 +3,30 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31025.194
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "WebApi\WebApi.csproj", "{8AA1121B-F6D0-4EDC-BC44-B43F7983944C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApi", "WebApi\WebApi.csproj", "{8AA1121B-F6D0-4EDC-BC44-B43F7983944C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D0CE9E04-F619-4203-9045-589E44F3FDEF} = {D0CE9E04-F619-4203-9045-589E44F3FDEF}
 		{20D10E1E-998C-4EE8-A104-337C0B949C0B} = {20D10E1E-998C-4EE8-A104-337C0B949C0B}
 		{77D86DBB-DF8C-49C6-9CF0-7155055CE4D4} = {77D86DBB-DF8C-49C6-9CF0-7155055CE4D4}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{20D10E1E-998C-4EE8-A104-337C0B949C0B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{20D10E1E-998C-4EE8-A104-337C0B949C0B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D0CE9E04-F619-4203-9045-589E44F3FDEF} = {D0CE9E04-F619-4203-9045-589E44F3FDEF}
 		{77D86DBB-DF8C-49C6-9CF0-7155055CE4D4} = {77D86DBB-DF8C-49C6-9CF0-7155055CE4D4}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository", "Repository\Repository.csproj", "{D0CE9E04-F619-4203-9045-589E44F3FDEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository", "Repository\Repository.csproj", "{D0CE9E04-F619-4203-9045-589E44F3FDEF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{77D86DBB-DF8C-49C6-9CF0-7155055CE4D4} = {77D86DBB-DF8C-49C6-9CF0-7155055CE4D4}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{77D86DBB-DF8C-49C6-9CF0-7155055CE4D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{77D86DBB-DF8C-49C6-9CF0-7155055CE4D4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5125E0D7-710A-453A-9A50-CB59A402CA8D}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

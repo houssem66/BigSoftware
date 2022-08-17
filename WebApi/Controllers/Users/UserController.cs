@@ -1,6 +1,7 @@
 ﻿using Data.Entities;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -39,15 +40,18 @@ namespace WebApi.Controllers
             this.configuration = configuration;
             this.mailingService = mailingService;
         }
+
+       
         [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterModelUser model)
         {
-
+            
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            var result = await userService.RegisterAsync(model);
+         
+               var result = await userService.RegisterAsync(model);
+          
           
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
@@ -84,8 +88,10 @@ namespace WebApi.Controllers
 
             return Ok(result);
         }
-        [Authorize]
+        
        [HttpGet]
+       
+        [AllowAnonymous]
         public IQueryable GetAll()
         {
 

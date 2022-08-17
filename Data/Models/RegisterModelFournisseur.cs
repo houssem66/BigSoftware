@@ -32,6 +32,8 @@ namespace Data.Models
         [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
         //Fournisseur Attribut
         [DefaultValue(false)]
