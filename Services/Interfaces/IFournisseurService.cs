@@ -10,9 +10,9 @@ namespace Services.Interfaces
     public interface IFournisseurService
     {
     
-        public Task Update(string id, Fournisseur entity);
-        public Task<Fournisseur> GetById(string id);
-        public Task Delete(string id);
+        public Task Update(int id, Fournisseur entity);
+        public Task<Fournisseur> GetById(int id);
+        public Task Delete(int id);
         public List<Fournisseur> GetAll();
         public Task Ajout(Fournisseur entity);
     }

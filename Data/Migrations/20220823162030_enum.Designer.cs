@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(BigSoftContext))]
-    [Migration("20220712154845_first")]
-    partial class first
+    [Migration("20220823162030_enum")]
+    partial class @enum
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,109 @@ namespace Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Data.Entities.Client", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Adresse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Cin")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<int>("Civility")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CodePostale")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Gouvernorats")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Identifiant_fiscale")
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NumMobile")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<string>("PhoneBureau")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<string>("Prenom")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("TypeClient")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Clients");
+                });
+
+            modelBuilder.Entity("Data.Entities.Fournisseur", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Adresse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CodePostale")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Gouvernorats")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NomPersAContact")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumFax")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Numbureau")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PrenomPersAContact")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RaisonSocial")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SiteWeb")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Fournisseurs");
+                });
 
             modelBuilder.Entity("Data.Entities.Utilisateur", b =>
                 {
@@ -64,7 +167,9 @@ namespace Data.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Nom")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
@@ -87,13 +192,12 @@ namespace Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Prenom")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Telephone")
-                        .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
@@ -248,53 +352,6 @@ namespace Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Data.Entities.Client", b =>
-                {
-                    b.HasBaseType("Data.Entities.Utilisateur");
-
-                    b.Property<string>("Cin")
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<int>("TypeClient")
-                        .HasColumnType("int");
-
-                    b.HasDiscriminator().HasValue("Client");
-                });
-
-            modelBuilder.Entity("Data.Entities.Fournisseur", b =>
-                {
-                    b.HasBaseType("Data.Entities.Utilisateur");
-
-                    b.Property<string>("CodePostale")
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)")
-                        .HasColumnName("Fournisseur_CodePostale");
-
-                    b.Property<int>("Numbureau")
-                        .HasColumnType("int")
-                        .HasColumnName("Fournisseur_Numbureau");
-
-                    b.Property<string>("PersAContact")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Fournisseur_PersAContact");
-
-                    b.Property<string>("Rib")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasColumnName("Fournisseur_Rib");
-
-                    b.Property<string>("SiteWeb")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Fournisseur_SiteWeb");
-
-                    b.Property<bool>("Verified")
-                        .HasColumnType("bit")
-                        .HasColumnName("Fournisseur_Verified");
-
-                    b.HasDiscriminator().HasValue("Fournisseur");
-                });
-
             modelBuilder.Entity("Data.Entities.Grossiste", b =>
                 {
                     b.HasBaseType("Data.Entities.Utilisateur");
@@ -302,6 +359,9 @@ namespace Data.Migrations
                     b.Property<string>("CodePostale")
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)");
+
+                    b.Property<int>("Gouvernorats")
+                        .HasColumnType("int");
 
                     b.Property<int>("Numbureau")
                         .HasColumnType("int");

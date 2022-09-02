@@ -19,6 +19,66 @@ namespace Data.Migrations
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Data.Entities.Client", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Adresse")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Cin")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<int>("Civility")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CodePostale")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Gouvernorats")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Identifiant_fiscale")
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("NumMobile")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<string>("PhoneBureau")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
+
+                    b.Property<string>("Prenom")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("TypeClient")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Clients");
+                });
+
             modelBuilder.Entity("Data.Entities.Fournisseur", b =>
                 {
                     b.Property<int>("Id")
@@ -35,6 +95,9 @@ namespace Data.Migrations
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Gouvernorats")
+                        .HasColumnType("int");
 
                     b.Property<string>("NomPersAContact")
                         .HasColumnType("nvarchar(max)");
@@ -287,20 +350,6 @@ namespace Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Data.Entities.Client", b =>
-                {
-                    b.HasBaseType("Data.Entities.Utilisateur");
-
-                    b.Property<string>("Cin")
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<int>("TypeClient")
-                        .HasColumnType("int");
-
-                    b.HasDiscriminator().HasValue("Client");
-                });
-
             modelBuilder.Entity("Data.Entities.Grossiste", b =>
                 {
                     b.HasBaseType("Data.Entities.Utilisateur");
@@ -308,6 +357,9 @@ namespace Data.Migrations
                     b.Property<string>("CodePostale")
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)");
+
+                    b.Property<int>("Gouvernorats")
+                        .HasColumnType("int");
 
                     b.Property<int>("Numbureau")
                         .HasColumnType("int");

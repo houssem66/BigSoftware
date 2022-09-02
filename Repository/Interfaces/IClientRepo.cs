@@ -9,7 +9,6 @@ namespace Repository.Interfaces
 {
     public interface IClientRepo
     {
-        public Task<AuthModel> RegisterAsync(RegisterModelClient model);
-        public Task<AuthModel> GetTokenAsync(TokenRequestModel model);
+       
     }
 }

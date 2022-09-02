@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class first : Migration
+    public partial class client : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,23 +26,14 @@ namespace Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Nom = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Prenom = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Telephone = table.Column<int>(type: "int", nullable: true),
+                    Nom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Prenom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Civility = table.Column<int>(type: "int", nullable: false),
                     Identifiant_fiscale = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: true),
                     NumMobile = table.Column<int>(type: "int", nullable: false),
                     Adresse = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TypeClient = table.Column<int>(type: "int", nullable: true),
-                    Cin = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: true),
-                    Fournisseur_PersAContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Fournisseur_Verified = table.Column<bool>(type: "bit", nullable: true),
-                    Fournisseur_Rib = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    Fournisseur_CodePostale = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: true),
-                    Fournisseur_SiteWeb = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Fournisseur_Numbureau = table.Column<int>(type: "int", nullable: true),
                     PersAContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Verified = table.Column<bool>(type: "bit", nullable: true),
                     Rib = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
@@ -67,6 +58,51 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Prenom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PhoneBureau = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Civility = table.Column<int>(type: "int", nullable: false),
+                    Identifiant_fiscale = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: true),
+                    NumMobile = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: true),
+                    Adresse = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CodePostale = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: true),
+                    TypeClient = table.Column<int>(type: "int", nullable: false),
+                    Cin = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clients", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Fournisseurs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NomPersAContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RaisonSocial = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PrenomPersAContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CodePostale = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SiteWeb = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Numbureau = table.Column<int>(type: "int", nullable: false),
+                    NumFax = table.Column<int>(type: "int", nullable: false),
+                    Adresse = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Fournisseurs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -231,6 +267,12 @@ namespace Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Clients");
+
+            migrationBuilder.DropTable(
+                name: "Fournisseurs");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

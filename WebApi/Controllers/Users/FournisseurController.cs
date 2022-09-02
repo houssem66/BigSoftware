@@ -25,14 +25,13 @@ namespace WebApi.Controllers.Users
         private readonly IConfiguration configuration;
         private readonly IMailingService mailingService;
 
-        public FournisseurController(IFournisseurService _FournisseurService, UserManager<Utilisateur> userManager, IConfiguration configuration, IMailingService mailingService)
+        public FournisseurController(IFournisseurService _FournisseurService)
         {
             fournisseurService = _FournisseurService;
-           _userManager = userManager;
-            this.configuration = configuration;
-            this.mailingService = mailingService;
+           
+          
         }
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost("Post")]
         public async Task<ActionResult<Fournisseur>> PostFournisseur([FromBody] Fournisseur model)
         {try { await fournisseurService.Ajout(model); }
@@ -53,7 +52,7 @@ namespace WebApi.Controllers.Users
         [Authorize]
         // DELETE: api/Applications/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {
@@ -61,16 +60,16 @@ namespace WebApi.Controllers.Users
 
                 return Ok(StatusCode(200));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Console.WriteLine(ex);
                 return Ok(StatusCode(400));
             }
 
         }
         [Authorize]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(string id, Fournisseur entity)
+        public async Task<IActionResult> Update(int id, Fournisseur entity)
         {
             try
             {
@@ -78,17 +77,17 @@ namespace WebApi.Controllers.Users
 
                 return Ok(StatusCode(200));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                return Ok(StatusCode(400));
+                return BadRequest(ModelState);
             }
           
 
         }
         [Authorize]
         [HttpGet("Get/{id}")]
-        public async Task<ActionResult<Fournisseur>> Details(string id)
+        public async Task<ActionResult<Fournisseur>> Details(int id)
         {
             var Entity = await fournisseurService.GetById(id);
 

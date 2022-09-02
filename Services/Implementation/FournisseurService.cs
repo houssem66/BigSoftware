@@ -27,17 +27,17 @@ namespace Services.Implementation
             return genericRepo.InsertAsync(entity);
         }
 
-        public Task Delete(string id)
+        public Task Delete(int id)
         {
             return genericRepo.DeleteAsync(id);
         }
 
-        public Task<Fournisseur> GetById(string id)
+        public Task<Fournisseur> GetById(int id)
         {
             return genericRepo.GetByIdAsync(id);
         }
 
-        public Task Update(string id,Fournisseur entity)
+        public Task Update(int id,Fournisseur entity)
         {
             return genericRepo.PutAsync(id, entity);
         }

@@ -75,8 +75,9 @@ namespace Repository.Implmentation
                 DbSet.Add(entity);
                await _dbContext.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine(ex);
 
                
             }
@@ -93,7 +94,7 @@ namespace Repository.Implmentation
                 _dbContext.Update(entity);
                 await _dbContext.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw new NotImplementedException();
             }
