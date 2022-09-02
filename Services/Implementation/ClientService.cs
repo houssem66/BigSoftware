@@ -24,10 +24,10 @@ namespace Services.Implementation
         }
         public Task Ajout(Client entity)
         {
-            throw new NotImplementedException();
+            return genericRepo.InsertAsync(entity);
         }
 
-        public Task Delete(string id)
+        public Task Delete(int id)
         {
             return genericRepo.DeleteAsync(id);
         }
@@ -37,22 +37,16 @@ namespace Services.Implementation
             return genericRepo.GetAll().ToList();
         }
 
-        public Task<Client> GetById(string id)
+        public Task<Client> GetById(int id)
         {
             return genericRepo.GetByIdAsync(id);
         }
 
-        public Task<AuthModel> Login(TokenRequestModel model)
-        {
-            return ClientRepo.GetTokenAsync(model);
-        }
+       
 
-        public Task<AuthModel> RegisterAsync(RegisterModelClient model)
-        {
-            return ClientRepo.RegisterAsync(model);
-        }
+       
 
-        public Task Update(string id, Client entity)
+        public Task Update(int id, Client entity)
         {
             return genericRepo.PutAsync(id, entity);
         }
