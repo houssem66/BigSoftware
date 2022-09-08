@@ -2,6 +2,7 @@
 using Data.Entities;
 using Data.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Interfaces;
@@ -47,18 +48,25 @@ namespace Repository.Implementation
             }
 
             var jwtSecurityToken = await CreateJwtToken(user);
-            var rolesList = await userManager.GetRolesAsync(user);
+            var rolesList =  userManager.GetRolesAsync(user).Result.First();
 
             authModel.IsAuthenticated = true;
             authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             authModel.Email = user.Email;
             authModel.Username = user.UserName;
             authModel.ExpiresOn = jwtSecurityToken.ValidTo;
-            authModel.Roles = rolesList.ToList();
+            authModel.Role = rolesList;
 
             return authModel;
         }
 
+        public async Task<Utilisateur> getUserByEmail(string email)
+        {
+             var user = await bigSoftContext.Utilisateurs.SingleOrDefaultAsync(c=>c.NormalizedEmail==email.ToUpper());
+            if (user!=null) { return user;  }
+
+                return null;
+        }
 
         public async Task<AuthModel> RegisterAsync(RegisterModelUser model)
         {
@@ -76,7 +84,6 @@ namespace Repository.Implementation
                 Email = model.Email,
                 Nom = model.Nom,
                 Prenom = model.Prenom,
-                Identifiant_fiscale = model.Identifiant_fiscale,
                 Adresse = model.Adresse,
                 BirthDate = model.BirthDate,
                 Civility = model.Civility,
@@ -117,7 +124,7 @@ namespace Repository.Implementation
                 Email = user.Email,
                 ExpiresOn = jwtSecurityToken.ValidTo,
                 IsAuthenticated = true,
-                Roles = new List<string> { "User" },
+                Role = "Utilisateur",
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                 Username = user.UserName
             };

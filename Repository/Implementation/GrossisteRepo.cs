@@ -47,14 +47,14 @@ namespace Repository.Implementation
             }
 
             var jwtSecurityToken = await CreateJwtToken(user);
-            var rolesList = await userManager.GetRolesAsync(user);
+            var rolesList =  userManager.GetRolesAsync(user).Result.First();
 
             authModel.IsAuthenticated = true;
             authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             authModel.Email = user.Email;
             authModel.Username = user.UserName;
             authModel.ExpiresOn = jwtSecurityToken.ValidTo;
-            authModel.Roles = rolesList.ToList();
+            authModel.Role = rolesList;
 
             return authModel;
         }
@@ -74,19 +74,23 @@ namespace Repository.Implementation
             {
                 UserName = model.Username,
                 Email = model.Email,
-                Nom = model.Nom,
-                Prenom = model.Prenom,
                 Identifiant_fiscale = model.Identifiant_fiscale,
                 Adresse = model.Adresse,
                 BirthDate = model.BirthDate,
                 Civility = model.Civility,
-                PhoneNumber = model.Telephone,
+                PhoneNumber = model.Numbureau.ToString(),
                 NumMobile = model.NumMobile,
                 CodePostale = model.CodePostale,
                 Numbureau = model.Numbureau,
                 Rib = model.Rib,
-                PersAContact = model.Nom + " " + model.Prenom,
+                EmailPersAContact=model.EmailPersonneAcontact,
+                Gouvernorats=model.Gouvernorats,
+                NomPersAContact = model.Nom,
+                PrenomPersAContact =  model.Prenom,
                 SiteWeb = model.SiteWeb,
+                NumFax=model.NumFax,
+                Nom=model.Nom,
+                Prenom=model.Prenom
             };
             var result = await userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
@@ -122,7 +126,7 @@ namespace Repository.Implementation
                 Email = user.Email,
                 ExpiresOn = jwtSecurityToken.ValidTo,
                 IsAuthenticated = true,
-                Roles = new List<string> { "Grossiste" },
+                Role =  "Grossiste" ,
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                 Username = user.UserName
             };

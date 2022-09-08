@@ -146,6 +146,20 @@ namespace WebApi.Controllers
             return Entity;
 
         }
+        [Authorize]
+        [HttpGet("Get/Email/{email}")]
+        public async Task<ActionResult<Utilisateur>> GetByEmail(string email)
+        {
+            var Entity = await userService.GetByEmail(email);
+
+            if (Entity == null)
+            {
+                return NotFound();
+            }
+
+            return Entity;
+
+        }
         [AllowAnonymous]
         [HttpGet("confirmemail")]
         public async Task<IActionResult> ConfirmEmail(string userid, string token)

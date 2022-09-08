@@ -32,6 +32,11 @@ namespace Services.Implementation
             return genericRepo.GetAll().ToList();
         }
 
+        public Task<Utilisateur> GetByEmail(string email)
+        {
+            return userRepo.getUserByEmail(email);
+        }
+
         public Task<Utilisateur> GetById(string id)
         {
             return genericRepo.GetByIdAsync(id);

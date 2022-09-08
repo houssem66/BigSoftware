@@ -1,4 +1,5 @@
 ﻿using Data.Entities.Enum;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -33,5 +34,6 @@ namespace Data.Models
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public IFormFile Document { get; set; }
     }
 }

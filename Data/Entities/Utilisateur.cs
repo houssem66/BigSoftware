@@ -17,10 +17,12 @@ namespace Data.Entities
         public DateTime BirthDate { get; set; }
         public Civility Civility { get; set; }
 
-        [RegularExpression(@"^[0-9]{8}[A-Za-z]$", ErrorMessage = "Must be a In this format 12345678X.")]
-        [StringLength(9, ErrorMessage = "The {0}  cannot exceed {1} characters. ")]
-        public string Identifiant_fiscale { get; set; }
-        public int NumMobile { get; set; }
+       
+        public int? NumMobile { get; set; }
         public String Adresse { get; set; }
+        [EmailAddress]
+        
+        public string Image { get; set; }
+
     }
 }
