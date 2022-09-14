@@ -32,9 +32,19 @@ namespace Services.Implementation
             return genericRepo.GetAll().ToList();
         }
 
+        public Task<Utilisateur> GetByEmail(string email)
+        {
+            return userRepo.getUserByEmail(email);
+        }
+
         public Task<Utilisateur> GetById(string id)
         {
             return genericRepo.GetByIdAsync(id);
+        }
+
+        public Task<Utilisateur> GetByUserName(string UserName)
+        {
+            return userRepo.getUserByUserName(UserName);
         }
 
         public Task<AuthModel> Login(TokenRequestModel model)
@@ -49,7 +59,7 @@ namespace Services.Implementation
 
         public Task Update(string id, Utilisateur entity)
         {
-            return genericRepo.PutAsync(id, entity);
+            return userRepo.PutAsync(entity.Id,entity);
         }
 
       

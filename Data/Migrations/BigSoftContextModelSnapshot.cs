@@ -79,6 +79,26 @@ namespace Data.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("Data.Entities.Document", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Filepath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GrossisteId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GrossisteId");
+
+                    b.ToTable("Documents");
+                });
+
             modelBuilder.Entity("Data.Entities.Fournisseur", b =>
                 {
                     b.Property<int>("Id")
@@ -87,6 +107,7 @@ namespace Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Adresse")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CodePostale")
@@ -100,18 +121,22 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("NomPersAContact")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("NumFax")
+                    b.Property<int?>("NumFax")
                         .HasColumnType("int");
 
-                    b.Property<int>("Numbureau")
+                    b.Property<int?>("Numbureau")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("PrenomPersAContact")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RaisonSocial")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SiteWeb")
@@ -139,6 +164,10 @@ namespace Data.Migrations
                     b.Property<int>("Civility")
                         .HasColumnType("int");
 
+                    b.Property<string>("CodePostale")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -154,9 +183,11 @@ namespace Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Identifiant_fiscale")
-                        .HasMaxLength(9)
-                        .HasColumnType("nvarchar(9)");
+                    b.Property<int>("Gouvernorats")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -177,7 +208,7 @@ namespace Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<int>("NumMobile")
+                    b.Property<int?>("NumMobile")
                         .HasColumnType("int");
 
                     b.Property<string>("PasswordHash")
@@ -354,17 +385,27 @@ namespace Data.Migrations
                 {
                     b.HasBaseType("Data.Entities.Utilisateur");
 
-                    b.Property<string>("CodePostale")
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)");
+                    b.Property<string>("EmailPersAContact")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Gouvernorats")
+                    b.Property<string>("Identifiant_fiscale")
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("NomPersAContact")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("NumFax")
                         .HasColumnType("int");
 
-                    b.Property<int>("Numbureau")
+                    b.Property<int?>("Numbureau")
                         .HasColumnType("int");
 
-                    b.Property<string>("PersAContact")
+                    b.Property<string>("PrenomPersAContact")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RaisonSocial")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Rib")
@@ -378,6 +419,16 @@ namespace Data.Migrations
                         .HasColumnType("bit");
 
                     b.HasDiscriminator().HasValue("Grossiste");
+                });
+
+            modelBuilder.Entity("Data.Entities.Document", b =>
+                {
+                    b.HasOne("Data.Entities.Grossiste", "Grossiste")
+                        .WithMany("Documents")
+                        .HasForeignKey("GrossisteId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Grossiste");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -429,6 +480,11 @@ namespace Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Entities.Grossiste", b =>
+                {
+                    b.Navigation("Documents");
                 });
 #pragma warning restore 612, 618
         }

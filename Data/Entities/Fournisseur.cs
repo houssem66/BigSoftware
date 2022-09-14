@@ -10,8 +10,11 @@ namespace Data.Entities
    public class Fournisseur
     {[Key]
         public int Id { get; set; }
+        [Required]
         public string NomPersAContact { get; set; }
+        [Required]
         public string RaisonSocial { get; set; }
+        [Required]
         public string PrenomPersAContact { get; set; }
        
         [RegularExpression(@"([0-9]+)", ErrorMessage = "Must be a Number.")]
@@ -20,9 +23,12 @@ namespace Data.Entities
         [EmailAddress]
         public string Email { get; set; }
         public string SiteWeb { get; set; }
-        public int Numbureau { get; set; }
-        public int NumFax { get; set; }
+        [Required]
+        public int? Numbureau { get; set; }
+        public int? NumFax { get; set; }
+        [Required]
         public Gouvernorats Gouvernorats { get; set; }
+        [Required]
         public String Adresse { get; set; }
     }
 }

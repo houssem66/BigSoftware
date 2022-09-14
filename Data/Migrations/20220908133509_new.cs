@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class client : Migration
+    public partial class @new : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,16 +30,21 @@ namespace Data.Migrations
                     Prenom = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Civility = table.Column<int>(type: "int", nullable: false),
-                    Identifiant_fiscale = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: true),
-                    NumMobile = table.Column<int>(type: "int", nullable: false),
+                    Gouvernorats = table.Column<int>(type: "int", nullable: false),
+                    NumMobile = table.Column<int>(type: "int", nullable: true),
                     Adresse = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CodePostale = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PersAContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NomPersAContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PrenomPersAContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Verified = table.Column<bool>(type: "bit", nullable: true),
                     Rib = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    CodePostale = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: true),
                     SiteWeb = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Numbureau = table.Column<int>(type: "int", nullable: true),
+                    NumFax = table.Column<int>(type: "int", nullable: true),
+                    Identifiant_fiscale = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: true),
+                    EmailPersAContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -74,6 +79,7 @@ namespace Data.Migrations
                     Civility = table.Column<int>(type: "int", nullable: false),
                     Identifiant_fiscale = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: true),
                     NumMobile = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: true),
+                    Gouvernorats = table.Column<int>(type: "int", nullable: false),
                     Adresse = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CodePostale = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: true),
                     TypeClient = table.Column<int>(type: "int", nullable: false),
@@ -90,15 +96,16 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    NomPersAContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RaisonSocial = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PrenomPersAContact = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NomPersAContact = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RaisonSocial = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PrenomPersAContact = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CodePostale = table.Column<string>(type: "nvarchar(4)", maxLength: 4, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SiteWeb = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Numbureau = table.Column<int>(type: "int", nullable: false),
-                    NumFax = table.Column<int>(type: "int", nullable: false),
-                    Adresse = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    NumFax = table.Column<int>(type: "int", nullable: true),
+                    Gouvernorats = table.Column<int>(type: "int", nullable: false),
+                    Adresse = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -211,6 +218,26 @@ namespace Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Documents",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Filepath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GrossisteId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Documents", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Documents_AspNetUsers_GrossisteId",
+                        column: x => x.GrossisteId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -249,6 +276,11 @@ namespace Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Documents_GrossisteId",
+                table: "Documents",
+                column: "GrossisteId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -270,6 +302,9 @@ namespace Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Clients");
+
+            migrationBuilder.DropTable(
+                name: "Documents");
 
             migrationBuilder.DropTable(
                 name: "Fournisseurs");

@@ -79,3 +79,8 @@ C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\Mailjet.Client
 C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\MailKit.dll
 C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\MimeKit.dll
 C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\BouncyCastle.Crypto.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\Microsoft.AspNetCore.Http.Features.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\Microsoft.Extensions.Primitives.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\System.IO.Pipelines.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\Microsoft.DotNet.PlatformAbstractions.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\Microsoft.Extensions.DependencyModel.dll
