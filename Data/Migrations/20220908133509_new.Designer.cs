@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(BigSoftContext))]
-    [Migration("20220906122446_docs")]
-    partial class docs
+    [Migration("20220908133509_new")]
+    partial class @new
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -166,6 +166,10 @@ namespace Data.Migrations
                     b.Property<int>("Civility")
                         .HasColumnType("int");
 
+                    b.Property<string>("CodePostale")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -181,12 +185,8 @@ namespace Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("EmailPersAContact")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Identifiant_fiscale")
-                        .HasMaxLength(9)
-                        .HasColumnType("nvarchar(9)");
+                    b.Property<int>("Gouvernorats")
+                        .HasColumnType("int");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -387,12 +387,12 @@ namespace Data.Migrations
                 {
                     b.HasBaseType("Data.Entities.Utilisateur");
 
-                    b.Property<string>("CodePostale")
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)");
+                    b.Property<string>("EmailPersAContact")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Gouvernorats")
-                        .HasColumnType("int");
+                    b.Property<string>("Identifiant_fiscale")
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
 
                     b.Property<string>("NomPersAContact")
                         .HasColumnType("nvarchar(max)");

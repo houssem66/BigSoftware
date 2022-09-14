@@ -110,10 +110,10 @@ namespace Repository.Implmentation
 
             try
             {
-                   
+                _dbContext.Update(entity);
                 await _dbContext.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw new NotImplementedException();
             }

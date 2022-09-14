@@ -43,6 +43,7 @@ namespace WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
+         
             //Conection string
             services.AddDbContext<BigSoftContext>(options =>
                            options.UseSqlServer(Configuration.GetConnectionString("myconn")));

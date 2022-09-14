@@ -14,6 +14,7 @@ namespace Services.Interfaces
         public Task<AuthModel> Login(TokenRequestModel model);
         public Task Update(string id, Grossiste entity);
         public Task<Grossiste> GetById(string id);
+     
         public Task Delete(string id);
         public List<Grossiste> GetAll();
     }

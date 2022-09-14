@@ -34,10 +34,13 @@ namespace Services.Implementation
             return genericRepo.GetAll().ToList();
         }
 
+     
         public Task<Grossiste> GetById(string id)
         {
             return genericRepo.GetByIdAsync(id);
         }
+
+      
 
         public Task<AuthModel> Login(TokenRequestModel model)
         {

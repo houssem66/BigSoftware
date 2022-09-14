@@ -105,23 +105,28 @@ namespace WebApi.Controllers.Users
             }
 
         }
-        [Authorize]
+       
         
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(string id, Grossiste entity)
+        public async Task<IActionResult> Update( [FromForm] ChangeDocumentsModel model)
         {
-            try
-            {
-                await grossisteService.Update(id, entity);
+            
+            //if (ModelState.IsValid) {
+            //    try
+            //    {
+            //        await grossisteService.Update(id, user);
 
-                return Ok(StatusCode(200));
-            }
-            catch (Exception)
-            {
+            //        return Ok(StatusCode(200));
+            //    }
+            //    catch (Exception)
+            //    {
 
-                return Ok(StatusCode(400));
-            }
+            //        return Ok(StatusCode(400));
+            //    }
+              
+            //}
 
+            return Ok(StatusCode(400));
         }
         [Authorize]
         [HttpGet("Get/{id}")]
@@ -136,7 +141,9 @@ namespace WebApi.Controllers.Users
 
             return Entity;
 
-        }
+        } 
+      
+      
         [AllowAnonymous]
         [HttpGet("ForgetPassword")]
         public async Task<UserManagerResponseModel> ForgetPasswordAsync(string email)

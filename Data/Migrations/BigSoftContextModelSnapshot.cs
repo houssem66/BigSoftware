@@ -164,6 +164,10 @@ namespace Data.Migrations
                     b.Property<int>("Civility")
                         .HasColumnType("int");
 
+                    b.Property<string>("CodePostale")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -178,6 +182,9 @@ namespace Data.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<int>("Gouvernorats")
+                        .HasColumnType("int");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -378,15 +385,8 @@ namespace Data.Migrations
                 {
                     b.HasBaseType("Data.Entities.Utilisateur");
 
-                    b.Property<string>("CodePostale")
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)");
-
                     b.Property<string>("EmailPersAContact")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Gouvernorats")
-                        .HasColumnType("int");
 
                     b.Property<string>("Identifiant_fiscale")
                         .HasMaxLength(9)
@@ -402,6 +402,10 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("PrenomPersAContact")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RaisonSocial")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Rib")

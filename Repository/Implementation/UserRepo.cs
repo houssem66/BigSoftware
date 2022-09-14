@@ -48,7 +48,7 @@ namespace Repository.Implementation
             }
 
             var jwtSecurityToken = await CreateJwtToken(user);
-            var rolesList =  userManager.GetRolesAsync(user).Result.First();
+            var rolesList = userManager.GetRolesAsync(user).Result.First();
 
             authModel.IsAuthenticated = true;
             authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
@@ -62,10 +62,44 @@ namespace Repository.Implementation
 
         public async Task<Utilisateur> getUserByEmail(string email)
         {
-             var user = await bigSoftContext.Utilisateurs.SingleOrDefaultAsync(c=>c.NormalizedEmail==email.ToUpper());
-            if (user!=null) { return user;  }
+            var user = await bigSoftContext.Utilisateurs.SingleOrDefaultAsync(c => c.NormalizedEmail == email.ToUpper());
+            if (user != null) { return user; }
 
-                return null;
+            return null;
+        }
+
+        public async Task<Utilisateur> getUserByUserName(string UserName)
+        {
+            var user = await bigSoftContext.Utilisateurs.SingleOrDefaultAsync(c => c.UserName == UserName);
+            if (user != null) { return user; }
+
+            return null;
+        }
+
+        public async Task PutAsync(string id,Utilisateur entity)
+        {
+            var user = await bigSoftContext.Utilisateurs.SingleAsync(user => user.Id == id);
+            user.Prenom = entity.Prenom;
+            user.UserName = entity.UserName;
+            user.Nom = entity.Nom;
+            user.NumMobile = entity.NumMobile;
+            user.Adresse = entity.Adresse;
+            user.Gouvernorats = entity.Gouvernorats;
+            user.Civility = entity.Civility;
+            user.CodePostale = entity.CodePostale;
+            user.Email = entity.Email;
+            user.BirthDate = entity.BirthDate;
+            user.Image = entity.Image;
+            user.UserName = entity.UserName;
+            try
+            {
+                bigSoftContext.Utilisateurs.Update(user);
+                 await bigSoftContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public async Task<AuthModel> RegisterAsync(RegisterModelUser model)
@@ -87,7 +121,9 @@ namespace Repository.Implementation
                 Adresse = model.Adresse,
                 BirthDate = model.BirthDate,
                 Civility = model.Civility,
-                PhoneNumber = model.Telephone,
+                CodePostale = model.CodePostale,
+                Gouvernorats = model.Gouvernorats,
+
                 NumMobile = model.NumMobile
             };
             var result = await userManager.CreateAsync(user, model.Password);

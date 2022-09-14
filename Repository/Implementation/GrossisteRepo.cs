@@ -2,6 +2,7 @@
 using Data.Entities;
 using Data.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Interfaces;
@@ -32,6 +33,21 @@ namespace Repository.Implementation
             userManager = _userManager;
             roleManager = _roleManager;
             _jwt = jwt.Value;
+        }
+
+        public async Task<Grossiste> GetGrossisteByEmail(string email)
+        {
+            var Grossiste = await bigSoftContext.Grossistes.SingleOrDefaultAsync(c => c.NormalizedEmail == email.ToUpper());
+            if (Grossiste != null) { return Grossiste; }
+
+            return null;
+        }
+
+        public async Task<Grossiste> GetGrossisteByUserName(string UserName)
+        {
+            var Grossiste = await bigSoftContext.Grossistes.SingleOrDefaultAsync(c => c.UserName == UserName);
+            if (Grossiste != null) { return Grossiste; }
+            return null;
         }
 
         public async Task<AuthModel> GetTokenAsync(TokenRequestModel model)
@@ -90,7 +106,9 @@ namespace Repository.Implementation
                 SiteWeb = model.SiteWeb,
                 NumFax=model.NumFax,
                 Nom=model.Nom,
-                Prenom=model.Prenom
+                Prenom=model.Prenom,
+                RaisonSocial=model.RaisonSocial
+
             };
             var result = await userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)

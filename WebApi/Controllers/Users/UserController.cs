@@ -1,17 +1,12 @@
 ﻿using Data.Entities;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Services.Implementation;
 using Services.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,7 +17,7 @@ using WebApi.Models;
 
 namespace WebApi.Controllers
 {
-   
+
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -32,7 +27,7 @@ namespace WebApi.Controllers
         private readonly IConfiguration configuration;
         private readonly IMailingService mailingService;
 
-        public UserController(IUserService _UserService, UserManager<Utilisateur> userManager, IConfiguration configuration,IMailingService mailingService)
+        public UserController(IUserService _UserService, UserManager<Utilisateur> userManager, IConfiguration configuration, IMailingService mailingService)
         {
 
             userService = _UserService;
@@ -41,22 +36,22 @@ namespace WebApi.Controllers
             this.mailingService = mailingService;
         }
 
-       
+
         [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterAsync([FromBody] RegisterModelUser model)
         {
-            
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-         
-               var result = await userService.RegisterAsync(model);
-          
-          
+
+            var result = await userService.RegisterAsync(model);
+
+
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
             //Confirmations mail
-            var user =await _userManager.FindByEmailAsync(result.Email);
+            var user = await _userManager.FindByEmailAsync(result.Email);
             var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
             var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
@@ -67,11 +62,11 @@ namespace WebApi.Controllers
             var mailText = str.ReadToEnd();
             str.Close();
 
-            mailText = mailText.Replace("[username]", user.UserName).Replace("[email]", user.Email).Replace("[URL]",url);
+            mailText = mailText.Replace("[username]", user.UserName).Replace("[email]", user.Email).Replace("[URL]", url);
 
             await mailingService.SendEmailAsync(user.Email, "Welcome to BigSoft" +
                 "", mailText);
-           
+
 
             return Ok(result);
         }
@@ -88,9 +83,9 @@ namespace WebApi.Controllers
 
             return Ok(result);
         }
-        
-       [HttpGet]
-       
+
+        [HttpGet]
+
         [AllowAnonymous]
         public IQueryable GetAll()
         {
@@ -117,15 +112,15 @@ namespace WebApi.Controllers
         }
         [Authorize]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(string id,Utilisateur utilisateur)
+        public async Task<IActionResult> Update(string id, Utilisateur utilisateur)
         {
             try
             {
-                await userService.Update(id,utilisateur);
+                await userService.Update(id, utilisateur);
 
                 return Ok(StatusCode(200));
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
                 return Ok(StatusCode(400));
@@ -146,7 +141,7 @@ namespace WebApi.Controllers
             return Entity;
 
         }
-        [Authorize]
+        
         [HttpGet("Get/Email/{email}")]
         public async Task<ActionResult<Utilisateur>> GetByEmail(string email)
         {
@@ -158,6 +153,51 @@ namespace WebApi.Controllers
             }
 
             return Entity;
+
+        } 
+        [HttpGet("Get/UserName/{UserName}")]
+        public async Task<ActionResult<Utilisateur>> GetByUserName(string userName)
+        {
+            var Entity = await userService.GetByUserName(userName);
+
+            if (Entity == null)
+            {
+                return NotFound();
+            }
+
+            return Entity;
+
+        }
+        [Authorize]
+        [HttpPost("ResetP")]
+        public async Task<IActionResult> ChangerPassWord([FromBody] PasswordModel passwordModel)
+        {
+            var user = await _userManager.FindByIdAsync(passwordModel.id);
+
+            if (user != null)
+            {
+                var token = new AuthModel();
+
+                var model = new TokenRequestModel { Email = user.Email, Password = passwordModel.OldPassword };
+                token = await userService.Login(model);
+                if (token.Token != null)
+                {
+                    var PassWordToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var result = await _userManager.ResetPasswordAsync(user, PassWordToken, passwordModel.NewPassword);
+                    return Ok(token);
+                }
+                else
+                {
+                    token.Message = "Ancienne mot de passe est faux";
+                    return BadRequest(token.Message);
+                }
+
+              
+            }
+
+
+
+            return Ok(StatusCode(400));
 
         }
         [AllowAnonymous]
@@ -182,7 +222,7 @@ namespace WebApi.Controllers
                 return Redirect($"{configuration["AppUrl"]}/Templates/confirmemail.html");
             }
 
-            
+
             return BadRequest("Email cannot be confirmed");
         }
         [AllowAnonymous]
@@ -201,13 +241,13 @@ namespace WebApi.Controllers
             var encodedToken = Encoding.UTF8.GetBytes(token);
             var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-           
+
 
             return new UserManagerResponseModel
             {
                 IsSuccess = true,
                 Message = "Reset password URL has been sent to the email successfully!",
-                token=validToken
+                token = validToken
             };
         }
         [HttpGet("calculer")]
@@ -216,7 +256,7 @@ namespace WebApi.Controllers
             var x = (prix * 1.19 + transport * 1.07) * 6;
 
             return Ok(x);
-    }
+        }
 
-}
+    }
 }

@@ -16,6 +16,7 @@ namespace Services.Interfaces
         public List<Utilisateur> GetAll();
         public Task<Utilisateur> GetById(string id);
         public Task<Utilisateur> GetByEmail(string email);
+        public Task<Utilisateur> GetByUserName(string UserName);
         public Task Delete(string id);
         public Task<AuthModel> Login(TokenRequestModel model);
 

@@ -25,7 +25,8 @@ namespace Data.Models
         public string Identifiant_fiscale { get; set; }
         public int NumMobile { get; set; }
         public String Adresse { get; set; }
-
+        [Required]
+        public string RaisonSocial { get; set; }
         [Required, StringLength(50)]
         public string Username { get; set; }
 
@@ -51,7 +52,7 @@ namespace Data.Models
 
         public int? Numbureau { get; set; }
         public int? NumFax { get; set; }
-        public List<IFormFile> Documents { get; set; }
+        public IFormFile Documents { get; set; }
 
     }
 }

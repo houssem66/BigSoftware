@@ -2,7 +2,7 @@
 
 namespace Data.Migrations
 {
-    public partial class utili : Migration
+    public partial class telehpne : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

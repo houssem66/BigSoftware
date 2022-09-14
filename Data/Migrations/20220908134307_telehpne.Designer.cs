@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(BigSoftContext))]
-    [Migration("20220902160604_optionale")]
-    partial class optionale
+    [Migration("20220908134307_telehpne")]
+    partial class telehpne
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -81,6 +81,26 @@ namespace Data.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("Data.Entities.Document", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Filepath")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("GrossisteId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GrossisteId");
+
+                    b.ToTable("Documents");
+                });
+
             modelBuilder.Entity("Data.Entities.Fournisseur", b =>
                 {
                     b.Property<int>("Id")
@@ -146,6 +166,10 @@ namespace Data.Migrations
                     b.Property<int>("Civility")
                         .HasColumnType("int");
 
+                    b.Property<string>("CodePostale")
+                        .HasMaxLength(4)
+                        .HasColumnType("nvarchar(4)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -161,12 +185,11 @@ namespace Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("EmailPersAContact")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Gouvernorats")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Identifiant_fiscale")
-                        .HasMaxLength(9)
-                        .HasColumnType("nvarchar(9)");
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -364,12 +387,12 @@ namespace Data.Migrations
                 {
                     b.HasBaseType("Data.Entities.Utilisateur");
 
-                    b.Property<string>("CodePostale")
-                        .HasMaxLength(4)
-                        .HasColumnType("nvarchar(4)");
+                    b.Property<string>("EmailPersAContact")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Gouvernorats")
-                        .HasColumnType("int");
+                    b.Property<string>("Identifiant_fiscale")
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
 
                     b.Property<string>("NomPersAContact")
                         .HasColumnType("nvarchar(max)");
@@ -394,6 +417,16 @@ namespace Data.Migrations
                         .HasColumnType("bit");
 
                     b.HasDiscriminator().HasValue("Grossiste");
+                });
+
+            modelBuilder.Entity("Data.Entities.Document", b =>
+                {
+                    b.HasOne("Data.Entities.Grossiste", "Grossiste")
+                        .WithMany("Documents")
+                        .HasForeignKey("GrossisteId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Grossiste");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -445,6 +478,11 @@ namespace Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Entities.Grossiste", b =>
+                {
+                    b.Navigation("Documents");
                 });
 #pragma warning restore 612, 618
         }
