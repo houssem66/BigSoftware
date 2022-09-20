@@ -10,7 +10,7 @@ namespace Data.Models
     public class ChangeDocumentsModel
     {
         public string id { get; set; }
-        public IFormFile Documents { get; set; }
+        public IList<IFormFile> Documents { get; set; }
      
     }
 }

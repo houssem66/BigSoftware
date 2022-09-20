@@ -54,7 +54,7 @@ namespace Services.Implementation
 
         public Task Update(string id,Grossiste entity)
         {
-            return genericRepo.PutAsync(id, entity);
+            return grossisteRepo.PutAsync(id, entity);
         }
     }
 }

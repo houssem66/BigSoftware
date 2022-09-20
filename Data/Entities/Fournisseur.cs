@@ -30,5 +30,10 @@ namespace Data.Entities
         public Gouvernorats Gouvernorats { get; set; }
         [Required]
         public String Adresse { get; set; }
+        public string IdGrossiste { get; set; }
+        public virtual Grossiste Grossiste { get; set; }
+        public virtual ICollection<BonDeCommandeFournisseur> BonDeCommandes{ get; set; }
+        public virtual ICollection<FactureFournisseur> Factures{ get; set; }
+        public virtual ICollection<BonDeRéceptionFournisseur> BonDeReceptions{ get; set; }
     }
 }

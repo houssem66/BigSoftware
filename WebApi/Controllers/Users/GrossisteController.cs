@@ -1,7 +1,7 @@
 ﻿using Data.Entities;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
@@ -13,7 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WebApi.Models;
 
 namespace WebApi.Controllers.Users
 {
@@ -25,13 +24,15 @@ namespace WebApi.Controllers.Users
         private readonly UserManager<Utilisateur> _userManager;
         private readonly IConfiguration configuration;
         private readonly IMailingService mailingService;
+        private readonly IWebHostEnvironment hostingEnvironment;
 
-        public GrossisteController(IGrossisteService _grossisteService, UserManager<Utilisateur> userManager, IConfiguration configuration, IMailingService mailingService)
+        public GrossisteController(IGrossisteService _grossisteService, UserManager<Utilisateur> userManager, IConfiguration configuration, IMailingService mailingService, IWebHostEnvironment hostingEnvironment)
         {
             grossisteService = _grossisteService;
-           _userManager = userManager;
+            _userManager = userManager;
             this.configuration = configuration;
             this.mailingService = mailingService;
+            this.hostingEnvironment = hostingEnvironment;
         }
         [AllowAnonymous]
         [HttpPost("Register")]
@@ -64,8 +65,8 @@ namespace WebApi.Controllers.Users
 
             return Ok(result);
         }
-      
-      
+
+
         [HttpPost("token")]
         public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestModel model)
         {
@@ -88,7 +89,7 @@ namespace WebApi.Controllers.Users
             return (grossisteService.GetAll().AsQueryable());
         }
         [Authorize]
-       
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
@@ -105,26 +106,69 @@ namespace WebApi.Controllers.Users
             }
 
         }
-       
-        
+
+
         [HttpPut("Update")]
-        public async Task<IActionResult> Update( [FromForm] ChangeDocumentsModel model)
+        public async Task<IActionResult> Update([FromForm] RegisterModelGrossiste model)
         {
-            
-            //if (ModelState.IsValid) {
-            //    try
-            //    {
-            //        await grossisteService.Update(id, user);
+            if (ModelState.IsValid)
+            {
+                List<Document> emp = new List<Document>();
+                string uniqueFileName = null;
+                if (model.Documents != null)
+                {
+                  
+                    Document employe = new Document();
+                    // The file must be uploaded to the images folder in wwwroot
+                    // To get the path of the wwwroot folder we are using the injected
+                    // IHostingEnvironment service provided by ASP.NET Core
+                    string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "Files");
+                    // To make sure the file name is unique we are appending a new
+                    // GUID value and and an underscore to the file name
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Documents.FileName;
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    // Use CopyTo() method provided by IFormFile interface to
+                    // copy the file to wwwroot/images folder
+                    model.Documents.CopyTo(new FileStream(filePath, FileMode.Create));
+                    employe.Filepath = uniqueFileName;
+                    emp.Add(employe);
+                   
+             
+            }
+                var Grossiste = new Grossiste
+                {
+                    UserName = model.Username,
+                    Email = model.Email,
+                    Identifiant_fiscale = model.Identifiant_fiscale,
+                    Adresse = model.Adresse,
+                    BirthDate = model.BirthDate,
+                    Civility = model.Civility,
+                    PhoneNumber = model.Numbureau.ToString(),
+                    NumMobile = model.NumMobile,
+                    CodePostale = model.CodePostale,
+                    Numbureau = model.Numbureau,
+                    Rib = model.Rib,
+                    EmailPersAContact = model.emailPersAContact,
+                    Gouvernorats = model.Gouvernorats,
+                    NomPersAContact = model.Nom,
+                    PrenomPersAContact = model.Prenom,
+                    SiteWeb = model.SiteWeb,
+                    NumFax = model.NumFax,
+                    Nom = model.Nom,
+                    Prenom = model.Prenom,
+                    RaisonSocial = model.RaisonSocial,
+                    Documents = emp,
 
-            //        return Ok(StatusCode(200));
-            //    }
-            //    catch (Exception)
-            //    {
 
-            //        return Ok(StatusCode(400));
-            //    }
-              
-            //}
+
+
+                };
+                var result = grossisteService.Update(model.id, Grossiste);
+                return Ok(result);
+
+            }
+
+
 
             return Ok(StatusCode(400));
         }
@@ -141,9 +185,9 @@ namespace WebApi.Controllers.Users
 
             return Entity;
 
-        } 
-      
-      
+        }
+
+
         [AllowAnonymous]
         [HttpGet("ForgetPassword")]
         public async Task<UserManagerResponseModel> ForgetPasswordAsync(string email)

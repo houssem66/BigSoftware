@@ -9,6 +9,7 @@ namespace Data.Models
 {
     public class RegisterModelGrossiste
     {
+        public string  id { get; set; }
         //User Attribut
         [Required, MaxLength(50)]
         public String Nom { get; set; }
@@ -35,7 +36,7 @@ namespace Data.Models
         public string Email { get; set; } 
         [Required]
         [DataType(DataType.EmailAddress)]
-        public string EmailPersonneAcontact { get; set; }
+        public string emailPersAContact { get; set; }
         public string Password { get; set; }
         //Grossiste attribut
        

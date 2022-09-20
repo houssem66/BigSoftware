@@ -12,6 +12,7 @@ namespace Repository.Interfaces
     {
         public Task<AuthModel> RegisterAsync(RegisterModelGrossiste model);
         public Task<AuthModel> GetTokenAsync(TokenRequestModel model);
-        
+        public Task PutAsync(string id, Grossiste entity);
+
     }
 }
