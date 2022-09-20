@@ -63,7 +63,7 @@ namespace Repository.Implementation
             }
 
             var jwtSecurityToken = await CreateJwtToken(user);
-            var rolesList =  userManager.GetRolesAsync(user).Result.First();
+            var rolesList = userManager.GetRolesAsync(user).Result.First();
 
             authModel.IsAuthenticated = true;
             authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
@@ -75,6 +75,40 @@ namespace Repository.Implementation
             return authModel;
         }
 
+        public async Task PutAsync(string id, Grossiste entity)
+        {
+            var user = await bigSoftContext.Grossistes.SingleAsync(user => user.Id == id);
+            user.UserName = entity.UserName;
+            user.Email = entity.Email;
+            user.Identifiant_fiscale = entity.Identifiant_fiscale;
+            user.Adresse = entity.Adresse;
+            user.BirthDate = entity.BirthDate;
+            user.Civility = entity.Civility;
+            user.PhoneNumber = entity.Numbureau.ToString();
+            user.NumMobile = entity.NumMobile;
+            user.CodePostale = entity.CodePostale;
+            user.Numbureau = entity.Numbureau;
+            user.Rib = entity.Rib;
+            user.EmailPersAContact = entity.EmailPersAContact;
+            user.Gouvernorats = entity.Gouvernorats;
+            user.NomPersAContact = entity.Nom;
+            user.PrenomPersAContact = entity.Prenom;
+            user.SiteWeb = entity.SiteWeb;
+            user.NumFax = entity.NumFax;
+            user.Nom = entity.Nom;
+            user.Prenom = entity.Prenom;
+            user.RaisonSocial = entity.RaisonSocial;
+            user.Documents = entity.Documents;
+            try
+            {
+                bigSoftContext.Grossistes.Update(user);
+                await bigSoftContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         public async Task<AuthModel> RegisterAsync(RegisterModelGrossiste model)
         {
@@ -99,15 +133,15 @@ namespace Repository.Implementation
                 CodePostale = model.CodePostale,
                 Numbureau = model.Numbureau,
                 Rib = model.Rib,
-                EmailPersAContact=model.EmailPersonneAcontact,
-                Gouvernorats=model.Gouvernorats,
+                EmailPersAContact = model.emailPersAContact,
+                Gouvernorats = model.Gouvernorats,
                 NomPersAContact = model.Nom,
-                PrenomPersAContact =  model.Prenom,
+                PrenomPersAContact = model.Prenom,
                 SiteWeb = model.SiteWeb,
-                NumFax=model.NumFax,
-                Nom=model.Nom,
-                Prenom=model.Prenom,
-                RaisonSocial=model.RaisonSocial
+                NumFax = model.NumFax,
+                Nom = model.Nom,
+                Prenom = model.Prenom,
+                RaisonSocial = model.RaisonSocial
 
             };
             var result = await userManager.CreateAsync(user, model.Password);
@@ -144,7 +178,7 @@ namespace Repository.Implementation
                 Email = user.Email,
                 ExpiresOn = jwtSecurityToken.ValidTo,
                 IsAuthenticated = true,
-                Role =  "Grossiste" ,
+                Role = "Grossiste",
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                 Username = user.UserName
             };
