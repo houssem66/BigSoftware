@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace Data.Entities
 {
-    public class BonDeRéceptionFournisseur
+    public class BonDeReceptionFournisseur
     {
         [Key]
         public int Id { get; set; }
         public int FournisseurId { get; set; }
+        public Decimal Prix { get; set; }
+        public DateTime Date { get; set; }
+
         public Fournisseur Fournisseur { get; set; }
         public virtual ICollection<DetailsReceptionFournisseur> DetailsReceptions { get; set; }
     }

@@ -27,8 +27,21 @@ namespace Data
         public DbSet<Produit> Produits { get; set; }
         public DbSet<StockProduit> StockProduits { get; set; }
         public DbSet<BonDeCommandeFournisseur> BonDeCommandeFournisseurs { get; set; }
-        public DbSet<BonDeRéceptionFournisseur> BonDeRéceptionFournisseurs { get; set; }
+        public DbSet<BonDeReceptionFournisseur> BonDeRéceptionFournisseurs { get; set; }
         public DbSet<FactureFournisseur> FactureFournisseurs { get; set; }
+
+        public DbSet<BonCommandeClient> BonCommandeClients { get; set; }
+        public DbSet<BonLivraisonClient> BonLivraisonClients { get; set; }
+        public DbSet<BonSortie> BonSorties { get; set; }
+        public DbSet<Devis> Devis { get; set; }
+        public DbSet<FactureClient> FactureClients { get; set; }
+
+        public DbSet<DetailsBonSortie> DetailsBonSorties { get; set; }
+        public DbSet<DetailsCommandeClient> DetailsCommandeClients { get; set; }
+        public DbSet<DetailsDevis> DetailsDevis { get; set; }
+        public DbSet<DetailsFactureClient> DetailsFactureClients { get; set; }
+        public DbSet<DetailsLivraisonClient> DetailsLivraisonClients { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             //Sprint 1
@@ -37,10 +50,27 @@ namespace Data
             //Sprint2
             builder.ApplyConfiguration(new FournisseurConfiguration());
             builder.ApplyConfiguration(new StockProduitConfiguration());
+            builder.ApplyConfiguration(new ProduitConfiguration());
+
             builder.ApplyConfiguration(new DetailsCommandeFournisseurConfiguration());
             builder.ApplyConfiguration(new DetailsBonReceptionFournisseurConfiguration());
             builder.ApplyConfiguration(new DetailsFactureFournisseurConfiguration());
-            builder.ApplyConfiguration(new ProduitConfiguration());
+
+            builder.ApplyConfiguration(new BonCommandeClientConfiguration());
+            builder.ApplyConfiguration(new BonLivraisonClientConfiguration());
+            builder.ApplyConfiguration(new BonSortieConfiguration());
+            builder.ApplyConfiguration(new DevisConfiguration());
+            builder.ApplyConfiguration(new FactureClientConfiguration());
+
+            builder.ApplyConfiguration(new FactureFournisseurConfiguration());
+            builder.ApplyConfiguration(new BonDeCommandeFournisseurConfiguration());
+            builder.ApplyConfiguration(new BonDeReceptionConfiguration());
+
+            builder.ApplyConfiguration(new DetailsBonCommandeClientConfiguration());
+            builder.ApplyConfiguration(new DetailsBonLivraisonClientConfiguration());
+            builder.ApplyConfiguration(new DetailsBonSortieClientConfiguration());
+            builder.ApplyConfiguration(new DetailsFactureClientConfiguration());
+            builder.ApplyConfiguration(new DetailsDevisClientConfiguration());
         }
     }
 }

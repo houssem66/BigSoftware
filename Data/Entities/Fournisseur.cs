@@ -22,9 +22,14 @@ namespace Data.Entities
         public string CodePostale { get; set; }
         [EmailAddress]
         public string Email { get; set; }
+        public FormeJuridique FormeJuridique { get; set; }
         public string SiteWeb { get; set; }
         [Required]
         public int? Numbureau { get; set; }
+        [RegularExpression(@"^[0-9]{8}[A-Za-z]$", ErrorMessage = "Must be a In this format 12345678X.")]
+        [StringLength(9, ErrorMessage = "The {0}  cannot exceed {1} characters. ")]
+        public string Identifiant_fiscale { get; set; }
+
         public int? NumFax { get; set; }
         [Required]
         public Gouvernorats Gouvernorats { get; set; }
@@ -34,6 +39,6 @@ namespace Data.Entities
         public virtual Grossiste Grossiste { get; set; }
         public virtual ICollection<BonDeCommandeFournisseur> BonDeCommandes{ get; set; }
         public virtual ICollection<FactureFournisseur> Factures{ get; set; }
-        public virtual ICollection<BonDeRéceptionFournisseur> BonDeReceptions{ get; set; }
+        public virtual ICollection<BonDeReceptionFournisseur> BonDeReceptions{ get; set; }
     }
 }

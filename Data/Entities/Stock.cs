@@ -10,6 +10,7 @@ namespace Data.Entities
    public class Stock
     {
         public string StoreName { get; set; }
+     
         [Key]
         public int Id { get; set; }
         public virtual ICollection<StockProduit> StockProduit { get; set; }

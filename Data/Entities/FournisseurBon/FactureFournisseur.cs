@@ -12,6 +12,8 @@ namespace Data.Entities
         [Key]
         public int Id { get; set; }
         public int FournisseurId { get; set; }
+        public Decimal Prix { get; set; }
+        public DateTime Date { get; set; }
         public Fournisseur Fournisseur { get; set; }
         public virtual ICollection<DetailsFactureFournisseur> DetailsFactures { get; set; }
 

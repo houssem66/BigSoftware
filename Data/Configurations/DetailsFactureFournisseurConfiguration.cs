@@ -16,8 +16,11 @@ namespace Data.Configurations
             builder.HasKey(e => new { e.IdProduit, e.IdFacutre });
             builder.HasOne(b => b.Produit).WithMany(b => b.DetailsFactures);
             builder.HasOne(b => b.FactureFournisseur).WithMany(b => b.DetailsFactures);
+            builder.Property(x => x.Montant).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.Quantite).HasColumnType("decimal(18,2)");
+
         }
 
-       
-}
+
+    }
 }

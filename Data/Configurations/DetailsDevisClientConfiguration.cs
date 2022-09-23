@@ -1,0 +1,25 @@
+﻿using Data.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+
+namespace Data.Configurations
+{
+    internal class DetailsDevisClientConfiguration : IEntityTypeConfiguration<DetailsDevis>
+    {
+        public void Configure(EntityTypeBuilder<DetailsDevis> builder)
+        {
+            builder.HasKey(e => new { e.IdProduit, e.IdDevis });
+            builder.HasOne(b => b.Produit).WithMany(b => b.DetailsDevis);
+            builder.HasOne(b => b.Devis).WithMany(b => b.DetailsDevis);
+            builder.Property(x => x.Montant).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.Quantite).HasColumnType("decimal(18,2)");
+
+        }
+    }
+}
