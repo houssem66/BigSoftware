@@ -41,5 +41,11 @@ namespace Data.Entities
         public string Cin { get; set; }
         public Grossiste Grossiste { get; set; }
         public string IdGrossiste { get; set; }
+        public virtual ICollection<BonLivraisonClient> BonLivraisonClients { get; set; }
+        public virtual ICollection<BonCommandeClient> BonCommandeClients { get; set; }
+        public virtual ICollection<BonSortie> BonSorties { get; set; }
+        public virtual ICollection<Devis> Devis { get; set; }
+        public virtual ICollection<FactureClient> FactureClients { get; set; }
+
     }
 }

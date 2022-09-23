@@ -10,6 +10,8 @@ namespace Data.Entities
     {
         public int IdProduit { get; set; }
         public int IdFacutre { get; set; }
+        public Decimal Quantite { get; set; }
+        public Decimal Montant { get; set; }
         public Produit Produit { get; set; }
         public FactureFournisseur FactureFournisseur { get; set; }
     }

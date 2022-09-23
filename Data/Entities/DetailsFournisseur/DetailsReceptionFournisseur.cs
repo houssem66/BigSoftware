@@ -10,7 +10,9 @@ namespace Data.Entities
     {
         public int IdProduit { get; set; }
         public int IdBonReception { get; set; }
+        public Decimal Quantite { get; set; }
+        public Decimal Montant { get; set; }
         public Produit Produit   { get; set; }
-        public BonDeRéceptionFournisseur BonDeRéception { get; set; }
+        public BonDeReceptionFournisseur BonDeRéception { get; set; }
     }
 }

@@ -10,8 +10,8 @@ namespace Data.Entities
     {
         public int IdProduit { get; set; }
         public int IdStock { get; set; }
-        public Decimal Quantité { get; set; }
         public Decimal PrixTotale { get; set; }
+        public Decimal Quantite { get; set; }
         public Produit Produit { get; set; }
         public Stock Stock { get; set; }
     }
