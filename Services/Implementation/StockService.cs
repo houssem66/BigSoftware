@@ -1,48 +1,51 @@
 ﻿using Data;
 using Data.Entities;
 using Repository.Interfaces;
+using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Implementation
+namespace Services.Implementation
 {
-    public class StockRepo:IStockRepo
+    public class StockService:IStockService
     {
         private readonly BigSoftContext bigSoftContext;
         private readonly IGenericRepository<Stock> genericRepository;
+        private readonly IStockRepo stockRepo;
 
-        public StockRepo(BigSoftContext _bigSoftContext, IGenericRepository<Stock> _genericRepository)
+        public StockService(BigSoftContext _bigSoftContext, IGenericRepository<Stock> _genericRepository,IStockRepo _stockRepo)
         {
             bigSoftContext = _bigSoftContext;
             genericRepository = _genericRepository;
+            stockRepo = _stockRepo;
         }
 
         public Task Ajout(Stock entity)
         {
-            throw new NotImplementedException();
+            return genericRepository.InsertAsync(entity);
         }
 
         public Task Delete(int id)
         {
-            throw new NotImplementedException();
+            return genericRepository.DeleteAsync(id);
         }
 
         public List<Stock> GetAll()
         {
-            throw new NotImplementedException();
+            return genericRepository.GetAll().ToList();
         }
 
         public Task<Stock> GetById(int id)
         {
-            throw new NotImplementedException();
+            return genericRepository.GetByIdAsync(id);
         }
 
         public Task Update(int id, Stock entity)
         {
-            throw new NotImplementedException();
+            return stockRepo.PutAsync(id, entity);
         }
     }
 }

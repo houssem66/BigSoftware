@@ -119,7 +119,10 @@ namespace Repository.Implementation
             if (await userManager.FindByNameAsync(model.Username) != null)
                 return new AuthModel { Message = "Username is already registered!" };
             //User Creation
-
+            var Stock = new Stock{
+            StoreName="Stock Principale"};
+            var stockList = new List<Stock>();
+            stockList.Add(Stock);
             var user = new Grossiste
             {
                 UserName = model.Username,
@@ -141,7 +144,8 @@ namespace Repository.Implementation
                 NumFax = model.NumFax,
                 Nom = model.Nom,
                 Prenom = model.Prenom,
-                RaisonSocial = model.RaisonSocial
+                RaisonSocial = model.RaisonSocial,
+                Stocks=stockList
 
             };
             var result = await userManager.CreateAsync(user, model.Password);

@@ -14,5 +14,6 @@ namespace Data.Entities
         [Key]
         public int Id { get; set; }
         public virtual ICollection<StockProduit> StockProduit { get; set; }
+        public virtual  Grossiste Grossiste { get; set; }
     }
 }

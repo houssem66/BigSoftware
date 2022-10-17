@@ -71,6 +71,33 @@ namespace WebApi
             services.AddScoped(typeof(IFournisseurRepo), typeof(FournisseurRepo));
             services.AddScoped(typeof(IUserRepo), typeof(UserRepo));
             services.AddScoped(typeof(IGrossiteRepo), typeof(GrossisteRepo));
+
+            //Sprint2
+            services.AddScoped(typeof(IBonDeCommandeFournisseurRepo), typeof(BonDeCommandeFournisseurRepo));
+            services.AddScoped(typeof(IBonDeReceptionFournisseurRepo), typeof(BonDeReceptionFournisseurRepo));
+            services.AddScoped(typeof(IFactureFournisseurRepo), typeof(FactureFournisseurRepo));
+
+            services.AddScoped(typeof(IDetailsBonCommandeFournisseurRepo), typeof(DetailsBonCommandeFournisseurRepo));
+            services.AddScoped(typeof(IDetailsBonReceptionFournisseurRepo), typeof(DetailsBonDeReceptionRepo));
+            services.AddScoped(typeof(IDetailsFactureFournisseurRepo), typeof(DetailsFactureRepo));
+
+            services.AddScoped(typeof(IBonCommandeClientRepo), typeof(BonCommandeClientRepo));
+            services.AddScoped(typeof(IBonLivraisonClientRepo), typeof(BonLivraisonClientRepo));
+            services.AddScoped(typeof(IBonSortieClientRepo), typeof(BonSortieClientRepo));
+            services.AddScoped(typeof(IDevisClientRepo), typeof(DevisClientRepo));
+            services.AddScoped(typeof(IFactureClientRepo), typeof(FactureClientRepo));
+
+            services.AddScoped(typeof(IDetailsBonSortieClientRepo), typeof(DetailsBonSortieClientRepo));
+            services.AddScoped(typeof(IDetailsCommandeClientRepo), typeof(DetailsCommandeClientRepo));
+            services.AddScoped(typeof(IDetailsBonSortieClientRepo), typeof(DetailsBonSortieClientRepo));
+            services.AddScoped(typeof(IDetailsDevisClientRepo), typeof(DetailsDevisClientRepo));
+            services.AddScoped(typeof(IDetailsFactureClientRepo), typeof(DetailsFactureClientRepo));
+
+            services.AddScoped(typeof(IStockProduitRepo), typeof(StockProduitRepo));
+            services.AddScoped(typeof(IProduitRepo), typeof(ProduitRepo));
+            services.AddScoped(typeof(IStockRepo), typeof(StockRepo));
+
+
             #endregion
 
 
@@ -81,6 +108,31 @@ namespace WebApi
             services.AddTransient<IFournisseurService, FournisseurService>();
             services.AddTransient<IClientService, ClientService>();
             services.AddTransient<IMailingService, MailingService>();
+
+            //sprint2
+            services.AddTransient<IStockService, StockService>();
+            services.AddTransient<IProduitService, ProduitService>();
+            services.AddTransient<IStockProduitService, StockProduitService>();
+
+            services.AddTransient<IBonDeCommandeFournisseurService, BonDeCommandeFournisseurService>();
+            services.AddTransient<IBonDeReceptionFournisseurService, BonDeReceptionFournisseurService>();
+            services.AddTransient<IFactureFournisseurService, FactureFournisseurService>();
+
+            services.AddTransient<IDetailsBonCommandeFournisseurService, DetailsBonCommandService>();
+            services.AddTransient<IDetailsBonDeReceptionFournisseurService, DetailsBonReceptionService>();
+            services.AddTransient<IDetailsFactureFournisseurService, DetailsFactureFournisseurService>();
+
+            services.AddTransient<IBonCommandeClientService, BonCommandeClientService>();
+            services.AddTransient<IBonLivraisonClientService, BonLivraisonClientService>();
+            services.AddTransient<IBonSortieClientService, BonSortieClientService>();
+            services.AddTransient<IDevisClientService, DevisClientService>();
+            services.AddTransient<IFactureClientService, FactureClientService>();
+
+            services.AddTransient<IDetailsCommandeClientService, DetailsCommandeClientService>();
+            services.AddTransient<IDetailsLivraisonClientService, DetailsLivraisonClientService>();
+            services.AddTransient<IDetailsBonSortieClientService, DetailsBonSortieClientService>();
+            services.AddTransient<IDetailsDevisClientService, DetailsDevisClientService>();
+            services.AddTransient<IDetailsFactureClientService, DetailsFactureClientService>();
             #endregion
             #region JWT Config 
             //Identity Config

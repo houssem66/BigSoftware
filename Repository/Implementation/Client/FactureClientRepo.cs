@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Repository.Implementation
 {
-    public class FactureClientRepo:IFactureClientRepo
+    public class FactureClientRepo: IFactureClientRepo
     {
         public FactureClientRepo(BigSoftContext _bigSoftContext, IGenericRepository<FactureClient> _genericRepository)
         {

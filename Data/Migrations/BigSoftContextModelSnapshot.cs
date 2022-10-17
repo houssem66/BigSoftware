@@ -631,10 +631,15 @@ namespace Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("GrossisteId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("StoreName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GrossisteId");
 
                     b.ToTable("Stocks");
                 });
@@ -1178,6 +1183,16 @@ namespace Data.Migrations
                     b.Navigation("Grossiste");
                 });
 
+            modelBuilder.Entity("Data.Entities.Stock", b =>
+                {
+                    b.HasOne("Data.Entities.Grossiste", "Grossiste")
+                        .WithMany("Stocks")
+                        .HasForeignKey("GrossisteId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Grossiste");
+                });
+
             modelBuilder.Entity("Data.Entities.StockProduit", b =>
                 {
                     b.HasOne("Data.Entities.Produit", "Produit")
@@ -1335,6 +1350,8 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.Grossiste", b =>
                 {
                     b.Navigation("Documents");
+
+                    b.Navigation("Stocks");
                 });
 #pragma warning restore 612, 618
         }

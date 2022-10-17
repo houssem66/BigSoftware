@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace Repository.Implementation
 {
-    public class FactureFournisseurRepo:IFactureFournisseurRepo
+    public class DetailsBonCommandeFournisseurRepo:IDetailsBonCommandeFournisseurRepo
     {
         private readonly BigSoftContext bigSoftContext;
-        private readonly IGenericRepository<FactureFournisseur> genericRepository;
+        private readonly IGenericRepository<DetailsCommandeFournisseur> genericRepository;
 
-        public FactureFournisseurRepo(BigSoftContext _bigSoftContext, IGenericRepository<FactureFournisseur> _genericRepository)
+        public DetailsBonCommandeFournisseurRepo(BigSoftContext _bigSoftContext, IGenericRepository<DetailsCommandeFournisseur> _genericRepository)
         {
             bigSoftContext = _bigSoftContext;
             genericRepository = _genericRepository;

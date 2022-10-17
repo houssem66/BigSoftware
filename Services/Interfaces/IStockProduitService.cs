@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Servicesitory.Interfaces
+namespace Services.Interfaces
 {
-    public interface IStockStockProduitService
+    public interface IStockProduitService
     {
         public Task Update(int id, StockProduit entity);
         public Task<StockProduit> GetById(int id);
