@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services.Implementation
+
+namespace Repository.Interfaces
 {
-    public class DetailsBonSorieClientService
+   public interface IDetailsBonCommandeFournisseurRepo
     {
     }
 }

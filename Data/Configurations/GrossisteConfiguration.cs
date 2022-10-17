@@ -16,6 +16,7 @@ namespace Data.Configurations
         public void Configure(EntityTypeBuilder<Grossiste> builder)
         {
             builder.HasMany(d => d.Documents).WithOne(u => u.Grossiste).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(d => d.Stocks).WithOne(u => u.Grossiste).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

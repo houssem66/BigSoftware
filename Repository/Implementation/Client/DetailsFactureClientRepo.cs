@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 namespace Repository.Implementation
 {
-    public class DetailsFactureClientRepo
+    public class DetailsFactureClientRepo: IDetailsFactureClientRepo
     {
         public DetailsFactureClientRepo(BigSoftContext _bigSoftContext, IGenericRepository<DetailsFactureClient> _genericRepository)
         {

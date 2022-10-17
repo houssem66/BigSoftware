@@ -1,7 +1,6 @@
 ﻿using Data;
 using Data.Entities;
 using Repository.Interfaces;
-using Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,17 +9,15 @@ using System.Threading.Tasks;
 
 namespace Repository.Implementation
 {
-    public class BonDeCommandeFournisseurRepo:IBonDeCommandeFournisseurRepo
+    public class DetailsBonDeReceptionRepo:IDetailsBonReceptionFournisseurRepo
     {
         private readonly BigSoftContext bigSoftContext;
-        private readonly IGenericRepository<BonDeCommandeFournisseur> genericRepository;
+        private readonly IGenericRepository<DetailsReceptionFournisseur> genericRepository;
 
-        public BonDeCommandeFournisseurRepo(BigSoftContext _bigSoftContext, IGenericRepository<BonDeCommandeFournisseur> _genericRepository)
+        public DetailsBonDeReceptionRepo(BigSoftContext _bigSoftContext, IGenericRepository<DetailsReceptionFournisseur> _genericRepository)
         {
             bigSoftContext = _bigSoftContext;
             genericRepository = _genericRepository;
         }
-
-     
     }
 }

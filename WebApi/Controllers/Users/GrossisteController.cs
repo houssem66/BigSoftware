@@ -36,11 +36,36 @@ namespace WebApi.Controllers.Users
         }
         [AllowAnonymous]
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterAsync([FromBody] RegisterModelGrossiste model)
+        public async Task<IActionResult> RegisterAsync([FromForm] RegisterModelGrossiste model)
         {
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+
+
+            List<Document> emp = new List<Document>();
+            string uniqueFileName = null;
+            if (model.Documents != null)
+            {
+
+                Document employe = new Document();
+                // The file must be uploaded to the images folder in wwwroot
+                // To get the path of the wwwroot folder we are using the injected
+                // IHostingEnvironment service provided by ASP.NET Core
+                string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "Files");
+                // To make sure the file name is unique we are appending a new
+                // GUID value and and an underscore to the file name
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Documents.FileName;
+                string filePathImage = Path.Combine(uploadsFolder, uniqueFileName);
+                // Use CopyTo() method provided by IFormFile interface to
+                // copy the file to wwwroot/images folder
+                model.Documents.CopyTo(new FileStream(filePathImage, FileMode.Create));
+                employe.Filepath = uniqueFileName;
+                emp.Add(employe);
+
+
+            }
+
 
             var result = await grossisteService.RegisterAsync(model);
 
@@ -117,7 +142,7 @@ namespace WebApi.Controllers.Users
                 string uniqueFileName = null;
                 if (model.Documents != null)
                 {
-                  
+
                     Document employe = new Document();
                     // The file must be uploaded to the images folder in wwwroot
                     // To get the path of the wwwroot folder we are using the injected
@@ -132,9 +157,9 @@ namespace WebApi.Controllers.Users
                     model.Documents.CopyTo(new FileStream(filePath, FileMode.Create));
                     employe.Filepath = uniqueFileName;
                     emp.Add(employe);
-                   
-             
-            }
+
+
+                }
                 var Grossiste = new Grossiste
                 {
                     UserName = model.Username,
@@ -163,7 +188,7 @@ namespace WebApi.Controllers.Users
 
 
                 };
-                var result = grossisteService.Update(model.id, Grossiste);
+                var result =  grossisteService.Update(model.id, Grossiste);
                 return Ok(result);
 
             }

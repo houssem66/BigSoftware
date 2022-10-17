@@ -1,5 +1,6 @@
 ﻿using Data;
 using Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,21 @@ namespace Repository.Implementation
         {
             bigSoftContext = _bigSoftContext;
             genericRepository = _genericRepository;
+        }
+
+        public async Task PutAsync(int id, Stock entity)
+        {
+            var stock = await bigSoftContext.Stocks.SingleAsync(user => user.Id == id);
+            stock.StoreName = entity.StoreName;
+            try
+            {
+                bigSoftContext.Stocks.Update(stock);
+                await bigSoftContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
