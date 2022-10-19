@@ -1,5 +1,6 @@
 ﻿using Data;
 using Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -24,9 +25,23 @@ namespace Repository.Implementation
             return bigSoftContext.BonDeRéceptionFournisseurs.Where(e => e.GrossisteId == id);
         }
 
-        public Task PutAsync(int id, BonDeReceptionFournisseur entity)
+        public async Task PutAsync(int id, BonDeReceptionFournisseur entity)
         {
-            throw new NotImplementedException();
+            var bon = await bigSoftContext.BonDeRéceptionFournisseurs.SingleAsync(x => x.Id == id);
+            bon.Date = entity.Date;
+            bon.DetailsReceptions = entity.DetailsReceptions;
+            bon.PrixTotaleHt = bon.PrixTotaleHt;
+            bon.PrixTotaleTTc = bon.PrixTotaleTTc;
+            
+            try
+            {
+                bigSoftContext.BonDeRéceptionFournisseurs.Update(bon);
+                await bigSoftContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using Data.Entities;
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
+using Services.Implementation;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -15,28 +18,67 @@ namespace WebApi.Controllers
     public class BonReceptionController : ControllerBase
     {
         private readonly IBonDeReceptionFournisseurService bonDeReceptionFournisseurService;
+        private readonly IProduitService produitService;
+        private readonly IDetailsBonDeReceptionFournisseurService detailsBonReceptionService;
 
-        public BonReceptionController(IBonDeReceptionFournisseurService _BonDeReceptionFournisseurService)
+        public BonReceptionController(IBonDeReceptionFournisseurService _BonDeReceptionFournisseurService,IProduitService _ProduitService, IDetailsBonDeReceptionFournisseurService _DetailsBonReceptionService)
         {
             bonDeReceptionFournisseurService = _BonDeReceptionFournisseurService;
+            produitService = _ProduitService;
+            detailsBonReceptionService = _DetailsBonReceptionService;
         }
-        [Authorize]
+      //  [Authorize]
         [HttpPost("Post")]
-        public async Task<ActionResult<BonDeReceptionFournisseur>> PostBonDeReceptionFournisseur([FromBody] BonDeReceptionFournisseur model)
+        public async Task<ActionResult<BonDeReceptionFournisseur>> PostBonDeReceptionFournisseur([FromBody] BonReceptionModel model)
         {
             {
+                var entity = new BonDeReceptionFournisseur {
+                    Date=model.Date,
+                    PrixTotaleHt=model.PrixTotaleHt,
+                    PrixTotaleTTc=model.PrixTotaleTTc,
+                    FournisseurId=model.FournisseurId,
+                    GrossisteId=model.GrossisteId
+                    
+
+                };
                 if (ModelState.IsValid)
                 {
-                    try { await bonDeReceptionFournisseurService.Ajout(model); }
+                    try { await bonDeReceptionFournisseurService.Ajout(entity);
+                    
+                    
+                    }
 
                     catch (Exception ex)
                     {
                         Console.WriteLine(ex);
                         return Ok(StatusCode(400));
                     }
+                    var list = new List<DetailsReceptionFournisseur>();
+                    Decimal? sumTTc = 0;
+                    Decimal? sumHt = 0;
+                    foreach(var item in model.DetailsBonReceptionModels)
+                    { var produit = await produitService.GetById(item.IdProduit);
+                        var detail = new DetailsReceptionFournisseur
+                        {
+                            IdProduit = produit.Id,
+                            IdBonReception = entity.Id,
+                            MontantHt = produit.PriceHt * item.Quantite,
+                            MontantTTc=produit.PriceTTc*item.Quantite,
+                            Quantite=item.Quantite,
+                            
 
 
-                    return CreatedAtAction("Details", new { id = model.Id }, model);
+                        };
+                        sumTTc += detail.MontantTTc;
+                        sumHt += detail.MontantHt;
+                        list.Add(detail);
+                       
+                    }
+                    entity.DetailsReceptions = list;
+                    entity.PrixTotaleTTc = sumTTc;
+                    entity.PrixTotaleHt = sumHt;
+                    await   bonDeReceptionFournisseurService.Update(entity.Id,entity);
+                    return CreatedAtAction("Details", new { id = entity.Id }, entity);
                 }
             }
 
