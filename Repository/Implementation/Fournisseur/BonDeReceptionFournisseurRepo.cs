@@ -19,5 +19,10 @@ namespace Repository.Implementation
             bigSoftContext = _bigSoftContext;
             genericRepository = _genericRepository;
         }
+
+        public Task PutAsync(int id, BonDeReceptionFournisseur entity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -29,8 +29,12 @@ namespace Repository.Implementation
             genericRepository = _genericRepository;
            
         }
-   
+
+        public IEnumerable<Client> GetAll(string id)
+        {
+           return bigSoftContext.Clients.Where(e => e.IdGrossiste == id);
         }
+    }
 
 
 

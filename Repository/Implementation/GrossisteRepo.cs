@@ -71,6 +71,7 @@ namespace Repository.Implementation
             authModel.Username = user.UserName;
             authModel.ExpiresOn = jwtSecurityToken.ValidTo;
             authModel.Role = rolesList;
+            authModel.Id = user.Id;
 
             return authModel;
         }

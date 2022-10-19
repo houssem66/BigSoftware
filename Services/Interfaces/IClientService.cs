@@ -14,7 +14,7 @@ namespace Services.Interfaces
         public Task Update(int id,Client entity);
         public Task<Client> GetById(int id);
         public Task Delete(int id);
-        public List<Client> GetAll();
+        public List<Client> GetAll(string id);
         public Task Ajout(Client entity);
     }
 }

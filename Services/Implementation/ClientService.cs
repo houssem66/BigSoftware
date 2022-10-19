@@ -32,9 +32,9 @@ namespace Services.Implementation
             return genericRepo.DeleteAsync(id);
         }
 
-        public List<Client> GetAll()
+        public List<Client> GetAll(string id)
         {
-            return genericRepo.GetAll().ToList();
+            return ClientRepo.GetAll(id).ToList();
         }
 
         public Task<Client> GetById(int id)

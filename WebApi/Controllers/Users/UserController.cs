@@ -26,14 +26,16 @@ namespace WebApi.Controllers
         private readonly UserManager<Utilisateur> _userManager;
         private readonly IConfiguration configuration;
         private readonly IMailingService mailingService;
+        private readonly IGrossisteService grossisteService;
 
-        public UserController(IUserService _UserService, UserManager<Utilisateur> userManager, IConfiguration configuration, IMailingService mailingService)
+        public UserController(IUserService _UserService, UserManager<Utilisateur> userManager, IConfiguration configuration, IMailingService mailingService, IGrossisteService _GrossisteService)
         {
 
             userService = _UserService;
             _userManager = userManager;
             this.configuration = configuration;
             this.mailingService = mailingService;
+            grossisteService = _GrossisteService;
         }
 
 
@@ -73,13 +75,27 @@ namespace WebApi.Controllers
         [HttpPost("token")]
         public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestModel model)
         {
+            var result = new AuthModel();
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            var role = _userManager.IsInRoleAsync(user, "Grossiste").Result;
+            if (role)
+            {
+                result = await grossisteService.Login(model);
+                return Ok(result);
 
-            var result = await userService.Login(model);
+               
+            }
+            else
+            {
+                result = await userService.Login(model);
 
+             
+            }
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
+
 
             return Ok(result);
         }
@@ -141,7 +157,7 @@ namespace WebApi.Controllers
             return Entity;
 
         }
-        
+
         [HttpGet("Get/Email/{email}")]
         public async Task<ActionResult<Utilisateur>> GetByEmail(string email)
         {
@@ -154,7 +170,7 @@ namespace WebApi.Controllers
 
             return Entity;
 
-        } 
+        }
         [HttpGet("Get/UserName/{UserName}")]
         public async Task<ActionResult<Utilisateur>> GetByUserName(string userName)
         {
@@ -192,7 +208,7 @@ namespace WebApi.Controllers
                     return BadRequest(token.Message);
                 }
 
-              
+
             }
 
 

@@ -13,7 +13,8 @@ namespace Data.Configurations
     {
         public void Configure(EntityTypeBuilder<Produit> builder)
         {
-            builder.Property(e => e.Price).HasColumnType("decimal(18,2)");
+            builder.Property(e => e.PriceTTc).HasColumnType("decimal(18,2)");
+            builder.Property(e => e.PriceHt).HasColumnType("decimal(18,2)");
         }
     }
 }

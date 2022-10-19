@@ -54,12 +54,12 @@ namespace WebApi.Controllers.Clients
         }
       
         [Authorize]
-        [HttpGet]
-        public IQueryable GetAll()
+        [HttpGet("{id}")]
+        public IQueryable GetAll(string id)
         {
 
 
-            return (ClientService.GetAll().AsQueryable());
+            return (ClientService.GetAll(id).AsQueryable());
         }
         [Authorize]
         // DELETE: api/Applications/5

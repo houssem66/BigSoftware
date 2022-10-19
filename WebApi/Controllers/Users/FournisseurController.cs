@@ -33,21 +33,39 @@ namespace WebApi.Controllers.Users
         }
         [Authorize]
         [HttpPost("Post")]
-        public async Task<ActionResult<Fournisseur>> PostFournisseur([FromBody] Fournisseur model)
-        {try { await fournisseurService.Ajout(model); }
+        public async Task<ActionResult<Fournisseur>> PostFournisseur([FromBody] FournisseurModel model)
+        {
+            var entity = new Fournisseur
+            {
+                Adresse = model.Adresse,
+                Gouvernorats = model.Gouvernorats,
+                Email = model.Email,
+                IdGrossiste = model.IdGrossiste,
+                CodePostale = model.CodePostale,
+                Identifiant_fiscale = model.Identifiant_fiscale,
+                NomPersAContact = model.NomPersAContact,
+                Numbureau = model.Numbureau,
+                NumFax = model.NumFax,
+                PrenomPersAContact = model.PrenomPersAContact,
+                RaisonSocial = model.RaisonSocial,
+                SiteWeb = model.SiteWeb
+            };
+            try {
+                
+                await fournisseurService.Ajout(entity); }
            
             catch(Exception ex) { Console.WriteLine(ex); }
-            return CreatedAtAction("Details", new { id = model.Id }, model);
+            return CreatedAtAction("Details", new { id = entity.Id }, model);
         }
         [HttpPost("token")]
        
         [Authorize]
-        [HttpGet]
-        public IQueryable GetAll()
+        [HttpGet("{id}")]
+        public IQueryable GetAll(string id)
         {
 
 
-            return (fournisseurService.GetAll().AsQueryable());
+            return (fournisseurService.GetAll(id).AsQueryable());
         }
         [Authorize]
         // DELETE: api/Applications/5
