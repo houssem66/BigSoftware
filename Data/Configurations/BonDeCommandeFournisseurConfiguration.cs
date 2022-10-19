@@ -13,7 +13,8 @@ namespace Data.Configurations
     {
         public void Configure(EntityTypeBuilder<BonDeCommandeFournisseur> builder)
         {
-            builder.Property(x => x.Prix).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.PrixTotaleHt).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.PrixTotaleTTc).HasColumnType("decimal(18,2)");
             builder.HasOne(b => b.Grossiste).WithMany().HasForeignKey(f => f.GrossisteId);
 
         }

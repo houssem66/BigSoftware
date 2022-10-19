@@ -4,12 +4,11 @@ using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Repository.Implementation
 {
-    public class BonDeReceptionFournisseurRepo:IBonDeReceptionFournisseurRepo
+    public class BonDeReceptionFournisseurRepo : IBonDeReceptionFournisseurRepo
     {
         private readonly BigSoftContext bigSoftContext;
         private readonly IGenericRepository<BonDeReceptionFournisseur> genericRepository;
@@ -18,6 +17,11 @@ namespace Repository.Implementation
         {
             bigSoftContext = _bigSoftContext;
             genericRepository = _genericRepository;
+        }
+
+        public IEnumerable<BonDeReceptionFournisseur> GetAll(string id)
+        {
+            return bigSoftContext.BonDeRéceptionFournisseurs.Where(e => e.GrossisteId == id);
         }
 
         public Task PutAsync(int id, BonDeReceptionFournisseur entity)

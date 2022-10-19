@@ -43,14 +43,14 @@ namespace WebApi.Controllers
             return Ok(StatusCode(400));
         }
 
-        //[Authorize]
-        //[HttpGet("{id}")]
-        //public IQueryable GetAll(string id)
-        //{
+        [Authorize]
+        [HttpGet("{id}")]
+        public IQueryable GetAll(string id)
+        {
 
 
-        //    return (bonDeReceptionFournisseurService.GetAll(id).AsQueryable());
-        //}
+            return (bonDeReceptionFournisseurService.GetAll(id).AsQueryable());
+        }
         [Authorize]
         // DELETE: api/Applications/5
         [HttpDelete("{id}")]

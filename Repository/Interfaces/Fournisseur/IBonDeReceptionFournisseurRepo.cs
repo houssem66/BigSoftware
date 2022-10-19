@@ -10,6 +10,8 @@ namespace Repository.Interfaces
     public interface IBonDeReceptionFournisseurRepo
     {
         public Task PutAsync(int id, BonDeReceptionFournisseur entity);
+        public IEnumerable<BonDeReceptionFournisseur> GetAll(string id);
+
 
     }
 }

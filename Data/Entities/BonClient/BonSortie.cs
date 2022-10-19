@@ -15,10 +15,11 @@ namespace Data.Entities
         public int Id { get; set; }
         public int ClientId { get; set; }
         public virtual Client Client { get; set; }
-        public Decimal Prix { get; set; }
+        public Decimal PrixTotaleTTc { get; set; }
+        public Decimal PrixTotaleHt { get; set; }
         public DateTime Date { get; set; }
         public  Grossiste Grossiste { get; set; }
-        public int GrossisteId { get; set; }
+        public string GrossisteId { get; set; }
         public virtual ICollection<DetailsBonSortie> DetailsBonSorties { get; set; }
 
     }
