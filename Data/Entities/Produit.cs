@@ -15,10 +15,9 @@ namespace Data.Entities
         public string Barcode { get; set; }
         [Required]
         public string Description { get; set; }
-        public string Image { get; set; }
-        public TypePrix TypePrix { get; set; }
         public TVA TVA { get; set; }
-        public decimal? Price { get; set; }
+        public decimal? PriceTTc { get; set; }
+        public decimal? PriceHt { get; set; }
         public Category Category { get; set; }
         public UnitOfMeasure UnitOfMeasure { get; set; }
         public virtual ICollection<StockProduit> StockProduit { get; set; }

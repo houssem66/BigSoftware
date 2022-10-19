@@ -1,4 +1,5 @@
-﻿using Data.Models;
+﻿using Data.Entities;
+using Data.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +10,7 @@ namespace Repository.Interfaces
 {
     public interface IClientRepo
     {
-       
+        IEnumerable<Client> GetAll(string id);
+
     }
 }

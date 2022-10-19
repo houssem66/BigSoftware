@@ -14,11 +14,13 @@ namespace Services.Implementation
     {
         private readonly BigSoftContext bigSoftContext;
         private readonly IGenericRepository<Produit> genericRepository;
+        private readonly IProduitRepo produitRepo;
 
-        public ProduitService(BigSoftContext _bigSoftContext, IGenericRepository<Produit> _genericRepository)
+        public ProduitService(BigSoftContext _bigSoftContext, IGenericRepository<Produit> _genericRepository,IProduitRepo _ProduitRepo)
         {
             bigSoftContext = _bigSoftContext;
             genericRepository = _genericRepository;
+            produitRepo = _ProduitRepo;
         }
         public Task Ajout(Produit entity)
         {
@@ -42,7 +44,7 @@ namespace Services.Implementation
 
         public Task Update(int id, Produit entity)
         {
-            return genericRepository.PutAsync(id, entity);
+            return produitRepo.PutAsync(id, entity);
         }
     }
 }

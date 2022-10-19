@@ -13,6 +13,6 @@ namespace Data.Entities
         public Decimal Quantite { get; set; }
         public Decimal Montant { get; set; }
         public Produit Produit { get; set; }
-        public FactureFournisseur FactureFournisseur { get; set; }
+        public virtual FactureFournisseur FactureFournisseur { get; set; }
     }
 }

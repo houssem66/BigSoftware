@@ -1,6 +1,6 @@
 ﻿using Data.Entities;
-using Microsoft.AspNetCore.Authorization;
-
+using Data.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using System;
@@ -14,35 +14,58 @@ namespace WebApi.Controllers
     public class ProduitController : ControllerBase
     {
         private readonly IProduitService produitService;
+        private readonly IWebHostEnvironment hostingEnvironment;
 
-        public ProduitController(IProduitService _ProduitService)
+        public ProduitController(IProduitService _ProduitService, IWebHostEnvironment hostingEnvironment)
         {
             produitService = _ProduitService;
+            this.hostingEnvironment = hostingEnvironment;
         }
-//[Authorize]
+        //[Authorize]
         [HttpPost("Post")]
-        public async Task<ActionResult<Produit>> PostClient([FromBody] Produit model)
+        public async Task<ActionResult<Produit>> PostClient([FromBody] ProduitModel model)
         {
+
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+
+
+
+                var y = ((decimal)model.TVA);
+                var x = model.PriceHT * (y / 100) + model.PriceHT;
+                var entity = new Produit
                 {
-                    try { await produitService.Ajout(model); }
+                    Barcode = model.Barcode,
+                    Category = model.Category,
+                    Description = model.Description,
+                    TVA = model.TVA,
+                    PriceHt = model.PriceHT,
+                    PriceTTc = x,
+                    ProductName = model.ProductName,
+                    UnitOfMeasure = model.UnitOfMeasure,
 
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
-                        return Ok(StatusCode(400));
-                    }
+                };
+                try { await produitService.Ajout(entity); }
 
-
-                    return CreatedAtAction("Details", new { id = model.Id }, model);
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    return Ok(StatusCode(400));
                 }
-            }
 
-            return Ok(StatusCode(400));
+
+                return CreatedAtAction("Details", new { id = entity.Id }, entity);
+            }
+            model.Message = ModelState.Select(x => x.Value.Errors)
+                          .Where(y => y.Count > 0)
+                          .ToString();
+
+
+
+            return BadRequest(model.Message);
         }
 
-//[Authorize]
+        //[Authorize]
         [HttpGet]
         public IQueryable GetAll()
         {
@@ -50,7 +73,7 @@ namespace WebApi.Controllers
 
             return (produitService.GetAll().AsQueryable());
         }
-//[Authorize]
+        //[Authorize]
         // DELETE: api/Applications/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -68,25 +91,42 @@ namespace WebApi.Controllers
             }
 
         }
-//[Authorize]
+        //[Authorize]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(int id, Produit entity)
+        public async Task<IActionResult> Update(int id, ProduitModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                model.Message = ModelState.Select(x => x.Value.Errors)
+                             .Where(y => y.Count > 0)
+                             .ToString();
+                return BadRequest(model.Message);
+            }
+            var y = ((decimal)model.TVA);
+            var x = model.PriceHT * (y / 100) + model.PriceHT;
+            var entity = new Produit
+            {
+                Barcode = model.Barcode,
+                Category = model.Category,
+                Description = model.Description,
+                TVA = model.TVA,
+                PriceHt = model.PriceHT,
+                PriceTTc = x,
+                ProductName = model.ProductName,
+                UnitOfMeasure = model.UnitOfMeasure,
+            };
             try
             {
-                await produitService.Update(id, entity);
+                await produitService.Update(model.Id, entity);
 
                 return Ok(StatusCode(200));
             }
             catch (Exception)
             {
-
                 return Ok(StatusCode(400));
             }
-
-
         }
-//[Authorize]
+        //[Authorize]
         [HttpGet("Get/{id}")]
         public async Task<ActionResult<Produit>> Details(int id)
         {

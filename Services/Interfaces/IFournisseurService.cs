@@ -13,7 +13,7 @@ namespace Services.Interfaces
         public Task Update(int id, Fournisseur entity);
         public Task<Fournisseur> GetById(int id);
         public Task Delete(int id);
-        public List<Fournisseur> GetAll();
+        public List<Fournisseur> GetAll(string id);
         public Task Ajout(Fournisseur entity);
     }
 }

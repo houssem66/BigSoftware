@@ -32,6 +32,10 @@ namespace Repository.Implementation
           
           
         }
-     
+
+        public IEnumerable<Fournisseur> GetAll(string id)
+        {
+            return bigSoftContext.Fournisseurs.Where(e => e.IdGrossiste == id);
+        }
     }
 }

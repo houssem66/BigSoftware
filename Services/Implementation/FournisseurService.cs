@@ -41,9 +41,9 @@ namespace Services.Implementation
         {
             return genericRepo.PutAsync(id, entity);
         }
-        public List<Fournisseur> GetAll()
+        public List<Fournisseur> GetAll(string id)
         {
-            return genericRepo.GetAll().ToList();
+            return FournisseurRepo.GetAll(id).ToList();
         }
 
        

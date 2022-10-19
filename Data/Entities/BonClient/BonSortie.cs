@@ -14,9 +14,11 @@ namespace Data.Entities
         [Key]
         public int Id { get; set; }
         public int ClientId { get; set; }
-        public Client Client { get; set; }
+        public virtual Client Client { get; set; }
         public Decimal Prix { get; set; }
         public DateTime Date { get; set; }
+        public  Grossiste Grossiste { get; set; }
+        public int GrossisteId { get; set; }
         public virtual ICollection<DetailsBonSortie> DetailsBonSorties { get; set; }
 
     }
