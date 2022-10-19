@@ -16,7 +16,7 @@ namespace Data.Entities
 
         public virtual Fournisseur Fournisseur { get; set; }
         public virtual Grossiste Grossiste { get; set; }
-        public int GrossisteId { get; set; }
+        public string GrossisteId { get; set; }
         public virtual ICollection<DetailsCommandeFournisseur> DetailsCommandes { get; set; }
 
     }

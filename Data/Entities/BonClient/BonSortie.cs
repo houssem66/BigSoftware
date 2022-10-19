@@ -18,7 +18,7 @@ namespace Data.Entities
         public Decimal Prix { get; set; }
         public DateTime Date { get; set; }
         public  Grossiste Grossiste { get; set; }
-        public int GrossisteId { get; set; }
+        public string GrossisteId { get; set; }
         public virtual ICollection<DetailsBonSortie> DetailsBonSorties { get; set; }
 
     }
