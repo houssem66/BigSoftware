@@ -14,11 +14,13 @@ namespace Services.Implementation
     {
         private readonly BigSoftContext bigSoftContext;
         private readonly IGenericRepository<BonDeReceptionFournisseur> genericRepository;
+        private readonly IBonDeReceptionFournisseurRepo bonDeReceptionFournisseurRepo;
 
-        public BonDeReceptionFournisseurService(BigSoftContext _bigSoftContext, IGenericRepository<BonDeReceptionFournisseur> _genericRepository)
+        public BonDeReceptionFournisseurService(BigSoftContext _bigSoftContext, IGenericRepository<BonDeReceptionFournisseur> _genericRepository,IBonDeReceptionFournisseurRepo _BonDeReceptionFournisseurRepo)
         {
             bigSoftContext = _bigSoftContext;
             genericRepository = _genericRepository;
+            bonDeReceptionFournisseurRepo = _BonDeReceptionFournisseurRepo;
         }
 
         public Task Ajout(BonDeReceptionFournisseur entity)
@@ -31,9 +33,9 @@ namespace Services.Implementation
             return genericRepository.DeleteAsync(id);
         }
 
-        public List<BonDeReceptionFournisseur> GetAll()
+        public List<BonDeReceptionFournisseur> GetAll(string id)
         {
-            return genericRepository.GetAll().ToList();
+            return bonDeReceptionFournisseurRepo.GetAll(id).ToList();
         }
 
         public Task<BonDeReceptionFournisseur> GetById(int id)

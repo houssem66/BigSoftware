@@ -17,7 +17,8 @@ namespace Data.Configurations
             builder.HasKey(e => new { e.IdProduit, e.IdDevis });
             builder.HasOne(b => b.Produit).WithMany(b => b.DetailsDevis);
             builder.HasOne(b => b.Devis).WithMany(b => b.DetailsDevis);
-            builder.Property(x => x.Montant).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.MontantHt).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.MontantTTc).HasColumnType("decimal(18,2)");
             builder.Property(x => x.Quantite).HasColumnType("decimal(18,2)");
 
         }

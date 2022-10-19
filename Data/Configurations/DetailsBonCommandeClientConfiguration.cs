@@ -18,7 +18,8 @@ namespace Data.Configurations
             builder.HasOne(b => b.Produit).WithMany(b => b.DetailsCommandeClients);
             builder.HasOne(b => b.CommandeClient).WithMany(b => b.DetailsCommandes);
             builder.Property(e => e.Quantite).HasColumnType("decimal(18,2)");
-            builder.Property(x => x.Montant).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.MontantHt).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.MontantTTc).HasColumnType("decimal(18,2)");
 
         }
     }
