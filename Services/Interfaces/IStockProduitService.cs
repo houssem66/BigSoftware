@@ -9,10 +9,7 @@ namespace Services.Interfaces
 {
     public interface IStockProduitService
     {
-        public Task Update(int id, StockProduit entity);
-        public Task<StockProduit> GetById(int id);
-        public Task Delete(int id);
-        public List<StockProduit> GetAll();
-        public Task Ajout(StockProduit entity);
+        public  Task Augmenter(int idProduit, int idStock, StockProduit entity);
+
     }
 }

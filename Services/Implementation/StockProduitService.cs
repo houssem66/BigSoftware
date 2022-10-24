@@ -11,39 +11,20 @@ namespace Services.Implementation
 {
     public class StockProduitService:IStockProduitService
     {
+        private readonly BigSoftContext bigSoftContext;
         private readonly IGenericRepository<StockProduit> genericRepository;
+        private readonly IStockProduitRepo stockProduitRepo;
 
-        public StockProduitService(BigSoftContext _bigSoftContext, IGenericRepository<StockProduit> _genericRepository)
+        public StockProduitService(BigSoftContext _bigSoftContext, IGenericRepository<StockProduit> _genericRepository,IStockProduitRepo _StockProduitRepo)
         {
-            BigSoftContext = _bigSoftContext;
+            bigSoftContext = _bigSoftContext;
             genericRepository = _genericRepository;
+            stockProduitRepo = _StockProduitRepo;
         }
 
-        public BigSoftContext BigSoftContext { get; }
-
-        public Task Ajout(StockProduit entity)
+        public Task Augmenter(int idProduit, int idStock, StockProduit entity)
         {
-            return genericRepository.InsertAsync(entity);
-        }
-
-        public Task Delete(int id)
-        {
-            return genericRepository.DeleteAsync(id);
-        }
-
-        public List<StockProduit> GetAll()
-        {
-            return genericRepository.GetAll().ToList();
-        }
-
-        public Task<StockProduit> GetById(int id)
-        {
-            return genericRepository.GetByIdAsync(id);
-        }
-
-        public Task Update(int id, StockProduit entity)
-        {
-            return genericRepository.PutAsync(id, entity);
+            return stockProduitRepo.Augmenter(idProduit,idStock,entity);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Repository.Implementation
 
         public IEnumerable<BonDeReceptionFournisseur> GetAll(string id)
         {
-            return bigSoftContext.BonDeRéceptionFournisseurs.Where(e => e.GrossisteId == id);
+            return bigSoftContext.BonDeRéceptionFournisseurs.Where(e => e.GrossisteId == id).Include(x=>x.DetailsReceptions).ThenInclude(x=>x.Produit).Include(x=>x.Fournisseur).ThenInclude(x=>x.Grossiste) ;
         }
 
         public async Task PutAsync(int id, BonDeReceptionFournisseur entity)
