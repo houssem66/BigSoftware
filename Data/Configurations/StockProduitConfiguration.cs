@@ -17,7 +17,8 @@ namespace Data.Configurations
             builder.HasOne(b => b.Produit).WithMany(b => b.StockProduit);
             builder.HasOne(b => b.Stock).WithMany(b => b.StockProduit);
             builder.Property(x => x.Quantite).HasColumnType("decimal(18,2)");
-            builder.Property(x => x.PrixTotale).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.PrixTotaleHt).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.PrixTotaleTTc).HasColumnType("decimal(18,2)");
         }
     }
 }

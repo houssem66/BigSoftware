@@ -4,14 +4,16 @@ using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(BigSoftContext))]
-    partial class BigSoftContextModelSnapshot : ModelSnapshot
+    [Migration("20221024185401_delete")]
+    partial class delete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -737,10 +739,7 @@ namespace Data.Migrations
                     b.Property<int>("IdStock")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("PrixTotaleHt")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("PrixTotaleTTc")
+                    b.Property<decimal>("PrixTotale")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("ProduitId")

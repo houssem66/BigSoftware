@@ -65,6 +65,7 @@ namespace WebApi.Controllers
                             MontantHt = produit.PriceHt * item.Quantite,
                             MontantTTc=produit.PriceTTc*item.Quantite,
                             Quantite=item.Quantite,
+                            Produit=produit
                             
 
 
