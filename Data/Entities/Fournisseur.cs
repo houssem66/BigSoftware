@@ -38,7 +38,6 @@ namespace Data.Entities
         public string IdGrossiste { get; set; }
         public virtual Grossiste Grossiste { get; set; }
         public virtual ICollection<BonDeCommandeFournisseur> BonDeCommandes{ get; set; }
-        public virtual ICollection<FactureFournisseur> Factures{ get; set; }
         public virtual ICollection<BonDeReceptionFournisseur> BonDeReceptions{ get; set; }
     }
 }

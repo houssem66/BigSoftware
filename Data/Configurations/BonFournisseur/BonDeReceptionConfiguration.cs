@@ -9,13 +9,14 @@ using System.Threading.Tasks;
 
 namespace Data.Configurations
 {
-    internal class FactureFournisseurConfiguration : IEntityTypeConfiguration<FactureFournisseur>
+    internal class BonDeReceptionConfiguration : IEntityTypeConfiguration<BonDeReceptionFournisseur>
     {
-        public void Configure(EntityTypeBuilder<FactureFournisseur> builder)
+        public void Configure(EntityTypeBuilder<BonDeReceptionFournisseur> builder)
         {
             builder.Property(x => x.PrixTotaleHt).HasColumnType("decimal(18,2)");
             builder.Property(x => x.PrixTotaleTTc).HasColumnType("decimal(18,2)");
             builder.HasOne(b => b.Grossiste).WithMany().HasForeignKey(f => f.GrossisteId);
+            builder.HasOne(b => b.FactureFournisseur).WithOne(a => a.BonDeReceptionFournisseur).HasForeignKey<FactureFournisseur>(b => b.BonDeReceptionId).OnDelete(DeleteBehavior.Cascade);
 
         }
     }

@@ -18,11 +18,12 @@ namespace Data.Entities
         public Boolean Confirmed { get; set; }
         public virtual Fournisseur Fournisseur { get; set; }
         public virtual Grossiste Grossiste { get; set; }
+        public FactureFournisseur FactureFournisseur { get; set; }
         public string GrossisteId { get; set; }
         public virtual ICollection<DetailsReceptionFournisseur> DetailsReceptions { get; set; }
-        public BonDeReceptionFournisseur()
-        {
-            Confirmed = false;
-        }
+        //public BonDeReceptionFournisseur()
+        //{
+        //    Confirmed = false;
+        //}
     }
 }

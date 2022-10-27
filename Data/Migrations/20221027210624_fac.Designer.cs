@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(BigSoftContext))]
-    [Migration("20221024234504_ht")]
-    partial class ht
+    [Migration("20221027210624_fac")]
+    partial class fac
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -89,6 +89,9 @@ namespace Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Confirmed")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -415,16 +418,16 @@ namespace Data.Migrations
                     b.Property<int?>("FactureFournisseurId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("MontantHt")
+                    b.Property<decimal?>("MontantHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("MontantTTc")
+                    b.Property<decimal?>("MontantTTc")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int?>("ProduitId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Quantite")
+                    b.Property<decimal?>("Quantite")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("IdProduit", "IdFacutre");
@@ -476,26 +479,18 @@ namespace Data.Migrations
                     b.Property<int>("IdBonReception")
                         .HasColumnType("int");
 
-                    b.Property<int?>("BonDeRéceptionId")
-                        .HasColumnType("int");
-
                     b.Property<decimal?>("MontantHt")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal?>("MontantTTc")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ProduitId")
-                        .HasColumnType("int");
-
                     b.Property<decimal?>("Quantite")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("IdProduit", "IdBonReception");
 
-                    b.HasIndex("BonDeRéceptionId");
-
-                    b.HasIndex("ProduitId");
+                    b.HasIndex("IdBonReception");
 
                     b.ToTable("DetailsReceptionFournisseurs");
                 });
@@ -589,26 +584,22 @@ namespace Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("BonDeReceptionId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FournisseurId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("GrossisteId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("PrixTotaleHt")
+                    b.Property<decimal?>("PrixTotaleHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("PrixTotaleTTc")
+                    b.Property<decimal?>("PrixTotaleTTc")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FournisseurId");
-
-                    b.HasIndex("GrossisteId");
+                    b.HasIndex("BonDeReceptionId")
+                        .IsUnique();
 
                     b.ToTable("FactureFournisseurs");
                 });
@@ -739,26 +730,18 @@ namespace Data.Migrations
                     b.Property<int>("IdStock")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("PrixTotaleHt")
+                    b.Property<decimal?>("PrixTotaleHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("PrixTotaleTTc")
+                    b.Property<decimal?>("PrixTotaleTTc")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("ProduitId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Quantite")
+                    b.Property<decimal?>("Quantite")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("StockId")
-                        .HasColumnType("int");
 
                     b.HasKey("IdProduit", "IdStock");
 
-                    b.HasIndex("ProduitId");
-
-                    b.HasIndex("StockId");
+                    b.HasIndex("IdStock");
 
                     b.ToTable("StockProduits");
                 });
@@ -1240,13 +1223,15 @@ namespace Data.Migrations
                 {
                     b.HasOne("Data.Entities.BonDeReceptionFournisseur", "BonDeRéception")
                         .WithMany("DetailsReceptions")
-                        .HasForeignKey("BonDeRéceptionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("IdBonReception")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Data.Entities.Produit", "Produit")
                         .WithMany("DetailsReceptions")
-                        .HasForeignKey("ProduitId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("IdProduit")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("BonDeRéception");
 
@@ -1299,19 +1284,13 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.FactureFournisseur", b =>
                 {
-                    b.HasOne("Data.Entities.Fournisseur", "Fournisseur")
-                        .WithMany("Factures")
-                        .HasForeignKey("FournisseurId")
+                    b.HasOne("Data.Entities.BonDeReceptionFournisseur", "BonDeReceptionFournisseur")
+                        .WithOne("FactureFournisseur")
+                        .HasForeignKey("Data.Entities.FactureFournisseur", "BonDeReceptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.Entities.Grossiste", "Grossiste")
-                        .WithMany()
-                        .HasForeignKey("GrossisteId");
-
-                    b.Navigation("Fournisseur");
-
-                    b.Navigation("Grossiste");
+                    b.Navigation("BonDeReceptionFournisseur");
                 });
 
             modelBuilder.Entity("Data.Entities.Fournisseur", b =>
@@ -1337,11 +1316,15 @@ namespace Data.Migrations
                 {
                     b.HasOne("Data.Entities.Produit", "Produit")
                         .WithMany("StockProduit")
-                        .HasForeignKey("ProduitId");
+                        .HasForeignKey("IdProduit")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Data.Entities.Stock", "Stock")
                         .WithMany("StockProduit")
-                        .HasForeignKey("StockId");
+                        .HasForeignKey("IdStock")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Produit");
 
@@ -1412,6 +1395,8 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.BonDeReceptionFournisseur", b =>
                 {
                     b.Navigation("DetailsReceptions");
+
+                    b.Navigation("FactureFournisseur");
                 });
 
             modelBuilder.Entity("Data.Entities.BonLivraisonClient", b =>
@@ -1457,8 +1442,6 @@ namespace Data.Migrations
                     b.Navigation("BonDeCommandes");
 
                     b.Navigation("BonDeReceptions");
-
-                    b.Navigation("Factures");
                 });
 
             modelBuilder.Entity("Data.Entities.Produit", b =>

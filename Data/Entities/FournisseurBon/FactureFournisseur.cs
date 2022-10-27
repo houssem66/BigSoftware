@@ -11,13 +11,12 @@ namespace Data.Entities
     {
         [Key]
         public int Id { get; set; }
-        public int FournisseurId { get; set; }
-        public Decimal PrixTotaleTTc { get; set; }
-        public Decimal PrixTotaleHt { get; set; }
+        public Decimal? PrixTotaleTTc { get; set; }
+        public Decimal? PrixTotaleHt { get; set; }
         public DateTime Date { get; set; }
-        public virtual Fournisseur Fournisseur { get; set; }
-        public virtual Grossiste Grossiste { get; set; }
-        public string GrossisteId { get; set; }
+        public virtual BonDeReceptionFournisseur BonDeReceptionFournisseur { get; set; }
+        public  int BonDeReceptionId { get; set; }
+      
         public virtual ICollection<DetailsFactureFournisseur> DetailsFactures { get; set; }
 
     }
