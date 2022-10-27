@@ -22,13 +22,27 @@ namespace Repository.Implementation
 
         public IEnumerable<BonDeReceptionFournisseur> GetAll(string id)
         {
-            return bigSoftContext.BonDeRéceptionFournisseurs.Where(e => e.GrossisteId == id).Include(x=>x.DetailsReceptions).ThenInclude(x=>x.Produit).Include(x=>x.Fournisseur).ThenInclude(x=>x.Grossiste) ;
+            return bigSoftContext.BonDeRéceptionFournisseurs.Where(e => e.GrossisteId == id)
+                .Include(x => x.DetailsReceptions)
+                .ThenInclude(x => x.Produit)
+                .Include(x => x.Fournisseur)
+                .ThenInclude(x => x.Grossiste)
+                .Include(x => x.FactureFournisseur)
+                .ThenInclude(x => x.DetailsFactures);
         }
 
         public async Task<BonDeReceptionFournisseur> GetById(int id, string include)
         {
-            var entity = await bigSoftContext.BonDeRéceptionFournisseurs.Include(x=>x.Grossiste).ThenInclude(x=>x.Stocks).Include(x=>x.DetailsReceptions).ThenInclude(x=>x.Produit).FirstOrDefaultAsync(x => x.Id == id);
-                return entity;
+            var entity = await bigSoftContext.BonDeRéceptionFournisseurs
+                .Include(x => x.Grossiste)
+                .ThenInclude(x => x.Stocks)
+                .Include(x => x.DetailsReceptions)
+                .ThenInclude(x => x.Produit)
+                .Include(x => x.FactureFournisseur)
+                .ThenInclude(x => x.DetailsFactures)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            return entity;
         }
 
         public async Task<BonDeReceptionFournisseur> GetById(int id)
@@ -45,9 +59,9 @@ namespace Repository.Implementation
             bon.PrixTotaleHt = entity.PrixTotaleHt;
             bon.PrixTotaleTTc = entity.PrixTotaleTTc;
             bon.FournisseurId = entity.FournisseurId;
-           
-            
-            
+
+
+
             try
             {
                 bigSoftContext.BonDeRéceptionFournisseurs.Update(bon);

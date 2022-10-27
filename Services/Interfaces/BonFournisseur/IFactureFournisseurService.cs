@@ -13,7 +13,7 @@ namespace Services.Interfaces
         public Task Update(int id, FactureFournisseur entity);
         public Task<FactureFournisseur> GetById(int id);
         public Task Delete(int id);
-        public List<FactureFournisseur> GetAll();
+        public List<FactureFournisseur> GetAll(string id);
         public Task Ajout(FactureFournisseur entity);
     }
 }

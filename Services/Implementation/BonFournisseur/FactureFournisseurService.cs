@@ -14,11 +14,13 @@ namespace Services.Implementation
     {
         private readonly BigSoftContext bigSoftContext;
         private readonly IGenericRepository<FactureFournisseur> genericRepository;
+        private readonly IFactureFournisseurRepo factureFournisseurRepo;
 
-        public FactureFournisseurService(BigSoftContext _bigSoftContext, IGenericRepository<FactureFournisseur> _genericRepository)
+        public FactureFournisseurService(BigSoftContext _bigSoftContext, IGenericRepository<FactureFournisseur> _genericRepository,IFactureFournisseurRepo factureFournisseurRepo)
         {
             bigSoftContext = _bigSoftContext;
             genericRepository = _genericRepository;
+            this.factureFournisseurRepo = factureFournisseurRepo;
         }
 
         public Task Ajout(FactureFournisseur entity)
@@ -31,14 +33,14 @@ namespace Services.Implementation
             return genericRepository.DeleteAsync(id);
         }
 
-        public List<FactureFournisseur> GetAll()
+        public List<FactureFournisseur> GetAll(string id)
         {
-            return genericRepository.GetAll().ToList();
+            return factureFournisseurRepo.GetAll(id).ToList();
         }
 
         public Task<FactureFournisseur> GetById(int id)
         {
-            return genericRepository.GetByIdAsync(id);
+            return factureFournisseurRepo.GetById(id);
         }
 
         public Task Update(int id, FactureFournisseur entity)
