@@ -10,9 +10,9 @@ namespace Data.Entities
     {
         public int IdProduit { get; set; }
         public int IdStock { get; set; }
-        public Decimal PrixTotaleTTc { get; set; }
-        public Decimal PrixTotaleHt { get; set; }
-        public Decimal Quantite { get; set; }
+        public Decimal? PrixTotaleTTc { get; set; }
+        public Decimal? PrixTotaleHt { get; set; }
+        public Decimal? Quantite { get; set; }
         public virtual Produit Produit { get; set; }
         public virtual Stock Stock { get; set; }
     }

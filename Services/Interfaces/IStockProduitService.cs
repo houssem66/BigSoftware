@@ -9,7 +9,8 @@ namespace Services.Interfaces
 {
     public interface IStockProduitService
     {
-        public  Task Augmenter(int idProduit, int idStock, StockProduit entity);
+        public  Task Augmenter(decimal? augmentation,int idProduit, int idStock, StockProduit entity);
+        public  Task Diminuer(int idProduit, int idStock, StockProduit entity);
 
     }
 }

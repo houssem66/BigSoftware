@@ -38,14 +38,19 @@ namespace Services.Implementation
             return bonDeReceptionFournisseurRepo.GetAll(id).ToList();
         }
 
+        public Task<BonDeReceptionFournisseur> GetById(int id,string include)
+        {
+            return bonDeReceptionFournisseurRepo.GetById(id, include);
+        }
+
         public Task<BonDeReceptionFournisseur> GetById(int id)
         {
-            return genericRepository.GetByIdAsync(id);
+            return bonDeReceptionFournisseurRepo.GetById(id);
         }
 
         public Task Update(int id, BonDeReceptionFournisseur entity)
         {
-            return genericRepository.PutAsync(id,entity);
+            return bonDeReceptionFournisseurRepo.PutAsync(id,entity);
         }
     }
 }
