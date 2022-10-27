@@ -14,8 +14,8 @@ namespace Data.Configurations
         public void Configure(EntityTypeBuilder<DetailsFactureFournisseur> builder)
         {
             builder.HasKey(e => new { e.IdProduit, e.IdFacutre });
-            builder.HasOne(b => b.Produit).WithMany(b => b.DetailsFactures);
-            builder.HasOne(b => b.FactureFournisseur).WithMany(b => b.DetailsFactures);
+            builder.HasOne(b => b.Produit).WithMany(b => b.DetailsFactures).OnDelete(DeleteBehavior.Cascade).HasForeignKey(x => x.IdProduit);
+            builder.HasOne(b => b.FactureFournisseur).WithMany(b => b.DetailsFactures).OnDelete(DeleteBehavior.Cascade).HasForeignKey(x => x.IdFacutre);
             builder.Property(x => x.Quantite).HasColumnType("decimal(18,2)");
             builder.Property(x => x.MontantHt).HasColumnType("decimal(18,2)");
             builder.Property(x => x.MontantTTc).HasColumnType("decimal(18,2)");
