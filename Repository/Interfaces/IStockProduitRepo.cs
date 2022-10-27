@@ -9,7 +9,7 @@ namespace Repository.Interfaces
 {
     public interface IStockProduitRepo
     {
-        public Task Augmenter(int idProduit, int idStock, StockProduit entity);
+        public Task Augmenter(decimal? aug,int idProduit, int idStock, StockProduit entity);
         public Task Diminuer(int idProduit, int idStock, StockProduit entity);
 
     }

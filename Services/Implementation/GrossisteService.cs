@@ -37,7 +37,7 @@ namespace Services.Implementation
      
         public Task<Grossiste> GetById(string id)
         {
-            return genericRepo.GetByIdAsync(id);
+            return grossisteRepo.GetById(id);
         }
 
       

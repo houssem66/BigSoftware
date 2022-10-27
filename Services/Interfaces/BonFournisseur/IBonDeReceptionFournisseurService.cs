@@ -11,6 +11,7 @@ namespace Services.Interfaces
     public interface IBonDeReceptionFournisseurService
     {
         public Task Update(int id, BonDeReceptionFournisseur entity);
+        public Task<BonDeReceptionFournisseur> GetById(int id,string include);
         public Task<BonDeReceptionFournisseur> GetById(int id);
         public Task Delete(int id);
         public List<BonDeReceptionFournisseur> GetAll(string id);

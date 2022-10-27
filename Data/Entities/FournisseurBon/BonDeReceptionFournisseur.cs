@@ -15,10 +15,14 @@ namespace Data.Entities
         public Decimal? PrixTotaleTTc { get; set; }
         public Decimal? PrixTotaleHt { get; set; }
         public DateTime Date { get; set; }
-
+        public Boolean Confirmed { get; set; }
         public virtual Fournisseur Fournisseur { get; set; }
         public virtual Grossiste Grossiste { get; set; }
         public string GrossisteId { get; set; }
         public virtual ICollection<DetailsReceptionFournisseur> DetailsReceptions { get; set; }
+        public BonDeReceptionFournisseur()
+        {
+            Confirmed = false;
+        }
     }
 }

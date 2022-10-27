@@ -35,6 +35,15 @@ namespace Repository.Implementation
             _jwt = jwt.Value;
         }
 
+        public async Task<Grossiste> GetById(string id)
+        {
+            var grossiste = await bigSoftContext.Grossistes.Include(x=>x.Stocks).SingleOrDefaultAsync(x => x.Id == id);
+           
+          
+
+            return grossiste;
+        }
+
         public async Task<Grossiste> GetGrossisteByEmail(string email)
         {
             var Grossiste = await bigSoftContext.Grossistes.SingleOrDefaultAsync(c => c.NormalizedEmail == email.ToUpper());

@@ -22,9 +22,14 @@ namespace Services.Implementation
             stockProduitRepo = _StockProduitRepo;
         }
 
-        public Task Augmenter(int idProduit, int idStock, StockProduit entity)
+        public Task Augmenter(decimal? aug,int idProduit, int idStock, StockProduit entity)
         {
-            return stockProduitRepo.Augmenter(idProduit,idStock,entity);
+            return stockProduitRepo.Augmenter(aug,idProduit,idStock,entity);
+        }
+
+        public Task Diminuer(int idProduit, int idStock, StockProduit entity)
+        {
+            return stockProduitRepo.Diminuer(idProduit, idStock, entity);
         }
     }
 }
