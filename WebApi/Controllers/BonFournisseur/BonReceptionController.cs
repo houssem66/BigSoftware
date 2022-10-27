@@ -16,17 +16,17 @@ namespace WebApi.Controllers
     {
         private readonly IBonDeReceptionFournisseurService bonDeReceptionFournisseurService;
         private readonly IProduitService produitService;
-        private readonly IDetailsBonDeReceptionFournisseurService detailsBonReceptionService;
         private readonly IGrossisteService grossisteService;
         private readonly IStockProduitService stockProduitService;
+        private readonly IFactureFournisseurService factureFournisseurService;
 
-        public BonReceptionController(IBonDeReceptionFournisseurService _BonDeReceptionFournisseurService, IProduitService _ProduitService, IDetailsBonDeReceptionFournisseurService _DetailsBonReceptionService, IGrossisteService grossisteService, IStockProduitService stockProduitService)
+        public BonReceptionController(IBonDeReceptionFournisseurService _BonDeReceptionFournisseurService, IProduitService _ProduitService, IGrossisteService grossisteService, IStockProduitService stockProduitService, IFactureFournisseurService factureFournisseurService)
         {
             bonDeReceptionFournisseurService = _BonDeReceptionFournisseurService;
             produitService = _ProduitService;
-            detailsBonReceptionService = _DetailsBonReceptionService;
             this.grossisteService = grossisteService;
             this.stockProduitService = stockProduitService;
+            this.factureFournisseurService = factureFournisseurService;
         }
         //  [Authorize]
         [HttpPost("Post")]
@@ -40,16 +40,12 @@ namespace WebApi.Controllers
                     PrixTotaleTTc = model.PrixTotaleTTc,
                     FournisseurId = model.FournisseurId,
                     GrossisteId = model.GrossisteId
-
-
                 };
                 if (ModelState.IsValid)
                 {
                     try
                     {
                         await bonDeReceptionFournisseurService.Ajout(entity);
-
-
                     }
 
                     catch (Exception ex)
@@ -73,32 +69,10 @@ namespace WebApi.Controllers
                             MontantTTc = produit.PriceTTc * item.Quantite,
                             Quantite = item.Quantite,
                             Produit = produit
-
-
-
                         };
                         sumTTc += detail.MontantTTc;
                         sumHt += detail.MontantHt;
                         list.Add(detail);
-                        var stockProduit = new StockProduit
-                        {
-                            IdProduit = produit.Id,
-                            IdStock = Grossiste.Stocks.FirstOrDefault().Id,
-                            PrixTotaleHt = detail.MontantHt,
-                            PrixTotaleTTc = detail.MontantTTc,
-                            Quantite = detail.Quantite,
-                            Produit = produit,
-                            Stock = Grossiste.Stocks.FirstOrDefault()
-
-                        };
-                        try
-                        {
-                            await stockProduitService.Augmenter(stockProduit.Quantite, stockProduit.IdProduit, stockProduit.IdStock, stockProduit);
-                        }
-                        catch (Exception e)
-                        {
-                            return Ok(StatusCode(400));
-                        }
                     }
                     entity.DetailsReceptions = list;
                     entity.PrixTotaleTTc = sumTTc;
@@ -180,32 +154,6 @@ namespace WebApi.Controllers
 
                 };
                 var bon = await bonDeReceptionFournisseurService.GetById(model.Id, "DetailsReceptions");
-                foreach (var item in bon.DetailsReceptions)
-                {
-                    var index = model.DetailsBonReceptionModels.ToList().FindIndex(w => w.IdProduit == item.IdProduit);
-                    if (index >= 0)
-                    {
-
-
-                    }
-                    else
-                    {
-                        var stockProduit = new StockProduit
-                        {
-                            IdProduit = item.IdProduit,
-                            IdStock = bon.Grossiste.Stocks.FirstOrDefault().Id,
-                            PrixTotaleHt = item.MontantHt,
-                            PrixTotaleTTc = item.MontantTTc,
-                            Quantite = item.Quantite,
-                            Produit = item.Produit,
-                            Stock = bon.Grossiste.Stocks.FirstOrDefault()
-
-                        };
-                        await stockProduitService.Diminuer(stockProduit.IdProduit, stockProduit.IdStock, stockProduit);
-
-                    }
-
-                }
                 var list = new List<DetailsReceptionFournisseur>();
                 Decimal? sumTTc = 0;
                 Decimal? sumHt = 0;
@@ -213,7 +161,6 @@ namespace WebApi.Controllers
                 foreach (var item in model.DetailsBonReceptionModels)
                 {
                     var produit = await produitService.GetById(item.IdProduit);
-
                     var detail = new DetailsReceptionFournisseur
                     {
                         IdProduit = produit.Id,
@@ -222,39 +169,10 @@ namespace WebApi.Controllers
                         MontantTTc = produit.PriceTTc * item.Quantite,
                         Quantite = item.Quantite,
                         Produit = produit
-
-
-
                     };
                     sumTTc += detail.MontantTTc;
                     sumHt += detail.MontantHt;
                     list.Add(detail);
-                    var stockProduit = new StockProduit
-                    {
-                        IdProduit = produit.Id,
-                        IdStock = Grossiste.Stocks.FirstOrDefault().Id,
-                        PrixTotaleHt = detail.MontantHt,
-                        PrixTotaleTTc = detail.MontantTTc,
-                        Quantite = detail.Quantite,
-                        Produit = produit,
-                        Stock = Grossiste.Stocks.FirstOrDefault()
-
-                    };
-                    var index = bon.DetailsReceptions.ToList().FindIndex(w => w.IdProduit == item.IdProduit);
-                    if (index >= 0)
-                    {
-                        var aux = model.DetailsBonReceptionModels.ElementAt(index).Quantite - item.Quantite;
-                        await stockProduitService.Augmenter(aux, stockProduit.IdProduit, stockProduit.IdStock, stockProduit);
-
-
-                    }
-                    else
-                    {
-                        var x = item.Quantite;
-                        await stockProduitService.Augmenter(x, stockProduit.IdProduit, stockProduit.IdStock, stockProduit);
-
-                    }
-
                 }
                 entity.FournisseurId = model.FournisseurId;
                 entity.DetailsReceptions = list;
@@ -273,13 +191,81 @@ namespace WebApi.Controllers
         }
         [Authorize]
         [HttpPut("Confirmer")]
-        public async Task<IActionResult> ConfirmerBonReception([FromForm]  int id)
+        public async Task<IActionResult> ConfirmerBonReception([FromForm] int id)
         {
             var bon = await bonDeReceptionFournisseurService.GetById(id, "DetailsReceptions");
             bon.Confirmed = true;
             await bonDeReceptionFournisseurService.Update(bon.Id, bon);
+            var facture = new FactureFournisseur
+            {
+                Date = bon.Date,
+                BonDeReceptionFournisseur = bon,
+                PrixTotaleHt = bon.PrixTotaleHt,
+                PrixTotaleTTc = bon.PrixTotaleTTc,
 
-            return Ok(StatusCode(200));
+
+
+            };
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await factureFournisseurService.Ajout(facture);
+                }
+
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    return Ok(StatusCode(400));
+                }
+                var list = new List<DetailsFactureFournisseur>();
+                foreach (var item in bon.DetailsReceptions)
+                {
+                    var detailsFacture = new DetailsFactureFournisseur
+                    {
+                        FactureFournisseur = facture,
+                        IdFacutre = facture.Id,
+                        MontantHt = item.MontantHt,
+                        MontantTTc = item.MontantTTc,
+                        IdProduit = item.IdProduit,
+                        Quantite = item.Quantite
+                    };
+                    var stockProduit = new StockProduit
+                    {
+                        IdProduit = item.IdProduit,
+                        IdStock = bon.Grossiste.Stocks.FirstOrDefault().Id,
+                        PrixTotaleHt = item.MontantHt,
+                        PrixTotaleTTc = item.MontantTTc,
+                        Quantite = item.Quantite,
+                        Produit = item.Produit,
+                        Stock = bon.Grossiste.Stocks.FirstOrDefault()
+
+                    };
+                    list.Add(detailsFacture);
+                    try
+                    {
+                        await stockProduitService.Augmenter(item.Quantite, stockProduit.IdProduit, stockProduit.IdStock, stockProduit);
+                    }
+                    catch (Exception e)
+                    {
+                        return Ok(StatusCode(400));
+                    }
+
+                }
+                try
+                {
+                    facture.DetailsFactures = list;
+                    await factureFournisseurService.Update(facture.Id, facture);
+                }
+                catch (Exception e)
+                {
+                    return Ok(StatusCode(400));
+                }
+
+                return Ok(StatusCode(200));
+            }
+
+            return Ok(StatusCode(400));
         }
         [Authorize]
         [HttpGet("Get/{id}")]

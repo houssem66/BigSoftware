@@ -46,6 +46,7 @@ namespace Data
         {
             //Sprint 1
             base.OnModelCreating(builder);
+
             builder.ApplyConfiguration(new GrossisteConfiguration());
             //Sprint2
             builder.ApplyConfiguration(new FournisseurConfiguration());

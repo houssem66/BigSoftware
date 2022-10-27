@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data.Migrations
 {
-    public partial class @new : Migration
+    public partial class idproduit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -302,7 +302,8 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleHt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ClientId = table.Column<int>(type: "int", nullable: false),
                     GrossisteId = table.Column<string>(type: "nvarchar(450)", nullable: true)
@@ -330,7 +331,8 @@ namespace Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleHt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ClientId = table.Column<int>(type: "int", nullable: false),
                     GrossisteId = table.Column<string>(type: "nvarchar(450)", nullable: true)
@@ -359,7 +361,8 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ClientId = table.Column<int>(type: "int", nullable: false),
-                    Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleHt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GrossisteId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
@@ -387,7 +390,8 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ClientId = table.Column<int>(type: "int", nullable: false),
-                    Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleHt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GrossisteId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
@@ -415,7 +419,8 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ClientId = table.Column<int>(type: "int", nullable: false),
-                    Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleHt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GrossisteId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
@@ -443,7 +448,8 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FournisseurId = table.Column<int>(type: "int", nullable: false),
-                    Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleHt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GrossisteId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
@@ -471,8 +477,10 @@ namespace Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FournisseurId = table.Column<int>(type: "int", nullable: false),
-                    Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PrixTotaleTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    PrixTotaleHt = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Confirmed = table.Column<bool>(type: "bit", nullable: false),
                     GrossisteId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -493,59 +501,30 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FactureFournisseurs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FournisseurId = table.Column<int>(type: "int", nullable: false),
-                    Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    GrossisteId = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_FactureFournisseurs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_FactureFournisseurs_AspNetUsers_GrossisteId",
-                        column: x => x.GrossisteId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_FactureFournisseurs_Fournisseurs_FournisseurId",
-                        column: x => x.FournisseurId,
-                        principalTable: "Fournisseurs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "StockProduits",
                 columns: table => new
                 {
                     IdProduit = table.Column<int>(type: "int", nullable: false),
                     IdStock = table.Column<int>(type: "int", nullable: false),
-                    PrixTotale = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Quantite = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProduitId = table.Column<int>(type: "int", nullable: true),
-                    StockId = table.Column<int>(type: "int", nullable: true)
+                    PrixTotaleTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    PrixTotaleHt = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Quantite = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_StockProduits", x => new { x.IdProduit, x.IdStock });
                     table.ForeignKey(
-                        name: "FK_StockProduits_Produits_ProduitId",
-                        column: x => x.ProduitId,
+                        name: "FK_StockProduits_Produits_IdProduit",
+                        column: x => x.IdProduit,
                         principalTable: "Produits",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_StockProduits_Stocks_StockId",
-                        column: x => x.StockId,
+                        name: "FK_StockProduits_Stocks_IdStock",
+                        column: x => x.IdStock,
                         principalTable: "Stocks",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -554,7 +533,8 @@ namespace Data.Migrations
                 {
                     IdProduit = table.Column<int>(type: "int", nullable: false),
                     IdCommande = table.Column<int>(type: "int", nullable: false),
-                    Montant = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantHt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Quantite = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ProduitId = table.Column<int>(type: "int", nullable: true),
                     CommandeClientId = table.Column<int>(type: "int", nullable: true)
@@ -584,7 +564,8 @@ namespace Data.Migrations
                     IdBonLivraison = table.Column<int>(type: "int", nullable: false),
                     ProduitId = table.Column<int>(type: "int", nullable: true),
                     Quantite = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Montant = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantHt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     BonLivraisonId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -611,7 +592,8 @@ namespace Data.Migrations
                     IdProduit = table.Column<int>(type: "int", nullable: false),
                     IdBonSortie = table.Column<int>(type: "int", nullable: false),
                     Quantite = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Montant = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantHt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ProduitId = table.Column<int>(type: "int", nullable: true),
                     BonSortieId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -640,7 +622,8 @@ namespace Data.Migrations
                     IdDevis = table.Column<int>(type: "int", nullable: false),
                     ProduitId = table.Column<int>(type: "int", nullable: true),
                     Quantite = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Montant = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantHt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     DevisId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -668,7 +651,8 @@ namespace Data.Migrations
                     IdFactureClient = table.Column<int>(type: "int", nullable: false),
                     ProduitId = table.Column<int>(type: "int", nullable: true),
                     Quantite = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Montant = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantHt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     FactureClientId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -695,7 +679,8 @@ namespace Data.Migrations
                     IdProduit = table.Column<int>(type: "int", nullable: false),
                     IdBonCommande = table.Column<int>(type: "int", nullable: false),
                     Quantite = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Montant = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MontantHt = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ProduitId = table.Column<int>(type: "int", nullable: true),
                     BonDeCommandeFournisseurId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -722,24 +707,52 @@ namespace Data.Migrations
                 {
                     IdProduit = table.Column<int>(type: "int", nullable: false),
                     IdBonReception = table.Column<int>(type: "int", nullable: false),
-                    Quantite = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Montant = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ProduitId = table.Column<int>(type: "int", nullable: true),
-                    BonDeRéceptionId = table.Column<int>(type: "int", nullable: true)
+                    Quantite = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    MontantTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    MontantHt = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DetailsReceptionFournisseurs", x => new { x.IdProduit, x.IdBonReception });
                     table.ForeignKey(
-                        name: "FK_DetailsReceptionFournisseurs_BonDeRéceptionFournisseurs_BonDeRéceptionId",
-                        column: x => x.BonDeRéceptionId,
+                        name: "FK_DetailsReceptionFournisseurs_BonDeRéceptionFournisseurs_IdBonReception",
+                        column: x => x.IdBonReception,
                         principalTable: "BonDeRéceptionFournisseurs",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_DetailsReceptionFournisseurs_Produits_ProduitId",
-                        column: x => x.ProduitId,
+                        name: "FK_DetailsReceptionFournisseurs_Produits_IdProduit",
+                        column: x => x.IdProduit,
                         principalTable: "Produits",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FactureFournisseurs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PrixTotaleTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    PrixTotaleHt = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BonDeReceptionId = table.Column<int>(type: "int", nullable: false),
+                    FournisseurId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FactureFournisseurs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FactureFournisseurs_BonDeRéceptionFournisseurs_BonDeReceptionId",
+                        column: x => x.BonDeReceptionId,
+                        principalTable: "BonDeRéceptionFournisseurs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FactureFournisseurs_Fournisseurs_FournisseurId",
+                        column: x => x.FournisseurId,
+                        principalTable: "Fournisseurs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -750,8 +763,9 @@ namespace Data.Migrations
                 {
                     IdProduit = table.Column<int>(type: "int", nullable: false),
                     IdFacutre = table.Column<int>(type: "int", nullable: false),
-                    Quantite = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Montant = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Quantite = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    MontantTTc = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    MontantHt = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     ProduitId = table.Column<int>(type: "int", nullable: true),
                     FactureFournisseurId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -937,14 +951,9 @@ namespace Data.Migrations
                 column: "ProduitId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DetailsReceptionFournisseurs_BonDeRéceptionId",
+                name: "IX_DetailsReceptionFournisseurs_IdBonReception",
                 table: "DetailsReceptionFournisseurs",
-                column: "BonDeRéceptionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DetailsReceptionFournisseurs_ProduitId",
-                table: "DetailsReceptionFournisseurs",
-                column: "ProduitId");
+                column: "IdBonReception");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Devis_ClientId",
@@ -972,14 +981,15 @@ namespace Data.Migrations
                 column: "GrossisteId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FactureFournisseurs_BonDeReceptionId",
+                table: "FactureFournisseurs",
+                column: "BonDeReceptionId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FactureFournisseurs_FournisseurId",
                 table: "FactureFournisseurs",
                 column: "FournisseurId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FactureFournisseurs_GrossisteId",
-                table: "FactureFournisseurs",
-                column: "GrossisteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Fournisseurs_IdGrossiste",
@@ -987,14 +997,9 @@ namespace Data.Migrations
                 column: "IdGrossiste");
 
             migrationBuilder.CreateIndex(
-                name: "IX_StockProduits_ProduitId",
+                name: "IX_StockProduits_IdStock",
                 table: "StockProduits",
-                column: "ProduitId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockProduits_StockId",
-                table: "StockProduits",
-                column: "StockId");
+                column: "IdStock");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Stocks_GrossisteId",
@@ -1074,13 +1079,13 @@ namespace Data.Migrations
                 name: "BonLivraisonClients");
 
             migrationBuilder.DropTable(
-                name: "BonDeRéceptionFournisseurs");
-
-            migrationBuilder.DropTable(
                 name: "Produits");
 
             migrationBuilder.DropTable(
                 name: "Stocks");
+
+            migrationBuilder.DropTable(
+                name: "BonDeRéceptionFournisseurs");
 
             migrationBuilder.DropTable(
                 name: "Clients");

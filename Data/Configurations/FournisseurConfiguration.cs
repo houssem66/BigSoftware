@@ -15,8 +15,6 @@ namespace Data.Configurations
         {
             builder.HasOne(b => b.Grossiste).WithMany().HasForeignKey(f=>f.IdGrossiste);
             builder.HasMany(b => b.BonDeCommandes).WithOne(b => b.Fournisseur).HasForeignKey(f=>f.FournisseurId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasMany(b => b.BonDeReceptions).WithOne(b => b.Fournisseur).HasForeignKey(f=>f.FournisseurId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasMany(b => b.Factures).WithOne(b => b.Fournisseur).HasForeignKey(f=>f.FournisseurId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
