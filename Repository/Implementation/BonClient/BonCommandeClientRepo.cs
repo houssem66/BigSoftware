@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Repository.Implementation
 {
-    public class BonCommandeClientRepo:IBonCommandeClientRepo
+    public class BonCommandeClientRepo: RepositoryBase<BonCommandeClient>, IBonCommandeClientRepo
     {
-        public BonCommandeClientRepo(BigSoftContext _bigSoftContext, IGenericRepository<BonCommandeClient> _genericRepository)
+        public BonCommandeClientRepo(BigSoftContext _bigSoftContext):base(_bigSoftContext)
         {
 
         }

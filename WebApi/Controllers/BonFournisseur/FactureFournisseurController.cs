@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Repository.Interfaces;
 using Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,81 +15,49 @@ namespace WebApi.Controllers.BonFournisseur
     [ApiController]
     public class FactureFournisseurController : ControllerBase
     {
-        private readonly IFactureFournisseurService factureFournisseurService;
-        private readonly IStockProduitService stockProduitService;
-        private readonly IBonDeReceptionFournisseurService bonDeReceptionFournisseurService;
+        private readonly IRepositoryWrapper repository;
 
-        public FactureFournisseurController(IFactureFournisseurService factureFournisseurService ,IStockProduitService stockProduitService,IBonDeReceptionFournisseurService bonDeReceptionFournisseurService)
+        public FactureFournisseurController(IRepositoryWrapper repository)
         {
-            this.factureFournisseurService = factureFournisseurService;
-            this.stockProduitService = stockProduitService;
-            this.bonDeReceptionFournisseurService = bonDeReceptionFournisseurService;
+            this.repository = repository;
         }
-        [Authorize]
-        [HttpGet("Get/{id}")]
-        public async Task<ActionResult<FactureFournisseur>> Details(int id)
-        {
-            var Entity = await factureFournisseurService.GetById(id);
 
-            if (Entity == null)
+        [Authorize]
+        [HttpGet()]
+            public IActionResult GetAll([FromQuery] QueryParametersString parameters)
+        {
+            if (parameters.include == null)
             {
-                return NotFound();
+                parameters.include = "";
             }
+            if (parameters.Id is null )
+            {
+                return StatusCode(500, "Empty");
 
-            return Entity;
+            }
+            return Ok(repository.FactureFournisseurRepo.FindByCondition(x => x.BonDeReceptionFournisseur.GrossisteId == parameters.Id, includeProperties: parameters.include));
 
-        }
-        [Authorize]
-        [HttpGet("{id}")]
-        public IQueryable GetAll(string id)
-        {
-
-
-            return factureFournisseurService.GetAll(id).AsQueryable();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            
-            var facture = await factureFournisseurService.GetById(id);
-            var bon = await bonDeReceptionFournisseurService.GetById(facture.BonDeReceptionId, "DetailsReceptions");
-            foreach (var item in facture.DetailsFactures)
-            {
-                var stockProduit = new StockProduit
-                {
-                    IdProduit = item.IdProduit,
-                    IdStock = facture.BonDeReceptionFournisseur.Grossiste.Stocks.FirstOrDefault().Id,
-                    PrixTotaleHt = item.MontantHt,
-                    PrixTotaleTTc = item.MontantTTc,
-                    Quantite = item.Quantite,
-                    Produit = item.Produit,
-                    Stock = facture.BonDeReceptionFournisseur.Grossiste.Stocks.FirstOrDefault()
-
-                };
-                try
-                {
-                    
-                    await stockProduitService.Diminuer(stockProduit.IdProduit, stockProduit.IdStock, stockProduit);
-                }
-                catch (Exception e)
-                {
-                    return Ok(StatusCode(400));
-                }
-
-            }
-
             try
             {
-                bon.Confirmed = false;
-                await bonDeReceptionFournisseurService.Update(bon.Id, bon);
-                await factureFournisseurService.Delete(id);
-
-                return Ok(StatusCode(200));
+                var bon = await repository.BonDeReceptionFournisseurRepo.FindById(id);
+                if (bon == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    repository.BonDeReceptionFournisseurRepo.Delete(bon);
+                    await repository.SaveAsync();
+                }
+                return NoContent();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                return Ok(StatusCode(400));
+                return StatusCode(500, e.Message);
             }
 
         }

@@ -15,6 +15,7 @@ namespace Data.Configurations
 
         public void Configure(EntityTypeBuilder<Grossiste> builder)
         {
+            builder.HasMany(h => h.Clients).WithOne(g => g.Grossiste).HasForeignKey(h => h.IdGrossiste).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(d => d.Documents).WithOne(u => u.Grossiste).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(d => d.Stocks).WithOne(u => u.Grossiste).OnDelete(DeleteBehavior.Cascade);
         }

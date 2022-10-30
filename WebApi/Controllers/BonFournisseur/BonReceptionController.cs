@@ -1,10 +1,13 @@
-﻿using Data.Entities;
+﻿using AutoMapper;
+using Data.Entities;
 using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,71 +17,46 @@ namespace WebApi.Controllers
     [ApiController]
     public class BonReceptionController : ControllerBase
     {
-        private readonly IBonDeReceptionFournisseurService bonDeReceptionFournisseurService;
-        private readonly IProduitService produitService;
-        private readonly IGrossisteService grossisteService;
-        private readonly IStockProduitService stockProduitService;
-        private readonly IFactureFournisseurService factureFournisseurService;
+        private readonly IRepositoryWrapper repository;
+        private readonly IMapper mapper;
 
-        public BonReceptionController(IBonDeReceptionFournisseurService _BonDeReceptionFournisseurService, IProduitService _ProduitService, IGrossisteService grossisteService, IStockProduitService stockProduitService, IFactureFournisseurService factureFournisseurService)
+        public BonReceptionController(IRepositoryWrapper repository, IMapper mapper)
         {
-            bonDeReceptionFournisseurService = _BonDeReceptionFournisseurService;
-            produitService = _ProduitService;
-            this.grossisteService = grossisteService;
-            this.stockProduitService = stockProduitService;
-            this.factureFournisseurService = factureFournisseurService;
+            this.repository = repository;
+            this.mapper = mapper;
         }
         //  [Authorize]
         [HttpPost("Post")]
         public async Task<ActionResult<BonDeReceptionFournisseur>> PostBonDeReceptionFournisseur([FromBody] BonReceptionModel model)
         {
+            if (ModelState.IsValid)
             {
-                var entity = new BonDeReceptionFournisseur
+                var entity = mapper.Map<BonDeReceptionFournisseur>(model);
+                entity.DetailsReceptions = new Collection<DetailsReceptionFournisseur>();
+                foreach (var item in model.DetailsBonReceptionModels)
                 {
-                    Date = model.Date,
-                    PrixTotaleHt = model.PrixTotaleHt,
-                    PrixTotaleTTc = model.PrixTotaleTTc,
-                    FournisseurId = model.FournisseurId,
-                    GrossisteId = model.GrossisteId
-                };
-                if (ModelState.IsValid)
+                    var produit = await repository.ProduitRepo.FindById(item.IdProduit);
+                    var detail = new DetailsReceptionFournisseur
+                    {
+                        IdProduit = produit.Id,
+                        IdBonReception = entity.Id,
+                        MontantHt = produit.PriceHt * item.Quantite,
+                        MontantTTc = produit.PriceTTc * item.Quantite,
+                        Quantite = item.Quantite,
+                    };
+                    entity.DetailsReceptions.Add(detail);
+                    entity.PrixTotaleHt += detail.MontantHt;
+                    entity.PrixTotaleTTc += detail.MontantTTc;
+                }
+                try
                 {
-                    try
-                    {
-                        await bonDeReceptionFournisseurService.Ajout(entity);
-                    }
-
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine(ex);
-                        return Ok(StatusCode(400));
-                    }
-                    var list = new List<DetailsReceptionFournisseur>();
-                    Decimal? sumTTc = 0;
-                    Decimal? sumHt = 0;
-                    var Grossiste = await grossisteService.GetById(model.GrossisteId);
-                    foreach (var item in model.DetailsBonReceptionModels)
-                    {
-                        var produit = await produitService.GetById(item.IdProduit);
-
-                        var detail = new DetailsReceptionFournisseur
-                        {
-                            IdProduit = produit.Id,
-                            IdBonReception = entity.Id,
-                            MontantHt = produit.PriceHt * item.Quantite,
-                            MontantTTc = produit.PriceTTc * item.Quantite,
-                            Quantite = item.Quantite,
-                            Produit = produit
-                        };
-                        sumTTc += detail.MontantTTc;
-                        sumHt += detail.MontantHt;
-                        list.Add(detail);
-                    }
-                    entity.DetailsReceptions = list;
-                    entity.PrixTotaleTTc = sumTTc;
-                    entity.PrixTotaleHt = sumHt;
-                    await bonDeReceptionFournisseurService.Update(entity.Id, entity);
+                    repository.BonDeReceptionFournisseurRepo.Create(entity);
+                    await repository.SaveAsync();
                     return CreatedAtAction("Details", new { id = entity.Id }, entity);
+                }
+                catch (Exception e)
+                {
+                    throw new NotImplementedException();
                 }
             }
 
@@ -86,192 +64,175 @@ namespace WebApi.Controllers
         }
 
         [Authorize]
-        [HttpGet("{id}")]
-        public IQueryable GetAll(string id)
+        [HttpGet()]
+        public IActionResult GetAll([FromQuery] QueryParametersString parameters)
         {
-
-
-            return (bonDeReceptionFournisseurService.GetAll(id).AsQueryable());
+            if (parameters.include == null)
+            {
+                parameters.include = "";
+            }
+            if (parameters.Id != null)
+            {
+                return Ok(repository.BonDeReceptionFournisseurRepo.FindByCondition(x => x.GrossisteId == parameters.Id, includeProperties: parameters.include));
+            }
+            return StatusCode(500, "Empty");
         }
         [Authorize]
         // DELETE: api/Applications/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var bon = await bonDeReceptionFournisseurService.GetById(id, "DetailsReceptions");
-            foreach (var item in bon.DetailsReceptions)
-            {
-                var stockProduit = new StockProduit
-                {
-                    IdProduit = item.IdProduit,
-                    IdStock = bon.Grossiste.Stocks.FirstOrDefault().Id,
-                    PrixTotaleHt = item.MontantHt,
-                    PrixTotaleTTc = item.MontantTTc,
-                    Quantite = item.Quantite,
-                    Produit = item.Produit,
-                    Stock = bon.Grossiste.Stocks.FirstOrDefault()
-
-                };
-                try
-                {
-                    await stockProduitService.Diminuer(stockProduit.IdProduit, stockProduit.IdStock, stockProduit);
-                }
-                catch (Exception e)
-                {
-                    return Ok(StatusCode(400));
-                }
-
-            }
-
             try
             {
-                await bonDeReceptionFournisseurService.Delete(id);
-
-                return Ok(StatusCode(200));
+                var bon = await repository.BonDeReceptionFournisseurRepo.FindById(id);
+                if (bon == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    repository.BonDeReceptionFournisseurRepo.Delete(bon);
+                    await repository.SaveAsync();
+                }
+                return NoContent();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
-                return Ok(StatusCode(400));
+                return StatusCode(500, e.Message);
             }
 
         }
         [Authorize]
-        [HttpPut("Update")]
+        [HttpPut("Update/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] BonReceptionModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var entity = new BonDeReceptionFournisseur
+                if (model is null)
                 {
-                    Date = model.Date,
-                    PrixTotaleHt = model.PrixTotaleHt,
-                    PrixTotaleTTc = model.PrixTotaleTTc,
-                    FournisseurId = model.FournisseurId,
-                    GrossisteId = model.GrossisteId,
-                    Id = model.Id
-
-
-                };
-                var bon = await bonDeReceptionFournisseurService.GetById(model.Id, "DetailsReceptions");
+                    return BadRequest(" model object is null");
+                }
+                var bon = await repository.BonDeReceptionFournisseurRepo.FindByCondition(x => x.Id == id, includeProperties: "DetailsReceptions.Produit,Fournisseur.Grossiste.Stocks,FactureFournisseur.DetailsFactures").FirstOrDefaultAsync();
+                if (bon is null)
+                {
+                    return NotFound();
+                }
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Invalid model object");
+                }
+                mapper.Map(model, bon);
                 var list = new List<DetailsReceptionFournisseur>();
-                Decimal? sumTTc = 0;
-                Decimal? sumHt = 0;
-                var Grossiste = await grossisteService.GetById(model.GrossisteId);
+               
                 foreach (var item in model.DetailsBonReceptionModels)
                 {
-                    var produit = await produitService.GetById(item.IdProduit);
+                    var produit = await repository.ProduitRepo.FindById(item.IdProduit);
                     var detail = new DetailsReceptionFournisseur
                     {
                         IdProduit = produit.Id,
-                        IdBonReception = model.Id,
+                        IdBonReception = id,
                         MontantHt = produit.PriceHt * item.Quantite,
                         MontantTTc = produit.PriceTTc * item.Quantite,
                         Quantite = item.Quantite,
                         Produit = produit
                     };
-                    sumTTc += detail.MontantTTc;
-                    sumHt += detail.MontantHt;
+                    bon.PrixTotaleTTc += detail.MontantTTc;
+                    bon.PrixTotaleHt += detail.MontantHt;
                     list.Add(detail);
                 }
-                entity.FournisseurId = model.FournisseurId;
-                entity.DetailsReceptions = list;
-                entity.PrixTotaleTTc = sumTTc;
-                entity.PrixTotaleHt = sumHt;
-                await bonDeReceptionFournisseurService.Update(entity.Id, entity);
+                bon.DetailsReceptions = list;
+
+                repository.BonDeReceptionFournisseurRepo.Update(bon);
+                await repository.SaveAsync();
+
+
+                return NoContent();
             }
-            else
+            catch (Exception e)
             {
-                return Ok(StatusCode(200));
-
+                return StatusCode(500, "Internal server error");
             }
 
-            return Ok(StatusCode(400));
+
 
         }
         [Authorize]
         [HttpPut("Confirmer")]
-        public async Task<IActionResult> ConfirmerBonReception([FromForm] int id)
+        public async Task<IActionResult> ConfirmerBonReception([FromQuery] int id)
         {
-            var bon = await bonDeReceptionFournisseurService.GetById(id, "DetailsReceptions");
-            bon.Confirmed = true;
-            await bonDeReceptionFournisseurService.Update(bon.Id, bon);
-            var facture = new FactureFournisseur
+            if (id <= 0)
             {
-                Date = bon.Date,
-                BonDeReceptionFournisseur = bon,
-                PrixTotaleHt = bon.PrixTotaleHt,
-                PrixTotaleTTc = bon.PrixTotaleTTc,
-
-
-
-            };
-            if (ModelState.IsValid)
+                return Ok(StatusCode(400));
+            }
+            else
             {
-                try
+                var bon = await repository.BonDeReceptionFournisseurRepo.FindByCondition(x => x.Id == id, includeProperties: "DetailsReceptions.Produit,Fournisseur.Grossiste.Stocks,FactureFournisseur.DetailsFactures").FirstOrDefaultAsync();
+                bon.Confirmed = true;
+                repository.BonDeReceptionFournisseurRepo.Update(bon);
+                var facture = new FactureFournisseur
                 {
-                    await factureFournisseurService.Ajout(facture);
-                }
-
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                    return Ok(StatusCode(400));
-                }
-                var list = new List<DetailsFactureFournisseur>();
+                    Date = bon.Date,
+                    BonDeReceptionFournisseur = bon,
+                    PrixTotaleHt = bon.PrixTotaleHt,
+                    PrixTotaleTTc = bon.PrixTotaleTTc,
+                };
+                facture.DetailsFactures = new Collection<DetailsFactureFournisseur>();
                 foreach (var item in bon.DetailsReceptions)
                 {
                     var detailsFacture = new DetailsFactureFournisseur
                     {
-                        FactureFournisseur = facture,
-                        IdFacutre = facture.Id,
                         MontantHt = item.MontantHt,
                         MontantTTc = item.MontantTTc,
                         IdProduit = item.IdProduit,
                         Quantite = item.Quantite
                     };
-                    var stockProduit = new StockProduit
+                    facture.DetailsFactures.Add(detailsFacture);
+                    var stockProduit = repository.StockProduitRepo.FindByCondition(x => x.IdProduit == item.IdProduit && x.IdStock == bon.Grossiste.Stocks.FirstOrDefault().Id).FirstOrDefault();
+                    if (stockProduit == null)
                     {
-                        IdProduit = item.IdProduit,
-                        IdStock = bon.Grossiste.Stocks.FirstOrDefault().Id,
-                        PrixTotaleHt = item.MontantHt,
-                        PrixTotaleTTc = item.MontantTTc,
-                        Quantite = item.Quantite,
-                        Produit = item.Produit,
-                        Stock = bon.Grossiste.Stocks.FirstOrDefault()
+                        var entity = new StockProduit
+                        {
+                            IdProduit = item.IdProduit,
+                            IdStock = bon.Grossiste.Stocks.FirstOrDefault().Id,
+                            PrixTotaleHt = item.MontantHt,
+                            PrixTotaleTTc = item.MontantTTc,
+                            Quantite = item.Quantite,
+                            Produit = item.Produit,
+                            Stock = bon.Grossiste.Stocks.FirstOrDefault()
 
-                    };
-                    list.Add(detailsFacture);
-                    try
-                    {
-                        await stockProduitService.Augmenter(item.Quantite, stockProduit.IdProduit, stockProduit.IdStock, stockProduit);
+                        };
+                        repository.StockProduitRepo.Create(entity);
                     }
-                    catch (Exception e)
+                    else
                     {
-                        return Ok(StatusCode(400));
+                        stockProduit.Quantite += item.Quantite;
+                        repository.StockProduitRepo.Update(stockProduit);
                     }
-
                 }
+
+                repository.FactureFournisseurRepo.Create(facture);
                 try
                 {
-                    facture.DetailsFactures = list;
-                    await factureFournisseurService.Update(facture.Id, facture);
+                    await repository.SaveAsync();
                 }
                 catch (Exception e)
                 {
-                    return Ok(StatusCode(400));
+                    return Ok(StatusCode(400, e.Message)); ;
                 }
-
                 return Ok(StatusCode(200));
+
             }
 
-            return Ok(StatusCode(400));
+
         }
         [Authorize]
         [HttpGet("Get/{id}")]
         public async Task<ActionResult<BonDeReceptionFournisseur>> Details(int id)
         {
-            var Entity = await bonDeReceptionFournisseurService.GetById(id, "");
+            var Entity = await repository.BonDeReceptionFournisseurRepo.FindByCondition
+                (x =>
+                x.Id == id, includeProperties: "DetailsReceptions.Produit,Fournisseur.Grossiste,FactureFournisseur.DetailsFactures"
+                ).FirstOrDefaultAsync();
 
             if (Entity == null)
             {
@@ -279,6 +240,7 @@ namespace WebApi.Controllers
             }
 
             return Entity;
+
 
         }
     }

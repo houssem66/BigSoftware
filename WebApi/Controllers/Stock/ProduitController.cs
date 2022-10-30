@@ -1,8 +1,8 @@
-﻿using Data.Entities;
+﻿using AutoMapper;
+using Data.Entities;
 using Data.Models;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Services.Interfaces;
+using Repository.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,39 +13,34 @@ namespace WebApi.Controllers
     [ApiController]
     public class ProduitController : ControllerBase
     {
-        private readonly IProduitService produitService;
-        private readonly IWebHostEnvironment hostingEnvironment;
+        private readonly IRepositoryWrapper repository;
+        private readonly IMapper mapper;
 
-        public ProduitController(IProduitService _ProduitService, IWebHostEnvironment hostingEnvironment)
+        public ProduitController(IRepositoryWrapper repository, IMapper mapper)
         {
-            produitService = _ProduitService;
-            this.hostingEnvironment = hostingEnvironment;
+            this.repository = repository;
+            this.mapper = mapper;
         }
         //[Authorize]
         [HttpPost("Post")]
-        public async Task<ActionResult<Produit>> PostClient([FromBody] ProduitModel model)
+        public async Task<ActionResult<Produit>> PostProduit(string id, [FromBody] ProduitModel model)
         {
-
+            var entity = mapper.Map<Produit>(model);
+            entity.IdGrossiste = id;
             if (ModelState.IsValid)
             {
 
 
 
-                var y = ((decimal)model.TVA);
-                var x = model.PriceHT * (y / 100) + model.PriceHT;
-                var entity = new Produit
-                {
-                    Barcode = model.Barcode,
-                    Category = model.Category,
-                    Description = model.Description,
-                    TVA = model.TVA,
-                    PriceHt = model.PriceHT,
-                    PriceTTc = x,
-                    ProductName = model.ProductName,
-                    UnitOfMeasure = model.UnitOfMeasure,
+                //var y = ((decimal)model.TVA);
+                //var x = model.PriceHt * (y / 100) + model.PriceHt;
+                //entity.PriceTTc = x;
 
-                };
-                try { await produitService.Ajout(entity); }
+                try
+                {
+                    repository.ProduitRepo.Create(entity);
+                    await repository.SaveAsync();
+                }
 
                 catch (Exception ex)
                 {
@@ -66,12 +61,15 @@ namespace WebApi.Controllers
         }
 
         //[Authorize]
-        [HttpGet]
-        public IQueryable GetAll()
+        [HttpGet()]
+        public IQueryable GetAll([FromQuery] QueryParametersString parameters)
         {
+            if (parameters.include == null)
+            {
+                parameters.include = "";
+            }
 
-
-            return (produitService.GetAll().AsQueryable());
+            return (repository.ProduitRepo.FindByCondition(x => x.IdGrossiste == parameters.Id, includeProperties: parameters.include));
         }
         //[Authorize]
         // DELETE: api/Applications/5
@@ -80,7 +78,9 @@ namespace WebApi.Controllers
         {
             try
             {
-                await produitService.Delete(id);
+                var entity = await repository.ProduitRepo.FindById(id);
+                repository.ProduitRepo.Delete(entity);
+                await repository.SaveAsync();
 
                 return Ok(StatusCode(200));
             }
@@ -93,7 +93,7 @@ namespace WebApi.Controllers
         }
         //[Authorize]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update(int id, ProduitModel model)
+        public async Task<IActionResult> Update(int id, [FromBody] ProduitModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -102,23 +102,13 @@ namespace WebApi.Controllers
                              .ToString();
                 return BadRequest(model.Message);
             }
-            var y = ((decimal)model.TVA);
-            var x = model.PriceHT * (y / 100) + model.PriceHT;
-            var entity = new Produit
-            {
-                Barcode = model.Barcode,
-                Category = model.Category,
-                Description = model.Description,
-                TVA = model.TVA,
-                PriceHt = model.PriceHT,
-                PriceTTc = x,
-                ProductName = model.ProductName,
-                UnitOfMeasure = model.UnitOfMeasure,
-            };
+            var entity = await repository.ProduitRepo.FindById(id);
+
             try
             {
-                await produitService.Update(model.Id, entity);
-
+                mapper.Map(model, entity);
+                repository.ProduitRepo.Update(entity);
+                await repository.SaveAsync();
                 return Ok(StatusCode(200));
             }
             catch (Exception)
@@ -127,10 +117,10 @@ namespace WebApi.Controllers
             }
         }
         //[Authorize]
-        [HttpGet("Get/{id}")]
-        public async Task<ActionResult<Produit>> Details(int id)
+        [HttpGet("Get")]
+        public async Task<ActionResult<Produit>> Details([FromQuery] QueryParametersInt parameters)
         {
-            var Entity = await produitService.GetById(id);
+            var Entity = await repository.ProduitRepo.FindById(parameters.Id);
 
             if (Entity == null)
             {

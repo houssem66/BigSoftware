@@ -7,13 +7,8 @@ using System.Threading.Tasks;
 
 namespace Repository.Interfaces
 {
-    public interface IBonDeReceptionFournisseurRepo
+    public interface IBonDeReceptionFournisseurRepo : IRepositoryBase<BonDeReceptionFournisseur>
     {
-        public Task PutAsync(int id, BonDeReceptionFournisseur entity);
-        public Task<BonDeReceptionFournisseur> GetById(int id,string include);
-        public Task<BonDeReceptionFournisseur> GetById(int id);
-        public IEnumerable<BonDeReceptionFournisseur> GetAll(string id);
-
-
+    
     }
 }

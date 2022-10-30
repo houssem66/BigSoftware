@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 namespace Repository.Implementation
 {
-    public class BonLivraisonClientRepo: IBonLivraisonClientRepo
+    public class BonLivraisonClientRepo: RepositoryBase<BonLivraisonClient>, IBonLivraisonClientRepo
     {
-        public BonLivraisonClientRepo(BigSoftContext _bigSoftContext, IGenericRepository<BonLivraisonClient> _genericRepository)
+        public BonLivraisonClientRepo(BigSoftContext _bigSoftContext) : base(_bigSoftContext)
         {
 
         }

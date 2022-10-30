@@ -84,3 +84,8 @@ C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\Microsoft.Exte
 C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\System.IO.Pipelines.dll
 C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\Microsoft.DotNet.PlatformAbstractions.dll
 C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\AutoMapper.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\Microsoft.Extensions.Options.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\System.Runtime.CompilerServices.Unsafe.dll

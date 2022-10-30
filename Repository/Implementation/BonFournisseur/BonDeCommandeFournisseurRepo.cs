@@ -9,15 +9,13 @@ using System.Threading.Tasks;
 
 namespace Repository.Implementation
 {
-    public class BonDeCommandeFournisseurRepo:IBonDeCommandeFournisseurRepo
+    public class BonDeCommandeFournisseurRepo: RepositoryBase<BonDeCommandeFournisseur>, IBonDeCommandeFournisseurRepo
     {
-        private readonly BigSoftContext bigSoftContext;
-        private readonly IGenericRepository<BonDeCommandeFournisseur> genericRepository;
-
-        public BonDeCommandeFournisseurRepo(BigSoftContext _bigSoftContext, IGenericRepository<BonDeCommandeFournisseur> _genericRepository)
+        public BonDeCommandeFournisseurRepo(BigSoftContext bigSoftContext):base(bigSoftContext)
         {
-            bigSoftContext = _bigSoftContext;
-            genericRepository = _genericRepository;
+                
         }
+
+       
     }
 }
