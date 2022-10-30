@@ -9,11 +9,8 @@ using System.Threading.Tasks;
 
 namespace Repository.Implementation
 {
-    public class DevisClientRepo:IDevisClientRepo
+    public class DevisClientRepo: RepositoryBase<Devis>, IDevisClientRepo
     {
-        public DevisClientRepo(BigSoftContext _bigSoftContext, IGenericRepository<Devis> _genericRepository)
-        {
-
-        }
+        public DevisClientRepo(BigSoftContext _bigSoftContext) : base(_bigSoftContext) { }
     }
 }

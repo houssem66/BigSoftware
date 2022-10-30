@@ -1,6 +1,7 @@
 ﻿using Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Interfaces;
+using Repository.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,11 +12,11 @@ namespace WebApi.Controllers
     [ApiController]
     public class StockController : ControllerBase
     {
-        private readonly IStockService stockService;
+        private readonly IRepositoryWrapper repository;
 
-        public StockController(IStockService _StockService)
+        public StockController(IRepositoryWrapper repository)
         {
-            stockService = _StockService;
+            this.repository = repository;
         }
         //[Authorize]
         [HttpPost("Post")]
@@ -24,7 +25,9 @@ namespace WebApi.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    try { await stockService.Ajout(model); }
+                    try { repository.StockRepo.Create(model);
+                      await  repository.SaveAsync();
+                    }
 
                     catch (Exception ex)
                     {
@@ -40,14 +43,8 @@ namespace WebApi.Controllers
             return Ok(StatusCode(400));
         }
 
-        //[Authorize]
-        [HttpGet]
-        public IQueryable GetAll()
-        {
-
-
-            return (stockService.GetAll().AsQueryable());
-        }
+     
+      
         //[Authorize]
         // DELETE: api/Applications/5
         [HttpDelete("{id}")]
@@ -55,7 +52,9 @@ namespace WebApi.Controllers
         {
             try
             {
-                await stockService.Delete(id);
+                var entity = await repository.StockRepo.FindById(id);
+                repository.StockRepo.Delete(entity);
+                await repository.SaveAsync();
 
                 return Ok(StatusCode(200));
             }
@@ -68,35 +67,38 @@ namespace WebApi.Controllers
         }
         //[Authorize]
         [HttpPut("Update")]
-        public async Task<IActionResult> Update( int id, [FromBody] Stock entity)
+        public async Task<IActionResult> Update(int id, [FromBody] Stock entity)
         {
-            try
+            if (entity != null)
             {
-                await stockService.Update(entity.Id, entity);
+                try
+                {
 
-                return Ok(StatusCode(200));
+                    repository.StockRepo.Update(entity);
+                    await repository.SaveAsync();
+
+                    return Ok(StatusCode(200));
+
+
+                }
+                catch (Exception e)
+                {
+
+                    return Ok(StatusCode(400));
+                }
             }
-            catch (Exception e)
-            {
-
-                return Ok(StatusCode(400));
-            }
-
-
+            return Ok(StatusCode(400));
         }
-        //[Authorize]
-        [HttpGet("Get/{id}")]
-        public async Task<ActionResult<Stock>> Details(int id)
+        [Authorize]
+        [HttpGet()]
+        public IQueryable GetAll([FromQuery] QueryParametersString parameters)
         {
-            var Entity = await stockService.GetById(id);
-
-            if (Entity == null)
+            if (parameters.include == null)
             {
-                return NotFound();
+                parameters.include = "";
             }
 
-            return Entity;
-
+            return (repository.StockRepo.FindByCondition(x => x.Grossiste.Id == parameters.Id, includeProperties: parameters.include));
         }
     }
 }

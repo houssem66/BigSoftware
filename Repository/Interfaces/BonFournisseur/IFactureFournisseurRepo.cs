@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 
 namespace Repository.Interfaces
 {
-    public interface IFactureFournisseurRepo
+    public interface IFactureFournisseurRepo : IRepositoryBase<FactureFournisseur>
     {
-        public Task PutAsync(int id, FactureFournisseur entity);
-        public Task<FactureFournisseur> GetById(int id);
-        public IEnumerable<FactureFournisseur>  GetAll(string id);
+        
 
     }
 }

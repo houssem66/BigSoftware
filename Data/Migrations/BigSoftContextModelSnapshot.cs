@@ -66,10 +66,10 @@ namespace Data.Migrations
                     b.Property<string>("GrossisteId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("PrixTotaleHt")
+                    b.Property<decimal?>("PrixTotaleHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("PrixTotaleTTc")
+                    b.Property<decimal?>("PrixTotaleTTc")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -207,11 +207,8 @@ namespace Data.Migrations
                     b.Property<int>("Gouvernorats")
                         .HasColumnType("int");
 
-                    b.Property<string>("GrossisteId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("IdGrossiste")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Identifiant_fiscale")
                         .HasMaxLength(9)
@@ -240,7 +237,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GrossisteId");
+                    b.HasIndex("IdGrossiste");
 
                     b.ToTable("Clients");
                 });
@@ -301,13 +298,13 @@ namespace Data.Migrations
                     b.Property<int>("IdBonCommande")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("MontantHt")
+                    b.Property<decimal?>("MontantHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("MontantTTc")
+                    b.Property<decimal?>("MontantTTc")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("Quantite")
+                    b.Property<decimal?>("Quantite")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("IdProduit", "IdBonCommande");
@@ -623,6 +620,9 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IdGrossiste")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal?>("PriceHt")
                         .HasColumnType("decimal(18,2)");
 
@@ -640,6 +640,8 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdGrossiste");
 
                     b.ToTable("Produits");
                 });
@@ -1050,8 +1052,9 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.Client", b =>
                 {
                     b.HasOne("Data.Entities.Grossiste", "Grossiste")
-                        .WithMany()
-                        .HasForeignKey("GrossisteId");
+                        .WithMany("Clients")
+                        .HasForeignKey("IdGrossiste")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Grossiste");
                 });
@@ -1272,6 +1275,15 @@ namespace Data.Migrations
                     b.Navigation("Grossiste");
                 });
 
+            modelBuilder.Entity("Data.Entities.Produit", b =>
+                {
+                    b.HasOne("Data.Entities.Grossiste", "Grossiste")
+                        .WithMany()
+                        .HasForeignKey("IdGrossiste");
+
+                    b.Navigation("Grossiste");
+                });
+
             modelBuilder.Entity("Data.Entities.Stock", b =>
                 {
                     b.HasOne("Data.Entities.Grossiste", "Grossiste")
@@ -1442,6 +1454,8 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.Grossiste", b =>
                 {
+                    b.Navigation("Clients");
+
                     b.Navigation("Documents");
 
                     b.Navigation("Stocks");

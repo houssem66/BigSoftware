@@ -15,6 +15,7 @@ namespace Data.Configurations
         {
             builder.Property(e => e.PriceTTc).HasColumnType("decimal(18,2)");
             builder.Property(e => e.PriceHt).HasColumnType("decimal(18,2)");
+            builder.HasOne(x => x.Grossiste).WithMany().HasForeignKey(x => x.IdGrossiste);
         }
     }
 }

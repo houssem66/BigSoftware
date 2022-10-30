@@ -20,6 +20,8 @@ namespace Data.Entities
         public decimal? PriceHt { get; set; }
         public Category Category { get; set; }
         public UnitOfMeasure UnitOfMeasure { get; set; }
+        public string IdGrossiste { get; set; }
+        public virtual Grossiste Grossiste { get; set; }
         public virtual ICollection<StockProduit> StockProduit { get; set; }
         //Details Fournisseur
         public virtual ICollection<DetailsCommandeFournisseur> DetailsCommandes { get; set; }

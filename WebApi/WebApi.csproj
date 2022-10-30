@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="Mailjet.Api" Version="3.0.0" />
     <PackageReference Include="MailKit" Version="3.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Core" Version="2.2.0" />
@@ -34,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Profiles\" />
     <Folder Include="wwwroot\Files\" />
   </ItemGroup>
 

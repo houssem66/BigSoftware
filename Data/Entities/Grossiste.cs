@@ -31,6 +31,7 @@ namespace Data.Entities
         public string EmailPersAContact { get; set; }
         public virtual IList<Document> Documents { get; set; }
         public virtual IList<Stock> Stocks { get; set; }
+        public virtual ICollection<Client> Clients { get; set; }
 
 
     }
