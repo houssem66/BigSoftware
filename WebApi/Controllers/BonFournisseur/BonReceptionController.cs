@@ -84,14 +84,33 @@ namespace WebApi.Controllers
         {
             try
             {
-                var bon = await repository.BonDeReceptionFournisseurRepo.FindById(id);
+                var bon = await repository.BonDeReceptionFournisseurRepo.FindByCondition(x => x.Id == id, includeProperties: "DetailsReceptions.Produit,Fournisseur.Grossiste.Stocks").FirstOrDefaultAsync();
                 if (bon == null)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    repository.BonDeReceptionFournisseurRepo.Delete(bon);
+                    if (bon.Confirmed)
+                    {
+                        foreach (var item in bon.DetailsReceptions)
+                        {
+                            var stockProduit = await repository.StockProduitRepo.FindByCondition(x => x.IdProduit == item.IdProduit && x.Stock.Grossiste.Id == bon.GrossisteId).FirstOrDefaultAsync();
+                            if (stockProduit != null)
+                            {
+                                stockProduit.Quantite -= item.Quantite;
+                                stockProduit.PrixTotaleTTc -= item.MontantTTc;
+                                stockProduit.PrixTotaleHt -= item.MontantHt;
+                            }
+                            repository.StockProduitRepo.Update(stockProduit);
+                        }
+                        repository.BonDeReceptionFournisseurRepo.Delete(bon);
+                    }
+                    else
+                    {
+                        repository.BonDeReceptionFournisseurRepo.Delete(bon);
+                    }
+
                     await repository.SaveAsync();
                 }
                 return NoContent();
@@ -123,7 +142,7 @@ namespace WebApi.Controllers
                 }
                 mapper.Map(model, bon);
                 var list = new List<DetailsReceptionFournisseur>();
-               
+
                 foreach (var item in model.DetailsBonReceptionModels)
                 {
                     var produit = await repository.ProduitRepo.FindById(item.IdProduit);
@@ -205,6 +224,8 @@ namespace WebApi.Controllers
                     }
                     else
                     {
+                        stockProduit.PrixTotaleTTc += item.MontantTTc;
+                        stockProduit.PrixTotaleHt += item.MontantHt;
                         stockProduit.Quantite += item.Quantite;
                         repository.StockProduitRepo.Update(stockProduit);
                     }

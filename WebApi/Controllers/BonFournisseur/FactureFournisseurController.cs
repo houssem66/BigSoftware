@@ -1,12 +1,8 @@
-﻿using Data.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Repository.Interfaces;
-using Services.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace WebApi.Controllers.BonFournisseur
@@ -24,13 +20,13 @@ namespace WebApi.Controllers.BonFournisseur
 
         [Authorize]
         [HttpGet()]
-            public IActionResult GetAll([FromQuery] QueryParametersString parameters)
+        public IActionResult GetAll([FromQuery] QueryParametersString parameters)
         {
             if (parameters.include == null)
             {
                 parameters.include = "";
             }
-            if (parameters.Id is null )
+            if (parameters.Id is null)
             {
                 return StatusCode(500, "Empty");
 
@@ -43,14 +39,28 @@ namespace WebApi.Controllers.BonFournisseur
         {
             try
             {
-                var bon = await repository.BonDeReceptionFournisseurRepo.FindById(id);
-                if (bon == null)
+                var facture = await repository.FactureFournisseurRepo.FindByCondition(x => x.Id == id, includeProperties: "DetailsFactures.Produit,BonDeReceptionFournisseur").FirstOrDefaultAsync();
+                if (facture == null)
                 {
                     return NotFound();
                 }
                 else
                 {
-                    repository.BonDeReceptionFournisseurRepo.Delete(bon);
+                    foreach (var item in facture.DetailsFactures)
+                    {
+                        var stockProduit = await repository.StockProduitRepo.FindByCondition(x => x.IdProduit == item.IdProduit && x.Stock.Grossiste.Id == facture.BonDeReceptionFournisseur.GrossisteId).FirstOrDefaultAsync();
+                        if (stockProduit != null)
+                        {
+                            stockProduit.Quantite -= item.Quantite;
+                            stockProduit.PrixTotaleTTc -= item.MontantTTc;
+                            stockProduit.PrixTotaleHt -= item.MontantHt;
+                        }
+                        repository.StockProduitRepo.Update(stockProduit);
+                    }
+                    var bon = await repository.BonDeReceptionFournisseurRepo.FindById(facture.BonDeReceptionId);
+                    bon.Confirmed = false;
+                    repository.BonDeReceptionFournisseurRepo.Update(bon);
+                    repository.FactureFournisseurRepo.Delete(facture);
                     await repository.SaveAsync();
                 }
                 return NoContent();
@@ -59,7 +69,6 @@ namespace WebApi.Controllers.BonFournisseur
             {
                 return StatusCode(500, e.Message);
             }
-
         }
     }
 }
