@@ -27,7 +27,7 @@ namespace WebApi.Controllers.BonFournisseur
         }
         //  [Authorize]
         [HttpPost("Post")]
-        public async Task<ActionResult<BonDeReceptionFournisseur>> PostBonDeReceptionFournisseur([FromBody] BonCommandeFModel model)
+        public async Task<ActionResult<BonDeCommandeFournisseur>> PostBonDeCommandeFournisseur([FromBody] BonCommandeFModel model)
         {
             {
 

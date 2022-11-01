@@ -14,7 +14,9 @@ namespace Data.Configurations
         public void Configure(EntityTypeBuilder<BonLivraisonClient> builder)
         {
             builder.Property(x => x.PrixTotaleHt).HasColumnType("decimal(18,2)");
-            builder.Property(x => x.PrixTotaleTTc).HasColumnType("decimal(18,2)"); builder.HasOne(b => b.Grossiste).WithMany().HasForeignKey(f => f.GrossisteId);
+            builder.Property(x => x.PrixTotaleTTc).HasColumnType("decimal(18,2)");
+            builder.HasOne(b => b.Grossiste).WithMany().HasForeignKey(f => f.GrossisteId);
+            builder.HasOne(b => b.FactureClient).WithOne(x => x.BonLivraisonClient).HasForeignKey<FactureClient>(x => x.BonLivraisonId);
 
         }
     }

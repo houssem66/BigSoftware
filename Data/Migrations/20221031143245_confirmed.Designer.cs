@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(BigSoftContext))]
-    [Migration("20221030163057_produit")]
-    partial class produit
+    [Migration("20221031143245_confirmed")]
+    partial class confirmed
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,10 +37,10 @@ namespace Data.Migrations
                     b.Property<string>("GrossisteId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("PrixTotaleHt")
+                    b.Property<decimal?>("PrixTotaleHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("PrixTotaleTTc")
+                    b.Property<decimal?>("PrixTotaleTTc")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -127,16 +127,19 @@ namespace Data.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Confirmed")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("GrossisteId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("PrixTotaleHt")
+                    b.Property<decimal?>("PrixTotaleHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("PrixTotaleTTc")
+                    b.Property<decimal?>("PrixTotaleTTc")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -164,10 +167,10 @@ namespace Data.Migrations
                     b.Property<string>("GrossisteId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("PrixTotaleHt")
+                    b.Property<decimal?>("PrixTotaleHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("PrixTotaleTTc")
+                    b.Property<decimal?>("PrixTotaleTTc")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -252,13 +255,13 @@ namespace Data.Migrations
                     b.Property<int>("IdBonSortie")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("MontantHt")
+                    b.Property<decimal?>("MontantHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("MontantTTc")
+                    b.Property<decimal?>("MontantTTc")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("Quantite")
+                    b.Property<decimal?>("Quantite")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("IdProduit", "IdBonSortie");
@@ -276,13 +279,13 @@ namespace Data.Migrations
                     b.Property<int>("IdCommande")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("MontantHt")
+                    b.Property<decimal?>("MontantHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("MontantTTc")
+                    b.Property<decimal?>("MontantTTc")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("Quantite")
+                    b.Property<decimal?>("Quantite")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("IdProduit", "IdCommande");
@@ -324,13 +327,13 @@ namespace Data.Migrations
                     b.Property<int>("IdDevis")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("MontantHt")
+                    b.Property<decimal?>("MontantHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("MontantTTc")
+                    b.Property<decimal?>("MontantTTc")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("Quantite")
+                    b.Property<decimal?>("Quantite")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("IdProduit", "IdDevis");
@@ -348,13 +351,13 @@ namespace Data.Migrations
                     b.Property<int>("IdFactureClient")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("MontantHt")
+                    b.Property<decimal?>("MontantHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("MontantTTc")
+                    b.Property<decimal?>("MontantTTc")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("Quantite")
+                    b.Property<decimal?>("Quantite")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("IdProduit", "IdFactureClient");
@@ -396,13 +399,13 @@ namespace Data.Migrations
                     b.Property<int>("IdBonLivraison")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("MontantHt")
+                    b.Property<decimal?>("MontantHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("MontantTTc")
+                    b.Property<decimal?>("MontantTTc")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("Quantite")
+                    b.Property<decimal?>("Quantite")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("IdProduit", "IdBonLivraison");
@@ -452,10 +455,10 @@ namespace Data.Migrations
                     b.Property<string>("GrossisteId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("PrixTotaleHt")
+                    b.Property<decimal?>("PrixTotaleHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("PrixTotaleTTc")
+                    b.Property<decimal?>("PrixTotaleTTc")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -494,26 +497,22 @@ namespace Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("ClientId")
+                    b.Property<int>("BonLivraisonId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("GrossisteId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("PrixTotaleHt")
+                    b.Property<decimal?>("PrixTotaleHt")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal>("PrixTotaleTTc")
+                    b.Property<decimal?>("PrixTotaleTTc")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("GrossisteId");
+                    b.HasIndex("BonLivraisonId")
+                        .IsUnique();
 
                     b.ToTable("FactureClients");
                 });
@@ -1242,19 +1241,13 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.FactureClient", b =>
                 {
-                    b.HasOne("Data.Entities.Client", "Client")
-                        .WithMany("FactureClients")
-                        .HasForeignKey("ClientId")
+                    b.HasOne("Data.Entities.BonLivraisonClient", "BonLivraisonClient")
+                        .WithOne("FactureClient")
+                        .HasForeignKey("Data.Entities.FactureClient", "BonLivraisonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Data.Entities.Grossiste", "Grossiste")
-                        .WithMany()
-                        .HasForeignKey("GrossisteId");
-
-                    b.Navigation("Client");
-
-                    b.Navigation("Grossiste");
+                    b.Navigation("BonLivraisonClient");
                 });
 
             modelBuilder.Entity("Data.Entities.FactureFournisseur", b =>
@@ -1386,6 +1379,8 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.BonLivraisonClient", b =>
                 {
                     b.Navigation("DetailsLivraisons");
+
+                    b.Navigation("FactureClient");
                 });
 
             modelBuilder.Entity("Data.Entities.BonSortie", b =>
@@ -1402,8 +1397,6 @@ namespace Data.Migrations
                     b.Navigation("BonSorties");
 
                     b.Navigation("Devis");
-
-                    b.Navigation("FactureClients");
                 });
 
             modelBuilder.Entity("Data.Entities.Devis", b =>

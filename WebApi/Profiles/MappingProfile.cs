@@ -14,6 +14,20 @@ namespace Data.Profiles
             CreateMap<DetailsBonReceptionModel, DetailsReceptionFournisseur>();
             CreateMap<BonReceptionModel, BonDeReceptionFournisseur>();
             CreateMap<ProduitModel, Produit>();
+            //mapping models for Client Models
+            CreateMap<BonLivraisonViewModel, BonLivraisonClient>();
+            CreateMap<DetailsLivraisonClientViewModel, DetailsLivraisonClient>();
+
+            CreateMap<BonCommandeCModel, BonCommandeClient>();
+            CreateMap<DetailsCommandeClient, DetailsCommandeClient>();
+
+            CreateMap<BonSortieViewModel, BonSortie>();
+            CreateMap<DetailsBonSortieModel, DetailsBonSortie>();
+
+            CreateMap<DevisViewModel, Devis>();
+            CreateMap<DetailsDevisModel, DetailsDevis>();
+
+
 
         }
     }

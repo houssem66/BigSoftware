@@ -2,13 +2,11 @@ C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\net5.0\Services.dep
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\net5.0\Services.runtimeconfig.json
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\net5.0\Services.runtimeconfig.dev.json
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\net5.0\Services.dll
-C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\net5.0\ref\Services.dll
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\net5.0\Services.pdb
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\net5.0\Data.dll
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\net5.0\Repository.dll
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\net5.0\Data.pdb
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\bin\Debug\net5.0\Repository.pdb
-C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\net5.0\Services.csprojAssemblyReference.cache
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\net5.0\Services.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\net5.0\Services.AssemblyInfoInputs.cache
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\net5.0\Services.AssemblyInfo.cs
@@ -18,3 +16,5 @@ C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\net5.0\Services.dll
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\net5.0\ref\Services.dll
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\net5.0\Services.pdb
 C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\net5.0\Services.genruntimeconfig.cache
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\net5.0\Services.csproj.AssemblyReference.cache
+C:\Users\Mega-PC\source\repos\BigSoftware\Services\obj\Debug\net5.0\refint\Services.dll
