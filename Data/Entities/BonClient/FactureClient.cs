@@ -12,13 +12,12 @@ namespace Data.Entities
     {
         [Key]
         public int Id { get; set; }
-        public int ClientId { get; set; }
-        public virtual Client Client { get; set; }
-        public Decimal PrixTotaleTTc { get; set; }
-        public Decimal PrixTotaleHt { get; set; }
+       
+        public Decimal? PrixTotaleTTc { get; set; }
+        public Decimal? PrixTotaleHt { get; set; }
         public DateTime Date { get; set; }
-        public virtual Grossiste Grossiste { get; set; }
-        public string GrossisteId { get; set; }
+        public  int BonLivraisonId { get; set; }
+        public virtual BonLivraisonClient BonLivraisonClient { get; set; }
         public virtual ICollection<DetailsFactureClient> DetailsFactures { get; set; }
     }
 }

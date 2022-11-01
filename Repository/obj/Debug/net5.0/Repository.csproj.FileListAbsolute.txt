@@ -1,5 +1,4 @@
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\bin\Debug\net5.0\Data.dll
-C:\Users\Mega-PC\source\repos\BigSoftware\Repository\obj\Debug\net5.0\Repository.csprojAssemblyReference.cache
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\obj\Debug\net5.0\Repository.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\obj\Debug\net5.0\Repository.AssemblyInfoInputs.cache
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\obj\Debug\net5.0\Repository.AssemblyInfo.cs
@@ -7,7 +6,6 @@ C:\Users\Mega-PC\source\repos\BigSoftware\Repository\bin\Debug\net5.0\Repository
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\bin\Debug\net5.0\Repository.runtimeconfig.json
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\bin\Debug\net5.0\Repository.runtimeconfig.dev.json
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\bin\Debug\net5.0\Repository.dll
-C:\Users\Mega-PC\source\repos\BigSoftware\Repository\bin\Debug\net5.0\ref\Repository.dll
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\bin\Debug\net5.0\Repository.pdb
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\bin\Debug\net5.0\Data.pdb
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\obj\Debug\net5.0\Repository.csproj.CoreCompileInputs.cache
@@ -16,3 +14,5 @@ C:\Users\Mega-PC\source\repos\BigSoftware\Repository\obj\Debug\net5.0\Repository
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\obj\Debug\net5.0\ref\Repository.dll
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\obj\Debug\net5.0\Repository.pdb
 C:\Users\Mega-PC\source\repos\BigSoftware\Repository\obj\Debug\net5.0\Repository.genruntimeconfig.cache
+C:\Users\Mega-PC\source\repos\BigSoftware\Repository\obj\Debug\net5.0\Repository.csproj.AssemblyReference.cache
+C:\Users\Mega-PC\source\repos\BigSoftware\Repository\obj\Debug\net5.0\refint\Repository.dll
