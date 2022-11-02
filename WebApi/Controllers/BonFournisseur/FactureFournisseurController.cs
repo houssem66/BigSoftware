@@ -20,7 +20,7 @@ namespace WebApi.Controllers.BonFournisseur
 
         [Authorize]
         [HttpGet()]
-        public IActionResult GetAll([FromQuery] QueryParametersString parameters)
+        public IActionResult GetAll([FromQuery] QueryParametersProduit parameters)
         {
             if (parameters.include == null)
             {
@@ -29,6 +29,11 @@ namespace WebApi.Controllers.BonFournisseur
             if (parameters.Id is null)
             {
                 return StatusCode(500, "Empty");
+
+            }
+            if (parameters.IdP > 0)
+            {
+                return Ok(repository.FactureFournisseurRepo.FindByCondition(x => x.BonDeReceptionFournisseur.GrossisteId == parameters.Id&&x.Id==parameters.IdP, includeProperties: parameters.include));
 
             }
             return Ok(repository.FactureFournisseurRepo.FindByCondition(x => x.BonDeReceptionFournisseur.GrossisteId == parameters.Id, includeProperties: parameters.include));

@@ -22,7 +22,7 @@ namespace WebApi.Controllers.BonClient
         }
         [Authorize]
         [HttpGet()]
-        public IActionResult GetAll([FromQuery] QueryParametersString parameters)
+        public IActionResult GetAll([FromQuery] QueryParametersProduit parameters)
         {
             if (parameters.include == null)
             {
@@ -32,6 +32,10 @@ namespace WebApi.Controllers.BonClient
             {
                 return StatusCode(500, "Empty");
 
+            }
+            if (parameters.IdP > 0)
+            {
+                return Ok(repository.FactureClientRepo.FindByCondition(x => x.BonLivraisonClient.GrossisteId == parameters.Id&&x.Id==parameters.IdP, includeProperties: parameters.include));
             }
             return Ok(repository.FactureClientRepo.FindByCondition(x => x.BonLivraisonClient.GrossisteId == parameters.Id, includeProperties: parameters.include));
 
@@ -73,4 +77,9 @@ namespace WebApi.Controllers.BonClient
             }
         }
     }
+}
+public class QueryParametersFac
+{
+    public string Id { get; set; }
+    public string include { get; set; }
 }
