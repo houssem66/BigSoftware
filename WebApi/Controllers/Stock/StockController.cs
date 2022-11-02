@@ -1,6 +1,7 @@
 ﻿using Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Repository.Interfaces;
 using System;
 using System.Linq;
@@ -91,14 +92,54 @@ namespace WebApi.Controllers
         }
         [Authorize]
         [HttpGet()]
-        public IQueryable GetAll([FromQuery] QueryParametersString parameters)
+        public async Task<ActionResult<Stock>> GetAll([FromQuery] QueryParametersString parameters)
         {
-            if (parameters.include == null)
+            
+            try
             {
-                parameters.include = "";
+                if (parameters.include == null)
+                {
+                    parameters.include = "";
+                }
+                var entity = await repository.StockRepo.FindByCondition(x => x.Grossiste.Id == parameters.Id, includeProperties: parameters.include).FirstOrDefaultAsync();
+                if (entity == null)
+                {
+                    return NotFound();
+                }
+                return entity;
+
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
             }
 
-            return (repository.StockRepo.FindByCondition(x => x.Grossiste.Id == parameters.Id, includeProperties: parameters.include));
+           
+
+        }
+        [Authorize]
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<Stock>> Details(int id)
+        {
+            var Entity = await repository.StockRepo.FindByCondition
+                (x =>
+                x.Id == id, includeProperties: "StockProduit.Produit,Grossiste"
+                ).FirstOrDefaultAsync();
+
+            if (Entity == null)
+            {
+                return NotFound();
+            }
+
+            return Entity;
+
+
         }
     }
+}
+public class QueryParametersStock
+{
+    public string IdG { get; set; }
+    public string IdP { get; set; }
+    public string include { get; set; }
 }

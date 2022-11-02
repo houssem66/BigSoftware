@@ -1,6 +1,8 @@
 using Data;
 using Data.Entities;
 using Data.Settings;
+using DinkToPdf;
+using DinkToPdf.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -34,11 +36,12 @@ namespace WebApi
         string policyName = "_myAllowSpecificOrigins";
         public IConfiguration Configuration { get; }
         // This method gets called by the runtime. Use this method to add services to the container.
-      
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
+        {//pdf conveter
+            services.AddSingleton(typeof(IConverter), new SynchronizedConverter(new PdfTools()));
             services.AddCors();
             services.ConfigureRepositoryWrapper();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -70,7 +73,7 @@ namespace WebApi
             services.AddScoped(typeof(IGrossiteRepo), typeof(GrossisteRepo));
 
             //Sprint2
-          
+
 
 
             #endregion
@@ -79,12 +82,13 @@ namespace WebApi
             #region Services Addtransient
             //sprint1
             services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IProduitService, ProduitService>();
             services.AddTransient<IGrossisteService, GrossisteService>();
             services.AddTransient<IFournisseurService, FournisseurService>();
             services.AddTransient<IMailingService, MailingService>();
 
             //sprint2
-        
+
             #endregion
             #region JWT Config 
             //Identity Config

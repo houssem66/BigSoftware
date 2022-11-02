@@ -11,6 +11,12 @@ namespace Data.Entities
 {
     public class Devis
     {
+        public Devis()
+        {
+
+        }
+
+         
         [Key]
         public int Id { get; set; }
         public int ClientId { get; set; }

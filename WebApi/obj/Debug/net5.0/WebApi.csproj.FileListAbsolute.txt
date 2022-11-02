@@ -88,3 +88,7 @@ C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\Microsoft.Exte
 C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\System.Runtime.CompilerServices.Unsafe.dll
 C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\obj\Debug\net5.0\WebApi.csproj.AssemblyReference.cache
 C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\obj\Debug\net5.0\refint\WebApi.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\DinkToPdf.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\libwkhtmltox.dll
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\libwkhtmltox.dylib
+C:\Users\Mega-PC\source\repos\BigSoftware\WebApi\bin\Debug\net5.0\libwkhtmltox.so
