@@ -2,7 +2,9 @@
 using Data.Entities;
 using Data.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Repository.Interfaces;
+using Services.Interfaces;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,11 +17,13 @@ namespace WebApi.Controllers
     {
         private readonly IRepositoryWrapper repository;
         private readonly IMapper mapper;
+        private readonly IProduitService produitService;
 
-        public ProduitController(IRepositoryWrapper repository, IMapper mapper)
+        public ProduitController(IRepositoryWrapper repository, IMapper mapper, IProduitService produitService)
         {
             this.repository = repository;
             this.mapper = mapper;
+            this.produitService = produitService;
         }
         //[Authorize]
         [HttpPost("Post")]
@@ -62,14 +66,18 @@ namespace WebApi.Controllers
 
         //[Authorize]
         [HttpGet()]
-        public IQueryable GetAll([FromQuery] QueryParametersString parameters)
+        public IQueryable GetAll([FromQuery] QueryParametersProduit parameters)
         {
             if (parameters.include == null)
             {
                 parameters.include = "";
             }
+            if (parameters.IdP > 0)
+            {
+                return (repository.ProduitRepo.FindByCondition(x => x.IdGrossiste == parameters.Id && x.Id == parameters.IdP, includeProperties: parameters.include));
+            }
 
-            return (repository.ProduitRepo.FindByCondition(x => x.IdGrossiste == parameters.Id, includeProperties: parameters.include));
+            return (repository.ProduitRepo.FindByCondition(x => x.IdGrossiste == parameters.Id , includeProperties: parameters.include));
         }
         //[Authorize]
         // DELETE: api/Applications/5
@@ -102,11 +110,18 @@ namespace WebApi.Controllers
                              .ToString();
                 return BadRequest(model.Message);
             }
-            var entity = await repository.ProduitRepo.FindById(id);
+            var entity = await repository.ProduitRepo.FindByCondition(x => x.Id == id,
+                includeProperties:
+                "StockProduit,DetailsCommandes,DetailsFactures,DetailsReceptions,DetailsFactureClients,DetailsCommandeClients,DetailsLivraisons,DetailsDevis,DetailsBonSorties")
+
+                .FirstOrDefaultAsync();
 
             try
             {
+                // entity.DetailsDevis.().FirstOrDefault().MontantTTc=entity.PriceTTc * entity.DetailsDevis.FirstOrDefault().Quantite;
+            
                 mapper.Map(model, entity);
+                await produitService.UpdateAll(entity);
                 repository.ProduitRepo.Update(entity);
                 await repository.SaveAsync();
                 return Ok(StatusCode(200));
@@ -131,4 +146,10 @@ namespace WebApi.Controllers
 
         }
     }
+}
+public class QueryParametersProduit
+{
+    public string Id { get; set; }
+    public int IdP { get; set; }
+    public string include { get; set; }
 }
