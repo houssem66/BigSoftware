@@ -10,6 +10,5 @@ namespace Repository.Interfaces
     public interface IProduitRepo : IRepositoryBase<Produit>
     {
     
-        Task<IList<Produit>> UpdateAll(int id,Produit entity);
     }
 }
