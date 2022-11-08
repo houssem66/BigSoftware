@@ -25,7 +25,8 @@ namespace Data.Entities
         [Key]
         public int Id { get; set; }
         [NotMapped]
-        public Decimal? Sum => StockProduit?.Sum(x => x.PrixTotaleTTc) ?? context.Set<StockProduit>().Where(x => x.IdStock == Id).Sum(x => x.PrixTotaleTTc) ?? 0;
+        public Decimal? Sum => StockProduit?.Sum(x => x.PrixTotaleTTc) 
+            ?? context.Set<StockProduit>().Where(x => x.IdStock == Id).Sum(x => x.PrixTotaleTTc) ?? 0;
         public virtual ICollection<StockProduit> StockProduit { get; set; }
         public virtual  Grossiste Grossiste { get; set; }
     }

@@ -1,11 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Data.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Repository.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace WebApi.Controllers.BonClient
@@ -22,22 +20,31 @@ namespace WebApi.Controllers.BonClient
         }
         [Authorize]
         [HttpGet()]
-        public IActionResult GetAll([FromQuery] QueryParametersProduit parameters)
+        public IActionResult GetAll([FromQuery] QueryParametersString parameters)
         {
             if (parameters.include == null)
             {
                 parameters.include = "";
             }
-            if (parameters.Id is null)
+            if (!parameters.include.ToLower().Contains("BonLivraisonClient".ToLower()))
+            {
+                parameters.include = "BonLivraisonClient";
+            }
+
+            if (parameters.Id == null)
             {
                 return StatusCode(500, "Empty");
 
             }
-            if (parameters.IdP > 0)
+            if (parameters.iDC < 1)
             {
-                return Ok(repository.FactureClientRepo.FindByCondition(x => x.BonLivraisonClient.GrossisteId == parameters.Id&&x.Id==parameters.IdP, includeProperties: parameters.include));
+                return Ok(repository.FactureClientRepo.FindByCondition(x => x.BonLivraisonClient.GrossisteId == parameters.Id, includeProperties: parameters.include));
+
             }
-            return Ok(repository.FactureClientRepo.FindByCondition(x => x.BonLivraisonClient.GrossisteId == parameters.Id, includeProperties: parameters.include));
+
+            return Ok(repository.FactureClientRepo.FindByCondition
+                (x => x.BonLivraisonClient.GrossisteId == parameters.Id
+            && x.BonLivraisonClient.ClientId == parameters.iDC, includeProperties: parameters.include));
 
         }
         [HttpDelete("{id}")]
@@ -75,6 +82,24 @@ namespace WebApi.Controllers.BonClient
             {
                 return StatusCode(500, e.Message);
             }
+        }
+        [Authorize]
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<FactureClient>> Details(int id)
+        {
+            var Entity = await repository.FactureClientRepo.FindByCondition
+                (x =>
+                x.Id == id, includeProperties: "BonLivraisonClient.Grossiste,BonLivraisonClient.Client,DetailsFactures,BonLivraisonClient.DetailsLivraisons.Produit"
+                ).FirstOrDefaultAsync();
+
+            if (Entity == null)
+            {
+                return NotFound();
+            }
+
+            return Entity;
+
+
         }
     }
 }

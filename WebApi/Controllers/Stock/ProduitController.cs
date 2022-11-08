@@ -74,10 +74,10 @@ namespace WebApi.Controllers
             }
             if (parameters.IdP > 0)
             {
-                return (repository.ProduitRepo.FindByCondition(x => x.IdGrossiste == parameters.Id && x.Id == parameters.IdP, includeProperties: parameters.include));
+                return (repository.ProduitRepo.FindByCondition(x => x.IdGrossiste == parameters.Id && x.Id == parameters.IdP, includeProperties: parameters.include).AsSplitQuery());
             }
 
-            return (repository.ProduitRepo.FindByCondition(x => x.IdGrossiste == parameters.Id , includeProperties: parameters.include));
+            return (repository.ProduitRepo.FindByCondition(x => x.IdGrossiste == parameters.Id , includeProperties: parameters.include).AsSplitQuery());
         }
         //[Authorize]
         // DELETE: api/Applications/5

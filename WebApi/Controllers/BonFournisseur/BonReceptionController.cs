@@ -45,8 +45,8 @@ namespace WebApi.Controllers
                         Quantite = item.Quantite,
                     };
                     entity.DetailsReceptions.Add(detail);
-                    entity.PrixTotaleHt += detail.MontantHt;
-                    entity.PrixTotaleTTc += detail.MontantTTc;
+                    //entity.PrixTotaleHt += detail.MontantHt;
+                    //entity.PrixTotaleTTc += detail.MontantTTc;
                 }
                 try
                 {
@@ -71,11 +71,18 @@ namespace WebApi.Controllers
             {
                 parameters.include = "";
             }
-            if (parameters.Id != null)
+
+            if (parameters.Id == null)
+            {
+                return StatusCode(500, "Empty");
+
+            }
+            if (parameters.iDC < 1)
             {
                 return Ok(repository.BonDeReceptionFournisseurRepo.FindByCondition(x => x.GrossisteId == parameters.Id, includeProperties: parameters.include));
+
             }
-            return StatusCode(500, "Empty");
+            return Ok(repository.BonDeReceptionFournisseurRepo.FindByCondition(x => x.GrossisteId == parameters.Id && x.FournisseurId == parameters.iDC, includeProperties: parameters.include));
         }
         [Authorize]
         // DELETE: api/Applications/5
@@ -84,7 +91,7 @@ namespace WebApi.Controllers
         {
             try
             {
-                var bon = await repository.BonDeReceptionFournisseurRepo.FindByCondition(x => x.Id == id, includeProperties: "DetailsReceptions.Produit,Fournisseur.Grossiste.Stocks").FirstOrDefaultAsync();
+                var bon = await repository.BonDeReceptionFournisseurRepo.FindByCondition(x => x.Id == id, includeProperties: "DetailsReceptions.Produit,Fournisseur.Grossiste,FactureFournisseur.DetailsFactures").FirstOrDefaultAsync();
                 if (bon == null)
                 {
                     return NotFound();
@@ -131,7 +138,7 @@ namespace WebApi.Controllers
                 {
                     return BadRequest(" model object is null");
                 }
-                var bon = await repository.BonDeReceptionFournisseurRepo.FindByCondition(x => x.Id == id, includeProperties: "DetailsReceptions.Produit,Fournisseur.Grossiste.Stocks,FactureFournisseur.DetailsFactures").FirstOrDefaultAsync();
+                var bon = await repository.BonDeReceptionFournisseurRepo.FindByCondition(x => x.Id == id, includeProperties: "DetailsReceptions").FirstOrDefaultAsync();
                 if (bon is null)
                 {
                     return NotFound();
@@ -142,24 +149,43 @@ namespace WebApi.Controllers
                 }
                 mapper.Map(model, bon);
                 var list = new List<DetailsReceptionFournisseur>();
-
-                foreach (var item in model.DetailsBonReceptionModels)
+                var listjoin = model.DetailsBonReceptionModels.GroupJoin(
+                                            bon.DetailsReceptions,
+                                            detail => detail.IdProduit,
+                                            bon => bon.IdProduit,
+                                            (detail, y) => new
+                                            {
+                                                idProduit = detail.IdProduit,
+                                                idBon = detail.IdBonReception,
+                                                quantite = detail?.Quantite,
+                                                produit = repository.ProduitRepo.GetById(detail.IdProduit),
+                                                details = y,
+                                            }
+                                            );
+                var listExept = bon.DetailsReceptions.Select(x => x.IdProduit).Except(model.DetailsBonReceptionModels.Select(x => x.IdProduit)).ToList();
+                bon.DetailsReceptions = bon.DetailsReceptions.Where(x => (!listExept.Contains(x.IdProduit))).ToList();
+                foreach (var item in listjoin)
                 {
-                    var produit = await repository.ProduitRepo.FindById(item.IdProduit);
-                    var detail = new DetailsReceptionFournisseur
+                    if (item.details.ToList().Count < 1)
                     {
-                        IdProduit = produit.Id,
-                        IdBonReception = id,
-                        MontantHt = produit.PriceHt * item.Quantite,
-                        MontantTTc = produit.PriceTTc * item.Quantite,
-                        Quantite = item.Quantite,
-                        Produit = produit
-                    };
-                    bon.PrixTotaleTTc += detail.MontantTTc;
-                    bon.PrixTotaleHt += detail.MontantHt;
-                    list.Add(detail);
+                        var detail = new DetailsReceptionFournisseur
+                        {
+                            IdProduit = item.idProduit,
+                            IdBonReception = id,
+                            MontantHt = item.produit.PriceHt * item.quantite,
+                            MontantTTc = item.produit.PriceTTc * item.quantite,
+                            Quantite = item.quantite,
+                        };
+                        bon.DetailsReceptions.Add(detail);
+                    }
+                    else
+                    {
+                        item.details.FirstOrDefault().MontantHt = item.produit.PriceHt * item.quantite;
+                        item.details.FirstOrDefault().MontantTTc = item.produit.PriceTTc * item.quantite;
+                        item.details.FirstOrDefault().Quantite = item.quantite;
+                    }
+
                 }
-                bon.DetailsReceptions = list;
 
                 repository.BonDeReceptionFournisseurRepo.Update(bon);
                 await repository.SaveAsync();
@@ -192,8 +218,7 @@ namespace WebApi.Controllers
                 {
                     Date = bon.Date,
                     BonDeReceptionFournisseur = bon,
-                    PrixTotaleHt = bon.PrixTotaleHt,
-                    PrixTotaleTTc = bon.PrixTotaleTTc,
+                   
                 };
                 facture.DetailsFactures = new Collection<DetailsFactureFournisseur>();
                 foreach (var item in bon.DetailsReceptions)
