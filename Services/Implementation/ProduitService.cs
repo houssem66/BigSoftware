@@ -88,84 +88,69 @@ namespace Services.Implementation
                     #region fournisseur Conditions
                     if (item.bonReception != oldBonReception && item.bonReception != null)
                     {
-                        item.bonReception.BonDeRéception.PrixTotaleHt -= item.bonReception.MontantHt;
-                        item.bonReception.BonDeRéception.PrixTotaleTTc -= item.bonReception.MontantTTc;
+                       
                         item.bonReception.MontantHt = item.bonReception.Quantite * produit.PriceHt;
                         item.bonReception.MontantTTc = item.bonReception.Quantite * produit.PriceTTc;
-                        item.bonReception.BonDeRéception.PrixTotaleHt += item.bonReception.MontantHt;
-                        item.bonReception.BonDeRéception.PrixTotaleTTc += item.bonReception.MontantTTc;
+                        
                         oldBonReception = item.bonReception;
                     }
                     if (item.BonCommandeFournisseur != null && item.BonCommandeFournisseur != oldBonCommandeFournisseur)
                     {
-                        item.BonCommandeFournisseur.BonDeCommandeFournisseur.PrixTotaleHt -= item.BonCommandeFournisseur.MontantHt;
-                        item.BonCommandeFournisseur.BonDeCommandeFournisseur.PrixTotaleTTc -= item.BonCommandeFournisseur.MontantTTc;
+                       
                         item.BonCommandeFournisseur.MontantHt = item.BonCommandeFournisseur.Quantite * produit.PriceHt;
                         item.BonCommandeFournisseur.MontantTTc = item.BonCommandeFournisseur.Quantite * produit.PriceTTc;
-                        item.BonCommandeFournisseur.BonDeCommandeFournisseur.PrixTotaleHt += item.BonCommandeFournisseur.MontantHt;
-                        item.BonCommandeFournisseur.BonDeCommandeFournisseur.PrixTotaleTTc += item.BonCommandeFournisseur.MontantTTc;
+                      
                         oldBonCommandeFournisseur = item.BonCommandeFournisseur;
                     }
                     if (item.factureFournisseur != null && oldFactureFournisseur != item.factureFournisseur)
                     {
-                        item.factureFournisseur.FactureFournisseur.PrixTotaleHt -= item.factureFournisseur.MontantHt;
-                        item.factureFournisseur.FactureFournisseur.PrixTotaleTTc -= item.factureFournisseur.MontantTTc;
+                        
                         item.factureFournisseur.MontantTTc = item.factureFournisseur.Quantite * produit.PriceTTc;
                         item.factureFournisseur.MontantHt = item.factureFournisseur.Quantite * produit.PriceHt;
-                        item.factureFournisseur.FactureFournisseur.PrixTotaleHt += item.factureFournisseur.MontantHt;
-                        item.factureFournisseur.FactureFournisseur.PrixTotaleTTc += item.factureFournisseur.MontantTTc;
+                      
                         oldFactureFournisseur = item.factureFournisseur;
                     }
                     #endregion
                     #region client conditions
                     if (item.bonCommandeClient != oldBonCommandeClient && item.bonCommandeClient != null)
                     {
-                        item.bonCommandeClient.CommandeClient.PrixTotaleHt -= item.bonCommandeClient.MontantHt;
-                        item.bonCommandeClient.CommandeClient.PrixTotaleTTc -= item.bonCommandeClient.MontantTTc;
+                        //item.bonCommandeClient.CommandeClient.PrixTotaleHt -= item.bonCommandeClient.MontantHt;
+                     //   item.bonCommandeClient.CommandeClient.PrixTotaleTTc -= item.bonCommandeClient.MontantTTc;
                         item.bonCommandeClient.MontantHt = item.bonCommandeClient.Quantite * produit.PriceHt;
                         item.bonCommandeClient.MontantTTc = item.bonCommandeClient.Quantite * produit.PriceTTc;
-                        item.bonCommandeClient.CommandeClient.PrixTotaleHt += item.bonCommandeClient.MontantHt;
-                        item.bonCommandeClient.CommandeClient.PrixTotaleTTc += item.bonCommandeClient.MontantTTc;
+                       // item.bonCommandeClient.CommandeClient.PrixTotaleHt += item.bonCommandeClient.MontantHt;
+                        //item.bonCommandeClient.CommandeClient.PrixTotaleTTc += item.bonCommandeClient.MontantTTc;
                         oldBonCommandeClient = item.bonCommandeClient;
                     }
                     if (item.bonLivraisonClient != oldBonLivraisonClient && item.bonLivraisonClient != null)
                     {
-                        item.bonLivraisonClient.BonLivraison.PrixTotaleTTc -= item.bonLivraisonClient.MontantTTc;
-                        item.bonLivraisonClient.BonLivraison.PrixTotaleHt -= item.bonLivraisonClient.MontantHt;
+                        
                         item.bonLivraisonClient.MontantHt = item.bonLivraisonClient.Quantite * produit.PriceHt;
                         item.bonLivraisonClient.MontantTTc = item.bonLivraisonClient.Quantite * produit.PriceTTc;
-                        item.bonLivraisonClient.BonLivraison.PrixTotaleTTc += item.bonLivraisonClient.MontantTTc;
-                        item.bonLivraisonClient.BonLivraison.PrixTotaleHt += item.bonLivraisonClient.MontantHt;
+                        
                         oldBonLivraisonClient = item.bonLivraisonClient;
                     }
                     if (item.bonSortie != oldBonSortie && item.bonSortie != null)
                     {
-                        item.bonSortie.BonSortie.PrixTotaleHt -= item.bonSortie.MontantHt;
-                        item.bonSortie.BonSortie.PrixTotaleTTc -= item.bonSortie.MontantTTc;
+                       
                         item.bonSortie.MontantHt = item.bonSortie.Quantite * produit.PriceHt;
                         item.bonSortie.MontantTTc = item.bonSortie.Quantite * produit.PriceTTc;
-                        item.bonSortie.BonSortie.PrixTotaleHt += item.bonSortie.MontantHt;
-                        item.bonSortie.BonSortie.PrixTotaleTTc += item.bonSortie.MontantTTc;
+                     
                         oldBonSortie = item.bonSortie;
                     }
                     if (item.devis != oldDevis && item.devis != null)
                     {
-                        item.devis.Devis.PrixTotaleHt -= item.devis.MontantHt;
-                        item.devis.Devis.PrixTotaleTTc -= item.devis.MontantTTc;
+                       
                         item.devis.MontantHt = item.devis.Quantite * produit.PriceHt;
                         item.devis.MontantTTc = item.devis.Quantite * produit.PriceTTc;
-                        item.devis.Devis.PrixTotaleHt += item.devis.MontantHt;
-                        item.devis.Devis.PrixTotaleTTc += item.devis.MontantTTc;
-                        oldDevis = item.devis;
+                       
                     }
                     if (item.factureClient != oldFactureClient && item.factureClient != null)
                     {
-                        item.factureClient.FactureClient.PrixTotaleHt -= item.factureClient.MontantHt;
-                        item.factureClient.FactureClient.PrixTotaleTTc -= item.factureClient.MontantTTc;
+                       
                         item.factureClient.MontantHt = item.factureClient.Quantite * produit.PriceHt;
                         item.factureClient.MontantTTc = item.factureClient.Quantite * produit.PriceTTc;
-                        item.factureClient.FactureClient.PrixTotaleHt += item.factureClient.MontantHt;
-                        item.factureClient.FactureClient.PrixTotaleTTc += item.factureClient.MontantTTc;
+                       
                         oldFactureClient = item.factureClient;
                     }
                     #endregion

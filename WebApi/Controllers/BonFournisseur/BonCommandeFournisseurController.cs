@@ -66,8 +66,8 @@ namespace WebApi.Controllers.BonFournisseur
                         list.Add(detail);
                     }
                     entity.DetailsCommandes = list;
-                    entity.PrixTotaleTTc = sumTTc;
-                    entity.PrixTotaleHt = sumHt;
+                    //entity.PrixTotaleTTc = sumTTc;
+                    //entity.PrixTotaleHt = sumHt;
                     try
                     {
                         repository.BonDeCommandeFournisseurRepo.Update(entity);
@@ -84,11 +84,10 @@ namespace WebApi.Controllers.BonFournisseur
             return Ok(StatusCode(400));
         }
         [Authorize]
-        [HttpGet("Get")]
-        public async Task<ActionResult<BonDeCommandeFournisseur>> Details([FromQuery] QueryParametersInt parameters)
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<BonDeCommandeFournisseur>> Details(int id)
         {
-            var list = repository.BonDeCommandeFournisseurRepo.FindAll();
-            var Entity = await repository.BonDeCommandeFournisseurRepo.FindByCondition(x => x.Id == parameters.Id).FirstOrDefaultAsync();
+            var Entity = await repository.BonDeCommandeFournisseurRepo.FindByCondition(x => x.Id == id, includeProperties: "Fournisseur.Grossiste,DetailsCommandes.Produit").FirstOrDefaultAsync();
 
             if (Entity == null)
             {
@@ -121,80 +120,85 @@ namespace WebApi.Controllers.BonFournisseur
         [HttpPut("Update")]
         public async Task<IActionResult> Update(int id, [FromBody] BonCommandeFModel model)
         {
-            if (ModelState.IsValid)
-            {
-                try
+           try
+            {if (model == null)
                 {
-                    var entity = await repository.BonDeCommandeFournisseurRepo.FindByCondition(x => x.Id == id, includeProperties: "DetailsCommandes").FirstOrDefaultAsync();
-                    if (entity == null)
+                    return BadRequest("Model is empty");
+                }
+            if (!ModelState.IsValid)
+                {   return BadRequest("Invalid model object"); }
+                var bon =await repository.BonDeCommandeFournisseurRepo.FindByCondition(x => x.Id == id, includeProperties: "DetailsCommandes").FirstOrDefaultAsync();
+                if (bon == null) { return NotFound(); }
+                mapper.Map(model, bon);
+                var listjoin = model.DetailsBonCommandes.GroupJoin(
+                             bon.DetailsCommandes,
+                             detail => detail.IdProduit,
+                             bon => bon.IdProduit,
+                             (detail, y) => new
+                             {
+                                 idProduit = detail.IdProduit,
+                                 idBon = detail.IdBonReception,
+                                 quantite = detail?.Quantite,
+                                 produit = repository.ProduitRepo.GetById(detail.IdProduit),
+                                 details = y,
+                             }
+                             );
+                var listExept = bon.DetailsCommandes.Select(x => x.IdProduit).Except(model.DetailsBonCommandes.Select(x => x.IdProduit)).ToList();
+                bon.DetailsCommandes = bon.DetailsCommandes.Where(x => (!listExept.Contains(x.IdProduit))).ToList();
+                foreach (var item in listjoin)
+                {
+                    if (item.details.ToList().Count < 1)
                     {
-                        return Ok(StatusCode(400));
-
+                        var detail = new DetailsCommandeFournisseur
+                        {
+                            IdProduit = item.idProduit,
+                            IdBonCommande = id,
+                            MontantHt = item.produit.PriceHt * item.quantite,
+                            MontantTTc = item.produit.PriceTTc * item.quantite,
+                            Quantite = item.quantite,
+                        };
+                        bon.DetailsCommandes.Add(detail);
                     }
                     else
                     {
-                        try
-                        {
-                            mapper.Map(model, entity);
-                            var list = new List<DetailsCommandeFournisseur>();
-                            Decimal? sumTTc = 0;
-                            Decimal? sumHt = 0;
-                            foreach (var item in model.DetailsBonCommandes)
-                            {
-                                var produit = await repository.ProduitRepo.FindById(item.IdProduit);
-                                var detail = new DetailsCommandeFournisseur
-                                {
-                                    IdProduit = produit.Id,
-                                    IdBonCommande = id,
-                                    MontantHt = produit.PriceHt * item.Quantite,
-                                    MontantTTc = produit.PriceTTc * item.Quantite,
-                                    Quantite = item.Quantite,
-                                    Produit = produit
-                                };
-                                sumTTc += detail.MontantTTc;
-                                sumHt += detail.MontantHt;
-                                list.Add(detail);
-                            }
-                            entity.DetailsCommandes = list;
-                            entity.PrixTotaleTTc = sumTTc;
-                            entity.PrixTotaleHt = sumHt;
-                            repository.BonDeCommandeFournisseurRepo.Update(entity);
-                            await repository.SaveAsync();
-                            return Ok(StatusCode(200));
-                        }
-                        catch (Exception e)
-                        {
-                            throw new NotImplementedException();
-                        }
-
+                        item.details.FirstOrDefault().MontantHt = item.produit.PriceHt * item.quantite;
+                        item.details.FirstOrDefault().MontantTTc = item.produit.PriceTTc * item.quantite;
+                        item.details.FirstOrDefault().Quantite = item.quantite;
                     }
-                }
-                catch (Exception e)
-                {
-                    return Ok(StatusCode(400));
+
                 }
 
-          
-
+                repository.BonDeCommandeFournisseurRepo.Update(bon);
+                await repository.SaveAsync();
+                return NoContent();
             }
-            else
+            catch (Exception e)
             {
-                return Ok(StatusCode(400));
-
+                return StatusCode(500, "Internal server error with Exception:" + e.Message);
             }
 
 
         }
         [Authorize]
         [HttpGet()]
-        public IQueryable GetAll([FromQuery] QueryParametersString parameters)
+        public IActionResult GetAll([FromQuery] QueryParametersString parameters)
         {
             if (parameters.include == null)
             {
                 parameters.include = "";
             }
 
-            return (repository.BonDeCommandeFournisseurRepo.FindByCondition(x => x.GrossisteId == parameters.Id, includeProperties: parameters.include));
+            if (parameters.Id == null)
+            {
+                return StatusCode(500, "Empty");
+
+            }
+            if (parameters.iDC < 1)
+            {
+                return Ok(repository.BonDeCommandeFournisseurRepo.FindByCondition(x => x.GrossisteId == parameters.Id, includeProperties: parameters.include));
+
+            }
+            return Ok(repository.BonDeCommandeFournisseurRepo.FindByCondition(x => x.GrossisteId == parameters.Id && x.FournisseurId == parameters.iDC, includeProperties: parameters.include));
         }
     }
 }

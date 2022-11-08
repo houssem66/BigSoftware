@@ -29,22 +29,22 @@ namespace Repository.Implementation
 
             if (filter != null)
             {
-                query = query.Where(filter);
+                query = query.Where(filter).AsSplitQuery();
             }
 
             foreach (var includeProperty in includeProperties.Split
                 (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
             {
-                query = query.Include(includeProperty);
+                query = query.Include(includeProperty).AsSplitQuery();
             }
 
             if (orderBy != null)
             {
-                return orderBy(query);
+                return orderBy(query).AsSplitQuery();
             }
             else
             {
-                return query;
+                return query.AsSplitQuery();
             }
         }
 
@@ -76,6 +76,11 @@ namespace Repository.Implementation
         public async Task<T> FindById(string id)
         {
             return await dbSet.FindAsync(id);
+        }
+
+        public T GetById(int id)
+        {
+            return  dbSet.Find(id);
         }
     }
 }

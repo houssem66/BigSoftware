@@ -35,12 +35,6 @@ namespace Data.Migrations
                     b.Property<string>("GrossisteId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal?>("PrixTotaleHt")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("PrixTotaleTTc")
-                        .HasColumnType("decimal(18,2)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
@@ -65,12 +59,6 @@ namespace Data.Migrations
 
                     b.Property<string>("GrossisteId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal?>("PrixTotaleHt")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("PrixTotaleTTc")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -100,12 +88,6 @@ namespace Data.Migrations
                     b.Property<string>("GrossisteId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal?>("PrixTotaleHt")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("PrixTotaleTTc")
-                        .HasColumnType("decimal(18,2)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FournisseurId");
@@ -134,12 +116,6 @@ namespace Data.Migrations
                     b.Property<string>("GrossisteId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal?>("PrixTotaleHt")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("PrixTotaleTTc")
-                        .HasColumnType("decimal(18,2)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
@@ -164,12 +140,6 @@ namespace Data.Migrations
 
                     b.Property<string>("GrossisteId")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal?>("PrixTotaleHt")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("PrixTotaleTTc")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -453,12 +423,6 @@ namespace Data.Migrations
                     b.Property<string>("GrossisteId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal?>("PrixTotaleHt")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("PrixTotaleTTc")
-                        .HasColumnType("decimal(18,2)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
@@ -501,12 +465,6 @@ namespace Data.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal?>("PrixTotaleHt")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("PrixTotaleTTc")
-                        .HasColumnType("decimal(18,2)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("BonLivraisonId")
@@ -527,12 +485,6 @@ namespace Data.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("PrixTotaleHt")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("PrixTotaleTTc")
-                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 

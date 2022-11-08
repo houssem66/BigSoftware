@@ -14,6 +14,7 @@ namespace Repository.Interfaces
             string includeProperties = "");
         void Create(T entity);
         Task<T> FindById(int id);
+        T GetById(int id);
         Task<T> FindById(string id);
         void Update(T entity);
         void Delete(T entity);

@@ -145,5 +145,6 @@ public class QueryParametersInt
 {
     public string Id { get; set; }
     public string include { get; set; }
+    public int iDC { get; set; }
 }
 

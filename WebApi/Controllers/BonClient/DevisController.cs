@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace WebApi.Controllers.BonClient
 {
@@ -42,8 +43,7 @@ namespace WebApi.Controllers.BonClient
 
                 var entity = mapper.Map<Devis>(model);
                 entity.DetailsDevis = new Collection<DetailsDevis>();
-                entity.PrixTotaleTTc = 0;
-                entity.PrixTotaleHt = 0;
+               
                 foreach (var item in model.DetailsDevisModels)
                 {
 
@@ -59,8 +59,7 @@ namespace WebApi.Controllers.BonClient
                             Quantite = item.Quantite,
                         };
                         entity.DetailsDevis.Add(detail);
-                        entity.PrixTotaleHt += produit.PriceHt * item.Quantite;
-                        entity.PrixTotaleTTc += produit.PriceTTc * item.Quantite;
+                       
                     }
                 }
 
@@ -107,11 +106,18 @@ namespace WebApi.Controllers.BonClient
             {
                 parameters.include = "";
             }
-            if (parameters.Id != null)
+
+            if (parameters.Id == null)
+            {
+                return StatusCode(500, "Empty");
+
+            }
+            if (parameters.iDC < 1)
             {
                 return Ok(repository.DevisClientRepo.FindByCondition(x => x.GrossisteId == parameters.Id, includeProperties: parameters.include));
+
             }
-            return StatusCode(500, "Empty");
+            return Ok(repository.DevisClientRepo.FindByCondition(x => x.GrossisteId == parameters.Id && x.ClientId == parameters.iDC, includeProperties: parameters.include));
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -146,7 +152,7 @@ namespace WebApi.Controllers.BonClient
                 }
                 var bon = await repository.DevisClientRepo
                     .FindByCondition(x => x.Id == id,
-                   includeProperties: "DetailsDevis.Produit,Client,Grossiste").FirstOrDefaultAsync();
+                   includeProperties: "DetailsDevis").FirstOrDefaultAsync();
                 if (bon is null)
                 {
                     return NotFound();
@@ -156,26 +162,43 @@ namespace WebApi.Controllers.BonClient
                     return BadRequest("Invalid model object");
                 }
                 mapper.Map(model, bon);
-                var list = new List<DetailsDevis>();
-                bon.PrixTotaleTTc = 0;
-                bon.PrixTotaleHt = 0;
-                foreach (var item in model.DetailsDevisModels)
+                var listjoin = model.DetailsDevisModels.GroupJoin(
+                              bon.DetailsDevis,
+                              detail => detail.IdProduit,
+                              bon => bon.IdProduit,
+                              (detail, y) => new
+                              {
+                                  idProduit = detail.IdProduit,
+                                  idBon = detail.IdDevis,
+                                  quantite = detail?.Quantite,
+                                  produit = repository.ProduitRepo.GetById(detail.IdProduit),
+                                  details = y,
+                              }
+                              );
+                var listExept = bon.DetailsDevis.Select(x => x.IdProduit).Except(model.DetailsDevisModels.Select(x => x.IdProduit)).ToList();
+                bon.DetailsDevis = bon.DetailsDevis.Where(x => (!listExept.Contains(x.IdProduit))).ToList();
+                foreach (var item in listjoin)
                 {
-                    var produit = await repository.ProduitRepo.FindById(item.IdProduit);
-                    var detail = new DetailsDevis
+                    if (item.details.ToList().Count < 1)
                     {
-                        IdProduit = produit.Id,
-                        IdDevis = id,
-                        MontantHt = produit.PriceHt * item.Quantite,
-                        MontantTTc = produit.PriceTTc * item.Quantite,
-                        Quantite = item.Quantite,
-                        Produit = produit
-                    };
-                    bon.PrixTotaleTTc += detail.MontantTTc;
-                    bon.PrixTotaleHt += detail.MontantHt;
-                    list.Add(detail);
+                        var detail = new DetailsDevis
+                        {
+                            IdProduit = item.idProduit,
+                            IdDevis = id,
+                            MontantHt = item.produit.PriceHt * item.quantite,
+                            MontantTTc = item.produit.PriceTTc * item.quantite,
+                            Quantite = item.quantite,
+                        };
+                        bon.DetailsDevis.Add(detail);
+                    }
+                    else
+                    {
+                        item.details.FirstOrDefault().MontantHt = item.produit.PriceHt * item.quantite;
+                        item.details.FirstOrDefault().MontantTTc = item.produit.PriceTTc * item.quantite;
+                        item.details.FirstOrDefault().Quantite = item.quantite;
+                    }
+
                 }
-                bon.DetailsDevis = list;
 
                 repository.DevisClientRepo.Update(bon);
                 await repository.SaveAsync();

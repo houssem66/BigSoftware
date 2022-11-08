@@ -4,6 +4,7 @@ using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using Repository.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -42,8 +43,7 @@ namespace WebApi.Controllers
 
                 var entity = mapper.Map<BonLivraisonClient>(model);
                 entity.DetailsLivraisons = new Collection<DetailsLivraisonClient>();
-                entity.PrixTotaleTTc = 0;
-                entity.PrixTotaleHt = 0;
+
                 foreach (var item in model.DetailsLivraisonsModel)
                 {
                    
@@ -59,8 +59,7 @@ namespace WebApi.Controllers
                                 Quantite = item.Quantite,
                             };
                             entity.DetailsLivraisons.Add(detail);
-                            entity.PrixTotaleHt +=produit.PriceHt * item.Quantite;
-                            entity.PrixTotaleTTc += produit.PriceTTc * item.Quantite;
+                           
                         }               
                 }
               
@@ -107,11 +106,18 @@ namespace WebApi.Controllers
             {
                 parameters.include = "";
             }
-            if (parameters.Id != null)
+
+            if (parameters.Id == null)
+            {
+                return StatusCode(500, "Empty");
+
+            }
+            if (parameters.iDC < 1)
             {
                 return Ok(repository.BonLivraisonClientRepo.FindByCondition(x => x.GrossisteId == parameters.Id, includeProperties: parameters.include));
+
             }
-            return StatusCode(500, "Empty");
+            return Ok(repository.BonLivraisonClientRepo.FindByCondition(x => x.GrossisteId == parameters.Id && x.ClientId == parameters.iDC, includeProperties: parameters.include));
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
@@ -175,26 +181,44 @@ namespace WebApi.Controllers
                     return BadRequest("Invalid model object");
                 }
                 mapper.Map(model, bon);
-                var list = new List<DetailsLivraisonClient>();
-                bon.PrixTotaleTTc = 0;
-                bon.PrixTotaleHt = 0;
-                foreach (var item in model.DetailsLivraisonsModel)
+                var listjoin = model.DetailsLivraisonsModel.GroupJoin(
+                           bon.DetailsLivraisons,
+                           detail => detail.IdProduit,
+                           bon => bon.IdProduit,
+                           (detail, y) => new
+                           {
+                               idProduit = detail.IdProduit,
+                               idBon = detail.IdBonLivraison,
+                               quantite = detail?.Quantite,
+                               produit = repository.ProduitRepo.GetById(detail.IdProduit),
+                               details = y,
+                           }
+                           );
+                var listExept = bon.DetailsLivraisons.Select(x => x.IdProduit).Except(model.DetailsLivraisonsModel.Select(x => x.IdProduit)).ToList();
+                bon.DetailsLivraisons = bon.DetailsLivraisons.Where(x => (!listExept.Contains(x.IdProduit))).ToList();
+                foreach (var item in listjoin)
                 {
-                    var produit = await repository.ProduitRepo.FindById(item.IdProduit);
-                    var detail = new DetailsLivraisonClient
+                    if (item.details.ToList().Count < 1)
                     {
-                        IdProduit = produit.Id,
-                        IdBonLivraison = id,
-                        MontantHt = produit.PriceHt * item.Quantite,
-                        MontantTTc = produit.PriceTTc * item.Quantite,
-                        Quantite = item.Quantite,
-                        Produit = produit
-                    };
-                    bon.PrixTotaleTTc += detail.MontantTTc;
-                    bon.PrixTotaleHt += detail.MontantHt;
-                    list.Add(detail);
+                        var detail = new DetailsLivraisonClient
+                        {
+                            IdProduit = item.idProduit,
+                            IdBonLivraison = id,
+                            MontantHt = item.produit.PriceHt * item.quantite,
+                            MontantTTc = item.produit.PriceTTc * item.quantite,
+                            Quantite = item.quantite,
+
+                        };
+                        bon.DetailsLivraisons.Add(detail);
+                    }
+                    else
+                    {
+                        item.details.FirstOrDefault().MontantHt = item.produit.PriceHt * item.quantite;
+                        item.details.FirstOrDefault().MontantTTc = item.produit.PriceTTc * item.quantite;
+                        item.details.FirstOrDefault().Quantite = item.quantite;
+                    }
+
                 }
-                bon.DetailsLivraisons = list;
 
                 repository.BonLivraisonClientRepo.Update(bon);
                 await repository.SaveAsync();
@@ -227,8 +251,7 @@ namespace WebApi.Controllers
                 {
                     Date = bon.Date,
                     BonLivraisonClient = bon,
-                    PrixTotaleHt = bon.PrixTotaleHt,
-                    PrixTotaleTTc = bon.PrixTotaleTTc,
+                 
                 };
                 facture.DetailsFactures = new Collection<DetailsFactureClient>();
                 foreach (var item in bon.DetailsLivraisons)
