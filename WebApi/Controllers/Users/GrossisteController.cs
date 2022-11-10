@@ -37,72 +37,81 @@ namespace WebApi.Controllers.Users
         [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterAsync([FromForm] RegisterModelGrossiste model)
-        {
+        {try {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+
+                List<Document> emp = new List<Document>();
+                string uniqueFileName = null;
+                if (model.Documents != null)
+                {
+
+                    Document employe = new Document();
+                    // The file must be uploaded to the images folder in wwwroot
+                    // To get the path of the wwwroot folder we are using the injected
+                    // IHostingEnvironment service provided by ASP.NET Core
+                    string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "Files");
+                    // To make sure the file name is unique we are appending a new
+                    // GUID value and and an underscore to the file name
+                    uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Documents.FileName;
+                    string filePathImage = Path.Combine(uploadsFolder, uniqueFileName);
+                    // Use CopyTo() method provided by IFormFile interface to
+                    // copy the file to wwwroot/images folder
+                    model.Documents.CopyTo(new FileStream(filePathImage, FileMode.Create));
+                    employe.Filepath = uniqueFileName;
+                    emp.Add(employe);
 
 
-            List<Document> emp = new List<Document>();
-            string uniqueFileName = null;
-            if (model.Documents != null)
+                }
+
+
+                var result = await grossisteService.RegisterAsync(model);
+
+                if (!result.IsAuthenticated)
+                    return BadRequest(result.Message);
+                //Confirmations mail
+                var user = await _userManager.FindByEmailAsync(result.Email);
+                var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
+                var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+                string url = $"https://localhost:44353/api/User/confirmemail?userid={user.Id}&token={validEmailToken}";
+                var filePath = $"{Directory.GetCurrentDirectory()}\\Templates\\EmailTemplate.html";
+                var str = new StreamReader(filePath);
+
+                var mailText = str.ReadToEnd();
+                str.Close();
+
+                mailText = mailText.Replace("[username]", user.UserName).Replace("[email]", user.Email).Replace("[URL]", url);
+
+               //// await mailingService.SendEmailAsync(user.Email, "Welcome to BigSoft" +
+               //     "", mailText);
+
+                return Ok(result);
+            }
+            catch (Exception e)
             {
-
-                Document employe = new Document();
-                // The file must be uploaded to the images folder in wwwroot
-                // To get the path of the wwwroot folder we are using the injected
-                // IHostingEnvironment service provided by ASP.NET Core
-                string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "Files");
-                // To make sure the file name is unique we are appending a new
-                // GUID value and and an underscore to the file name
-                uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Documents.FileName;
-                string filePathImage = Path.Combine(uploadsFolder, uniqueFileName);
-                // Use CopyTo() method provided by IFormFile interface to
-                // copy the file to wwwroot/images folder
-                model.Documents.CopyTo(new FileStream(filePathImage, FileMode.Create));
-                employe.Filepath = uniqueFileName;
-                emp.Add(employe);
-
-
+                return BadRequest(e.Message);
             }
 
-
-            var result = await grossisteService.RegisterAsync(model);
-
-            if (!result.IsAuthenticated)
-                return BadRequest(result.Message);
-            //Confirmations mail
-            var user = await _userManager.FindByEmailAsync(result.Email);
-            var confirmEmailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
-            var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
-            string url = $"https://localhost:44353/api/User/confirmemail?userid={user.Id}&token={validEmailToken}";
-            var filePath = $"{Directory.GetCurrentDirectory()}\\Templates\\EmailTemplate.html";
-            var str = new StreamReader(filePath);
-
-            var mailText = str.ReadToEnd();
-            str.Close();
-
-            mailText = mailText.Replace("[username]", user.UserName).Replace("[email]", user.Email).Replace("[URL]", url);
-
-            await mailingService.SendEmailAsync(user.Email, "Welcome to BigSoft" +
-                "", mailText);
-
-            return Ok(result);
+           
         }
 
 
-        [HttpPost("token")]
+        [HttpPost("Token")]
         public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var result = await grossisteService.Login(model);
-
+          
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
-
+            if (!result.IsConfirmed)
+            {
+                return BadRequest("email not yet confirmed");
+            }
             return Ok(result);
         }
         [Authorize]

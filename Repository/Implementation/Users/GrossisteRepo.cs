@@ -73,7 +73,7 @@ namespace Repository.Implementation
 
             var jwtSecurityToken = await CreateJwtToken(user);
             var rolesList = userManager.GetRolesAsync(user).Result.First();
-
+            authModel.IsConfirmed = user.EmailConfirmed;
             authModel.IsAuthenticated = true;
             authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             authModel.Email = user.Email;

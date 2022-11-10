@@ -8,8 +8,7 @@ using WebApi.Models;
 
 namespace Repository.Interfaces
 {
-    public interface IFournisseurRepo
+    public interface IFournisseurRepo : IRepositoryBase<Fournisseur>
     {
-        IEnumerable<Fournisseur> GetAll(string id);
     }
 }

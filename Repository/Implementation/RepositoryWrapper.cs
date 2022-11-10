@@ -19,6 +19,7 @@ namespace Repository.Implementation
         private IStockProduitRepo _StockProduitRepo;
         private IStockRepo _StockRepo;
         private IProduitRepo _ProduitRepo;
+        private IFournisseurRepo _FournisseurRepo;
         public IBonDeCommandeFournisseurRepo BonDeCommandeFournisseurRepo
         {
             get
@@ -30,7 +31,17 @@ namespace Repository.Implementation
                 return _BonDeCommandeFournisseurRepo;
             }
         }
-
+        public IFournisseurRepo FournisseurRepo
+        {
+            get
+            {
+                if (_FournisseurRepo == null)
+                {
+                    _FournisseurRepo = new FournisseurRepo(_repoContext);
+                }
+                return _FournisseurRepo;
+            }
+        }
         public IClientRepo ClientRepo
         {
             get

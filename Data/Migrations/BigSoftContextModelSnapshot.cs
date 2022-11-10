@@ -505,6 +505,9 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Civility")
+                        .HasColumnType("int");
+
                     b.Property<string>("CodePostale")
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)");
@@ -529,12 +532,13 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("NumFax")
-                        .HasColumnType("int");
+                    b.Property<string>("NumMobile")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
-                    b.Property<int?>("Numbureau")
-                        .IsRequired()
-                        .HasColumnType("int");
+                    b.Property<string>("PhoneBureau")
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.Property<string>("PrenomPersAContact")
                         .IsRequired()

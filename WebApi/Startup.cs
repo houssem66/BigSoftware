@@ -84,7 +84,6 @@ namespace WebApi
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IProduitService, ProduitService>();
             services.AddTransient<IGrossisteService, GrossisteService>();
-            services.AddTransient<IFournisseurService, FournisseurService>();
             services.AddTransient<IMailingService, MailingService>();
 
             //sprint2
