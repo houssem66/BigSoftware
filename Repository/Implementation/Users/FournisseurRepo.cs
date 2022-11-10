@@ -17,25 +17,19 @@ using WebApi.Models;
 
 namespace Repository.Implementation
 {
-    public class FournisseurRepo:IFournisseurRepo
+    public class FournisseurRepo: RepositoryBase<Fournisseur>, IFournisseurRepo
     {
-        private readonly BigSoftContext bigSoftContext;
-        private readonly IGenericRepository<Fournisseur> genericRepository;
 
-       
-      
-        public FournisseurRepo(BigSoftContext _bigSoftContext, IGenericRepository<Fournisseur> _genericRepository)
+
+
+        public FournisseurRepo(BigSoftContext _bigSoftContext):base(_bigSoftContext)
         {
-            bigSoftContext = _bigSoftContext;
-            genericRepository = _genericRepository;
+           
            
           
           
         }
 
-        public IEnumerable<Fournisseur> GetAll(string id)
-        {
-            return bigSoftContext.Fournisseurs.Where(e => e.IdGrossiste == id);
-        }
+       
     }
 }

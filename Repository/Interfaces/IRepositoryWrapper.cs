@@ -6,6 +6,7 @@ namespace Repository.Interfaces
     {
         IBonDeCommandeFournisseurRepo BonDeCommandeFournisseurRepo { get; }
         IClientRepo ClientRepo { get; }
+        IFournisseurRepo FournisseurRepo { get; }
         IBonDeReceptionFournisseurRepo BonDeReceptionFournisseurRepo { get; }
         IFactureFournisseurRepo FactureFournisseurRepo { get; }
         IBonCommandeClientRepo CommandeClientRepo { get; }
