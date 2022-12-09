@@ -135,6 +135,24 @@ namespace WebApi.Controllers
 
 
         }
+        [Authorize]
+        [HttpGet("Get/{id}")]
+        public async Task<ActionResult<Stock>> CalculateInventory(int id)
+        {
+            var Entity = await repository.StockRepo.FindByCondition
+                (x =>
+                x.Id == id, includeProperties: "StockProduit.Produit,Grossiste"
+                ).FirstOrDefaultAsync();
+
+            if (Entity == null)
+            {
+                return NotFound();
+            }
+
+            return Entity;
+
+
+        }
     }
 }
 public class QueryParametersStock

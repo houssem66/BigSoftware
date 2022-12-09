@@ -629,6 +629,12 @@ namespace Data.Migrations
                     b.Property<int>("IdStock")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("NewDateEntry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("OldDateEntry")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal?>("PrixTotaleHt")
                         .HasColumnType("decimal(18,2)");
 
