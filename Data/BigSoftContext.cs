@@ -26,6 +26,8 @@ namespace Data
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Produit> Produits { get; set; }
         public DbSet<StockProduit> StockProduits { get; set; }
+        public DbSet<StockProduitEntry> stockEntries { get; set; }
+
         public DbSet<BonDeCommandeFournisseur> BonDeCommandeFournisseurs { get; set; }
         public DbSet<BonDeReceptionFournisseur> BonDeRéceptionFournisseurs { get; set; }
         public DbSet<FactureFournisseur> FactureFournisseurs { get; set; }
@@ -41,7 +43,6 @@ namespace Data
         public DbSet<DetailsDevis> DetailsDevis { get; set; }
         public DbSet<DetailsFactureClient> DetailsFactureClients { get; set; }
         public DbSet<DetailsLivraisonClient> DetailsLivraisonClients { get; set; }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             //Sprint 1
@@ -52,6 +53,7 @@ namespace Data
             builder.ApplyConfiguration(new FournisseurConfiguration());
             builder.ApplyConfiguration(new StockProduitConfiguration());
             builder.ApplyConfiguration(new ProduitConfiguration());
+            builder.ApplyConfiguration(new StockEntryConfiguration());
 
             builder.ApplyConfiguration(new DetailsCommandeFournisseurConfiguration());
             builder.ApplyConfiguration(new DetailsBonReceptionFournisseurConfiguration());

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Data.Entities
 {
-   public class Grossiste:Utilisateur
+    public class Grossiste:Utilisateur
     {
         [Required]
         public string RaisonSocial { get; set; }

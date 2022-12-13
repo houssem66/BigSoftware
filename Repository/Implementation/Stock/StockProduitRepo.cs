@@ -15,7 +15,7 @@ namespace Repository.Implementation
         {
             if (entity != null)
             {
-                entity.Quantite += aug;
+               
                 Update(entity);
             }
         }

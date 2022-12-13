@@ -130,7 +130,7 @@ namespace Repository.Implementation
                 return new AuthModel { Message = "Username is already registered!" };
             //User Creation
             var Stock = new Stock{
-            StoreName="Stock Principale"};
+            StoreName="Main stock"};
             var stockList = new List<Stock>();
             stockList.Add(Stock);
             var user = new Grossiste
