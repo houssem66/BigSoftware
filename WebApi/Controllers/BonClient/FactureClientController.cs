@@ -64,9 +64,9 @@ namespace WebApi.Controllers.BonClient
                         var stockProduit = await repository.StockProduitRepo.FindByCondition(x => x.IdProduit == item.IdProduit && x.Stock.Grossiste.Id == facture.BonLivraisonClient.GrossisteId).FirstOrDefaultAsync();
                         if (stockProduit != null)
                         {
-                            stockProduit.Quantite += item.Quantite;
-                            stockProduit.PrixTotaleTTc += item.MontantTTc;
-                            stockProduit.PrixTotaleHt += item.MontantHt;
+                           
+                            //stockProduit.PrixTotaleTTc += item.MontantTTc;
+                            //stockProduit.PrixTotaleHt += item.MontantHt;
                         }
                         repository.StockProduitRepo.Update(stockProduit);
                     }

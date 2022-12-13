@@ -105,9 +105,8 @@ namespace WebApi.Controllers
                             var stockProduit = await repository.StockProduitRepo.FindByCondition(x => x.IdProduit == item.IdProduit && x.Stock.Grossiste.Id == bon.GrossisteId).FirstOrDefaultAsync();
                             if (stockProduit != null)
                             {
-                                stockProduit.Quantite -= item.Quantite;
-                                stockProduit.PrixTotaleTTc -= item.MontantTTc;
-                                stockProduit.PrixTotaleHt -= item.MontantHt;
+                               
+                                
                             }
                             repository.StockProduitRepo.Update(stockProduit);
                         }
@@ -211,7 +210,10 @@ namespace WebApi.Controllers
             }
             else
             {
-                var bon = await repository.BonDeReceptionFournisseurRepo.FindByCondition(x => x.Id == id, includeProperties: "DetailsReceptions.Produit,Fournisseur.Grossiste.Stocks,FactureFournisseur.DetailsFactures").FirstOrDefaultAsync();
+                var bon = await repository.BonDeReceptionFournisseurRepo.
+                    FindByCondition(
+                    x => x.Id == id, includeProperties: "DetailsReceptions.Produit,Fournisseur.Grossiste.Stocks,FactureFournisseur.DetailsFactures")
+                    .FirstOrDefaultAsync();
                 bon.Confirmed = true;
                 repository.BonDeReceptionFournisseurRepo.Update(bon);
                 var facture = new FactureFournisseur
@@ -234,24 +236,43 @@ namespace WebApi.Controllers
                     var stockProduit = repository.StockProduitRepo.FindByCondition(x => x.IdProduit == item.IdProduit && x.IdStock == bon.Grossiste.Stocks.FirstOrDefault().Id).FirstOrDefault();
                     if (stockProduit == null)
                     {
+                        var stockEntry = new StockProduitEntry {
+                            Quantity = item.Quantite,
+                            DateOfEntry=bon.Date
+                        };
+                        var list = new Collection<StockProduitEntry>();
+                        list.Add(stockEntry);
                         var entity = new StockProduit
                         {
                             IdProduit = item.IdProduit,
                             IdStock = bon.Grossiste.Stocks.FirstOrDefault().Id,
-                            PrixTotaleHt = item.MontantHt,
-                            PrixTotaleTTc = item.MontantTTc,
-                            Quantite = item.Quantite,
+                         
                             Produit = item.Produit,
                             Stock = bon.Grossiste.Stocks.FirstOrDefault()
 
                         };
+                        entity.StockProduitEntries = list;
                         repository.StockProduitRepo.Create(entity);
                     }
                     else
                     {
-                        stockProduit.PrixTotaleTTc += item.MontantTTc;
-                        stockProduit.PrixTotaleHt += item.MontantHt;
-                        stockProduit.Quantite += item.Quantite;
+                       
+                        var stockEntry = new StockProduitEntry
+                        {
+                            Quantity = item.Quantite,
+                            DateOfEntry = bon.Date
+                        };
+                        if (stockProduit.StockProduitEntries == null)
+                        {
+                            var list = new Collection<StockProduitEntry>();
+                            list.Add(stockEntry);
+                            stockProduit.StockProduitEntries = list;
+                        }
+                        else
+                        {
+                            stockProduit.StockProduitEntries.Add(stockEntry);
+
+                        }
                         repository.StockProduitRepo.Update(stockProduit);
                     }
                 }

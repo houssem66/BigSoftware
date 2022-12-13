@@ -135,12 +135,14 @@ namespace WebApi.Controllers
                     {
                         foreach (var item in bon.DetailsLivraisons)
                         {
-                            var stockProduit = await repository.StockProduitRepo.FindByCondition(x => x.IdProduit == item.IdProduit && x.Stock.Grossiste.Id == bon.GrossisteId).FirstOrDefaultAsync();
+                            var stockProduit = await repository.StockProduitRepo.
+                                FindByCondition(x => x.IdProduit == item.IdProduit && x.Stock.Grossiste.Id == bon.GrossisteId).
+                                FirstOrDefaultAsync();
                             if (stockProduit != null)
                             {
-                                stockProduit.Quantite += item.Quantite;
-                                stockProduit.PrixTotaleTTc += item.MontantTTc;
-                                stockProduit.PrixTotaleHt += item.MontantHt;
+                                
+                                //stockProduit.PrixTotaleTTc += item.MontantTTc;
+                                //stockProduit.PrixTotaleHt += item.MontantHt;
                             }
                             repository.StockProduitRepo.Update(stockProduit);
                         }
@@ -274,10 +276,23 @@ namespace WebApi.Controllers
                         {
                             return BadRequest("a negative was returned");
                         }
-                            stockProduit.PrixTotaleTTc -= item.MontantTTc;
-                        stockProduit.PrixTotaleHt -= item.MontantHt;
-                        stockProduit.Quantite -= item.Quantite;
-                        repository.StockProduitRepo.Update(stockProduit);
+                        var stockEntry = new StockProduitEntry
+                        {
+                            Quantity = -item.Quantite,
+                            DateOfEntry = bon.Date
+                        };
+                        var list = new Collection<StockProduitEntry>();
+                        list.Add(stockEntry);
+                        try {
+                        
+                            stockProduit.StockProduitEntries = list;
+                            repository.StockProduitRepo.Update(stockProduit);
+                        }
+                        catch (Exception e)
+                        {
+                            return BadRequest(e.Message);
+                        }
+                      
                     }
                 }
 

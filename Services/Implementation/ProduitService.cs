@@ -157,8 +157,8 @@ namespace Services.Implementation
                     #region stock conditions
                     if (item.stock != null && oldStock != item.stock)
                     {
-                        item.stock.PrixTotaleHt = item.stock.Quantite * produit.PriceHt;
-                        item.stock.PrixTotaleTTc = item.stock.Quantite * produit.PriceTTc;
+                        //item.stock.PrixTotaleHt = item.stock.Quantite * produit.PriceHt;
+                        //item.stock.PrixTotaleTTc = item.stock.Quantite * produit.PriceTTc;
                         oldStock = item.stock;
                     }
                     #endregion

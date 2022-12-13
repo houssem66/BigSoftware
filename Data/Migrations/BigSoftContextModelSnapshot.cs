@@ -629,26 +629,40 @@ namespace Data.Migrations
                     b.Property<int>("IdStock")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("NewDateEntry")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("OldDateEntry")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("PrixTotaleHt")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("PrixTotaleTTc")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Quantite")
-                        .HasColumnType("decimal(18,2)");
-
                     b.HasKey("IdProduit", "IdStock");
 
                     b.HasIndex("IdStock");
 
                     b.ToTable("StockProduits");
+                });
+
+            modelBuilder.Entity("Data.Entities.StockProduitEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DateOfEntry")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("Quantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("idProdFK")
+                        .HasColumnType("int");
+
+                    b.Property<int>("idStockFK")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("idProdFK", "idStockFK");
+
+                    b.ToTable("stockEntries");
                 });
 
             modelBuilder.Entity("Data.Entities.Utilisateur", b =>
@@ -1268,6 +1282,17 @@ namespace Data.Migrations
                     b.Navigation("Stock");
                 });
 
+            modelBuilder.Entity("Data.Entities.StockProduitEntry", b =>
+                {
+                    b.HasOne("Data.Entities.StockProduit", "StockProduit")
+                        .WithMany("StockProduitEntries")
+                        .HasForeignKey("idProdFK", "idStockFK")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StockProduit");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1405,6 +1430,11 @@ namespace Data.Migrations
             modelBuilder.Entity("Data.Entities.Stock", b =>
                 {
                     b.Navigation("StockProduit");
+                });
+
+            modelBuilder.Entity("Data.Entities.StockProduit", b =>
+                {
+                    b.Navigation("StockProduitEntries");
                 });
 
             modelBuilder.Entity("Data.Entities.Grossiste", b =>

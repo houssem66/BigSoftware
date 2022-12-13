@@ -1,5 +1,5 @@
-﻿using Data.Entities;
-using Data.Entities.Enum;
+﻿using Data.Entities.Enum;
+using Data.Entities;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
